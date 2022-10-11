@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.TransactionV3Mapper">
+
+
+		<!-- 최근 트랜잭션 정보 조회 -->
+		<select id="selectRecentTxList"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TxDetailDto">
+			select
+				t.tx_hash as txHash ,
+				t.height as height ,
+				t.create_date as createDate ,
+				t.from_addr as fromAddr ,
+				t.to_addr as toAddr ,
+				ifnull(t.tx_type,-1) as txType,
+				ifnull(t.amount,'-') as amount,
+				ifnull(t.fee,'-') as fee,
+				t.state as state,
+				t.contract_addr as targetContractAddr
+			from (
+				select
+					tx_hash
+				from
+					T_TRANSACTION
+				order by height desc, create_date desc
+					limit ${page} , ${counting}
+			) ori_date, T_TRANSACTION t
+			WHERE ori_date.tx_hash = t.tx_hash
+			order by height desc , create_date desc
+		</select>
+
+	<!-- 전체 트랜잭션중 해당 주소의 addressTx조회  v3/address-->
+	<select id="selectTotalTxListFromView"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TxDetailDto">
+
+			select
+				T.tx_hash as txHash ,
+				T.height as height ,
+				DATE_FORMAT(T.create_date, "%Y-%m-%d %H:%i:%s") as createDate ,
+				T.from_addr as fromAddr ,
+				T.to_addr as toAddr ,
+				ifnull(T.tx_type , -1) as txType,
+				ifnull(T.data_type, '-') as dataType,
+				ifnull(T.amount,'-') as amount,
+				ifnull(T.fee,'-') as fee,
+				ifnull(T.state, 2) as state,
+                T.contract_addr  as targetContractAddr
+			from (
+				SELECT id, tx_hash
+				FROM T_TRANSACTION_VIEW
+				WHERE 1=1
+				<if test="txType != null">
+					AND tx_type = #{txType}
+				</if>
+				<if test="address != null">
+					AND address = #{address}
+				</if>
+				ORDER BY id ${orderBy}
+				limit ${page} , ${counting}
+			) V, T_TRANSACTION_TOTAL as T
+			WHERE V.tx_hash = T.tx_hash
+			ORDER BY V.id DESC
+	</select>
+
+		<!-- 전체 트랜잭션중 해당 리스트만 조회  v3/address (지갑용)-->
+	<select id="selectTotalTxListFromViewForWallet"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TxDetailDto">
+
+		SELECT
+			v.tx_hash as txHash,
+			t.height as height,
+			DATE_FORMAT(t.create_date, "%Y-%m-%d %H:%i:%s") as createDate ,
+			t.from_addr as fromAddr ,
+			t.to_addr as toAddr ,
+			ifnull(t.tx_type , -1) as txType,
+			ifnull(t.data_type, '-') as dataType,
+			ifnull(t.amount,'-') as amount,
+			ifnull(t.fee,'-') as fee,
+			ifnull(t.state, 2) as state,
+			t.contract_addr  as targetContractAddr
+		FROM (
+			SELECT id, tx_hash
+			FROM T_TRANSACTION_VIEW
+			WHERE 1=1
+		<if test="txType != null">
+				AND tx_type = #{txType}
+		</if>
+		<if test="address != null">
+				AND address = #{address}
+		</if>
+				ORDER BY id ${orderBy}
+		LIMIT ${page} , ${counting}
+		) v, T_TRANSACTION_TOTAL t
+		WHERE v.tx_hash = t.tx_hash
+		ORDER BY v.id DESC
+	</select>
+	
+	
+	<select id="selectContractTxList"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TxDetailDto">
+		select
+			t2.tx_hash AS txhash,
+			t2.height AS height,
+			t2.create_date AS createdate,
+			t2.from_addr AS fromaddr,
+			t2.to_addr AS toaddr,
+			IFNULL(tx_type , -1) AS txtype,
+			IFNULL(t2.amount,'-') AS amount,
+			IFNULL(t2.state, 2) AS state,
+			IFNULL(t2.fee, '-') AS fee,
+			t2.contract_addr AS targetcontractaddr
+		from (
+			SELECT id, tx_hash
+			FROM T_TRANSACTION_VIEW
+			WHERE address = #{address}
+			ORDER BY id ${orderBy}
+			LIMIT #{page}, #{counting}
+		) t1, T_TRANSACTION_TOTAL t2
+		WHERE t1.tx_hash = t2.tx_hash
+		ORDER BY t2.id DESC
+	</select>
+
+	<!--<select id="selectTotalContractTxListForChallenge"-->
+			<!--parameterType="com.dfg.icon.web.v3.dto.PageReq"-->
+			<!--resultType="com.dfg.icon.web.v3.dto.TxDetailDto">-->
+		<!--select-->
+		<!--tx_hash as txHash ,-->
+		<!--height as height ,-->
+		<!--create_date as createDate,-->
+		<!--from_addr as fromAddr ,-->
+		<!--to_addr as toAddr ,-->
+		<!--error_msg as errorMsg-->
+		<!--from T_TRANSACTION_TOTAL-->
+		<!--where height &gt;= #{height} AND-->
+		<!--contract_addr = #{address} AND-->
+		<!--(create_date BETWEEN #{startDate} AND #{endDate})-->
+		<!--order by height asc-->
+	<!--</select>-->
+
+	<!--<select id="selectTotalContractTxCountForChallenge"-->
+			<!--parameterType="com.dfg.icon.web.v3.dto.PageReq"-->
+			<!--resultType="java.lang.Integer">-->
+		<!--select-->
+		<!--count(*)-->
+		<!--from T_TRANSACTION_TOTAL-->
+		<!--where height &gt;= #{height} AND-->
+		<!--contract_addr = #{address} AND-->
+		<!--(create_date BETWEEN #{startDate} AND #{endDate})-->
+	<!--</select>-->
+
+	<!--전체 트랜잭션 개수 조회 v3/address(동일조건)-->
+	<select id="selectTotalTxCount"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select
+		count(*)
+		from
+		T_TRANSACTION_TOTAL
+		where 1=1
+		<if test="address != null">
+			and (from_addr = #{address}	or to_addr = #{address})
+		</if>
+		<if test="state != null">
+			and state = #{state}
+		</if>
+		<if test="txType != null">
+			and tx_type = #{txType}
+			<if test="txType == 0">
+				and amount != '0' and to_addr NOT LIKE 'cx%'
+			</if>
+		</if>
+	</select>
+	
+		<!--전체 트랜잭션 개수 조회 v3/address(동일조건) 지갑용-->
+	<select id="selectTotalTxCountForWallet"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select
+		count(*)
+		from
+		T_TRANSACTION_VIEW
+		where 1=1
+		<if test="txType != null">
+			AND tx_type = #{txType}
+		</if>
+		<if test="address != null">
+			AND address = #{address}
+		</if>
+	</select>
+
+	
+	<!-- eventLog 조회 -->
+	<select id="selectEventLogList" 
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TxResultLog">
+		SELECT
+			t2.tx_hash as txHash,
+			t2.contract_addr as contractAddr,
+			t2.tx_index as txIndex,
+			t2.height as height,
+			t2.age as age,
+			t2.method as method,
+			t2.event_log as eventLog
+		FROM
+		(
+			SELECT e_index
+			FROM T_TX_RESULT_LOG
+			WHERE
+			<if test="txHash != null">
+				tx_hash = #{txHash}
+			</if>
+			<if test="address != null">
+				contract_addr = #{address}
+			</if>
+			order by e_index DESC
+			limit ${page} , ${counting}
+		) t1, T_TX_RESULT_LOG t2
+		WHERE t1.e_index = t2.e_index
+	</select>
+	
+	<!-- eventLog 갯수 조회 -->
+	<select id="selectTotalCountEventLog" resultType="java.lang.Integer">
+		SELECT 
+		    count(*)
+		FROM
+		    T_TX_RESULT_LOG 
+		WHERE
+		<if test="txHash != null">
+			tx_hash = #{txHash}
+		</if>
+		<if test="address != null">
+			contract_addr = #{address}
+		</if>
+
+	</select>
+	
+	
+		<select id="selectTokenTx" 
+				resultType="com.dfg.icon.web.v3.dto.TxDetailTokenTx" >
+		
+		SELECT
+			tokenTx.quantity as quantity ,
+			tokenInfo.symbol as symbol,
+			tokenInfo.name as tokenName,
+			tokenTx.from_addr as fromAddr,
+			tokenTx.to_addr as toAddr,
+			1 as state
+		FROM 
+			T_TOKEN_TX AS tokenTx
+			inner join T_CONTRACT AS tokenInfo ON tokenInfo.contract_addr = tokenTx.contract_addr
+		WHERE 
+			tokenTx.tx_hash = #{txHash} ORDER BY tokenTx.id ASC
+		
+		</select>
+
+		<!-- 트랜잭션  상세 내역  조회-->
+		<select id="selectTxDetail"
+				parameterType="com.dfg.icon.web.v3.dto.PageReq"
+				resultType="com.dfg.icon.web.v3.dto.TxDetail">
+	
+			select 
+				T.tx_hash as txHash , 
+				T.height as height , 
+				DATE_FORMAT(T.create_date, "%Y-%m-%d %H:%i:%s") as createDate ,
+				T.from_addr as fromAddr , 
+				T.to_addr as toAddr ,
+				ifnull(T.tx_type,-1) as txType,
+				ifnull(T.data_type, '-') as dataType,
+				ifnull(T.amount,'-') as amount,
+				ifnull(T.state, 2) as state,
+				ifnull(T.fee,'-') as fee,
+				ifnull(T.step_limit, '-') as stepLimit,
+				ifnull(T.step_used_tx, '-') as stepUsedByTxn,
+				ifnull(T.step_price, '-') as stepPrice,
+				TData.data_body as dataString,
+				TData.is_safe as isSafe,
+				T.reported_count as reportedCount,
+				ifnull(T.error_code, '-') as errorCode,
+				ifnull(T.error_msg, '-') as errorMsg,
+				T.contract_addr as targetContractAddr
+				<!--  
+				TToken.to_addr as toTokenAddr ,
+				TToken.quantity as quantity ,
+				TToken.irc_version as ircVersion
+				-->
+				
+			from 
+				T_TRANSACTION_TOTAL as T
+				inner join T_TX_DATA as TData on T.tx_hash = TData.tx_hash
+				<!--  
+				LEFT JOIN T_TOKEN_TX as TToken ON T.tx_hash = TToken.tx_hash
+				-->
+			where 
+				T.tx_hash = #{txHash , jdbcType=VARCHAR}
+		
+		</select>
+
+	<select id="selectInternalTx"
+			resultType="com.dfg.icon.web.v3.dto.InternalTx">
+		SELECT
+			parent_tx_hash txHash,
+		   	tx_index txIndex,
+		   	contract_addr contractAddr,
+		   	create_date createDate,
+		   	height,
+		   	from_addr fromAddr,
+		   	to_addr toAddr,
+		   	amount,
+		   	1 state
+		FROM T_INTERNAL_TX
+		WHERE parent_tx_hash = #{txHash}
+		ORDER BY id ASC
+
+	</select>
+
+	<select id="selectInternalTxPaging"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.InternalTx">
+		SELECT
+		t2.parent_tx_hash txHash,
+		t2.tx_index txIndex,
+		t2.contract_addr contractAddr,
+		t2.create_date createDate,
+		t2.height height,
+		t2.from_addr fromAddr,
+		t2.to_addr toAddr,
+		t2.amount amount,
+		1 as state
+		FROM (
+			SELECT id
+			FROM T_INTERNAL_TX
+			WHERE
+			<if test="txHash != null">
+				parent_tx_hash = #{txHash}
+			</if>
+			<if test="address != null">
+				contract_addr = #{address}
+			</if>
+			ORDER BY id desc
+			limit ${page} , ${counting}
+		) t1, T_INTERNAL_TX t2
+		WHERE t1.id = t2.id
+	</select>
+
+	<select id="selectInternalTxPagingByAddress"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.InternalTx">
+		SELECT
+			itv.parent_tx_hash txHash,
+			itv.tx_index txIndex,
+			it.contract_addr contractAddr,
+			it.create_date createDate,
+			it.height height,
+			it.from_addr fromAddr,
+			it.to_addr toAddr,
+			it.amount amount,
+			1 state
+		FROM (
+			SELECT
+				parent_tx_hash, tx_index
+			FROM T_INTERNAL_TX_VIEW
+			WHERE address = #{address2}
+			ORDER BY id DESC
+			LIMIT ${page} , ${counting}
+		) itv, T_INTERNAL_TX it
+		WHERE itv.parent_tx_hash = it.parent_tx_hash
+			  AND itv.tx_index = it.tx_index
+	</select>
+
+	<select id="selectInternalTxCount"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM T_INTERNAL_TX
+		WHERE
+		<if test="txHash != null">
+			parent_tx_hash = #{txHash}
+		</if>
+		<if test="address != null">
+			contract_addr = #{address}
+		</if>
+	</select>
+
+	<select id="selectInternalTxCountByAddress"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM T_INTERNAL_TX_VIEW
+		WHERE address = #{address2}
+	</select>
+
+	<select id="selectTxCountForDownload"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.core.v3.vo.TxCount">
+		SELECT
+			<if test="type == 0">
+				from_addr as address,
+				count(*) as cnt
+			</if>
+			<if test="type == 1">
+				to_addr as address,
+				count(*) as cnt
+			</if>
+		FROM T_TRANSACTION_TOTAL
+		WHERE create_date BETWEEN
+		CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
+		<if test="type == 0">
+			GROUP BY from_addr
+		</if>
+		<if test="type == 1">
+			GROUP BY to_addr
+		</if>
+		ORDER BY cnt DESC LIMIT 10000
+	</select>
+	<select id="selectTxListCountForDownload"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM
+		T_TRANSACTION_TOTAL
+		WHERE (create_date BETWEEN
+		CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59'))
+		<if test="address != null">
+			AND from_addr = #{address}
+		</if>
+		<if test="address2 != null">
+			AND to_addr = #{address2}
+		</if>
+	</select>
+	<select id="selectTxListForDownload"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.core.dao.icon.TTransactionTotal">
+		SELECT
+			height,
+			tx_hash txHash,
+			hash,
+			create_date createDate,
+			from_addr fromAddr,
+			to_addr toAddr,
+			fee,
+			amount,
+			state,
+			internal_tx_count internalTxCount,
+			contract_addr contractAddr
+		FROM
+			T_TRANSACTION_TOTAL
+		WHERE (create_date BETWEEN
+		CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59'))
+		<if test="address != null">
+			AND from_addr = #{address}
+		</if>
+		<if test="address2 != null">
+			AND to_addr = #{address2}
+		</if>
+	</select>
+
+	<update id="updateReportedCountAdd" parameterType="java.lang.String">
+		UPDATE T_TRANSACTION_TOTAL
+		SET reported_count = reported_count + 1
+		WHERE tx_hash = #{txHash}
+	</update>
+
+	<select id="getFeeSum" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.core.dao.icon.TAddressTotal">
+		select contract_addr address,
+			sum(convert(fee, decimal(64,18))) balanceOrder
+		from T_TRANSACTION_TOTAL where contract_addr = #{address} AND
+		(create_date BETWEEN CAST(#{startDate} AS DATETIME) AND CAST(#{endDate} AS DATETIME))
+		group by contract_addr
+	</select>
+</mapper>

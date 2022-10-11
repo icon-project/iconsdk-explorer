@@ -1,0 +1,78 @@
+{
+  "jsonrpc": "2.0",
+  "result":[
+    {
+      "type": "function",
+      "name": "balanceOf",
+      "inputs":[
+        {
+          "name": "_owner",
+          "type": "Address"
+        }
+      ],
+      "outputs":[
+        {
+          "type": "int"
+        }
+      ],
+      "readonly": "0x1"
+    },
+    {
+      "type": "function",
+      "name": "decimals",
+      "inputs":[],
+      "outputs":[
+        {
+          "type": "int"
+        }
+      ],
+      "readonly": "0x1"
+    },
+    {
+      "type": "function",
+      "name": "name",
+      "inputs":[],
+      "outputs":[
+        {"type": "str"}
+      ],
+      "readonly": "0x1"
+    },
+    {
+      "type": "function",
+      "name": "symbol",
+      "inputs":[],
+      "outputs":[
+        {"type": "str"}
+      ],
+      "readonly": "0x1"
+    },
+    {
+      "type": "function",
+      "name": "totalSupply",
+      "inputs":[],
+      "outputs":[{"type": "int" }],
+      "readonly": "0x1"
+    },
+    {
+      "type": "function",
+      "name": "transfer",
+      "inputs":[
+        {"name": "_to", "type": "Address"},
+        {"name": "_value", "type": "int"},
+        {"name": "_data", "type": "bytes", "default":null}
+      ],
+      "outputs":[]
+    },
+    {
+      "type": "eventlog",
+      "name": "Transfer",
+      "inputs":[
+        { "type": "Address", "indexed": "0x1"},
+        { "type": "Address", "indexed": "0x1"},
+        { "type": "int", "indexed": "0x1"},
+        { "type": "bytes"}
+      ]
+    }
+  ],
+  "id": 1234
+}

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.TokenMapper">
+
+	<select id="selectTokenInfoList" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TokenInfo">
+		select
+			contract_addr as contractAddr,
+			name,
+			symbol,
+			holder_addr as holderAddr,
+			holder_count as holderCount,
+			transfer_count as transferCount,
+			total_supply as totalSupply,
+			decimals
+		from T_CONTRACT
+		where irc_version = 'IRC2'
+		<if test="address != null">
+			and contract_addr = #{address}
+		</if>
+		<if test="address2 != null">
+			and holder_addr = #{address2}
+		</if>
+		<if test="keyword != null">
+			and (name like CONCAT(#{keyword},'%') or symbol like CONCAT(#{keyword},'%'))
+		</if>
+		order by active_sort, name_sort, name
+		limit ${page} , ${counting}
+
+	</select>
+
+	<select id="selectTokenInfoTotalCount" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select
+			count(*)
+		from T_CONTRACT
+		where irc_version = 'IRC2'
+		<if test="address != null">
+			and contract_addr = #{address}
+		</if>
+		<if test="address2 != null">
+			and holder_addr = #{address2}
+		</if>
+		<if test="keyword != null">
+			and (name like CONCAT(#{keyword},'%') or lower(symbol) like CONCAT(#{keyword},'%'))
+		</if>
+	</select>
+
+
+	<select id="selectTokenTransferList" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TokenTransfers">
+		select
+		T.contract_addr as contractAddr,
+		T.tx_hash as txHash,
+		T.block_height as height,
+		T.age as age ,
+		T.from_addr as fromAddr,
+		T.to_addr as toAddr,
+		T.quantity as quantity,
+		T.fee as fee,
+		1 as state,
+		I.symbol as symbol,
+		I.name as tokenName
+		FROM (
+			SELECT id
+			FROM T_TOKEN_TX
+			WHERE 1=1
+			<if test="address != null">
+				and contract_addr = #{address}
+			</if>
+			ORDER BY id ${orderBy}
+			limit ${page} , ${counting}
+		) tx, T_TOKEN_TX T, T_CONTRACT I
+		WHERE tx.id = T.id and T.contract_addr = I.contract_addr
+		ORDER BY tx.id DESC
+	</select>
+
+	<select id="selectTokenTransferListFromView" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TokenTransfers">
+		select
+		T.contract_addr as contractAddr,
+		T.tx_hash as txHash,
+		T.block_height as height,
+		T.age as age ,
+		T.from_addr as fromAddr,
+		T.to_addr as toAddr,
+		T.quantity as quantity,
+		T.fee as fee,
+		1 as state,
+		I.symbol as symbol,
+		I.name as tokenName
+		FROM (
+			SELECT id, tx_hash, tx_index
+			FROM T_TOKEN_TX_VIEW
+			WHERE address = #{address2}
+			<if test="address != null">
+				and contract_addr = #{address}
+			</if>
+			ORDER BY id ${orderBy}
+			limit ${page} , ${counting}
+		) tv, T_TOKEN_TX T, T_CONTRACT I
+		WHERE tv.tx_hash = T.tx_hash AND tv.tx_index = T.tx_index
+			and T.contract_addr = I.contract_addr
+		ORDER BY tv.id desc
+	</select>
+	
+	<!-- tokenHolders조회 -->
+	<select id="selectTokenHolders" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+		resultType="com.dfg.icon.web.v3.dto.TokenHolder">
+		
+		SELECT 
+		    A.address as address,
+		    A.contract_addr as contractAddr,
+		    A.tx_count as txCount,
+		    A.quantity as quantity,
+			<if test="icxSupply != null">
+			REPLACE(FORMAT((A.quantity/${icxSupply})*100, 2), ',', '')	as percentage,
+			</if>
+			<if test="icxSupply == null">
+				'-' as percentage,
+			</if>
+		    I.symbol as symbol,  
+		     @curRank := @curRank + 1 AS "rank"
+		FROM
+		    T_TOKEN_ADDRESS as A
+		inner join T_CONTRACT as I
+			on A.contract_addr = I.contract_addr
+		inner join (SELECT @curRank := (${page} )  ) r
+			
+		WHERE 1=1
+		and quantity_order &gt; 0
+		<if test="address!=null">
+			and A.contract_addr = #{address}
+		</if> 
+	    order by quantity_order desc
+		limit ${page} , ${counting}
+	
+	</select>
+	
+	<!-- tokenHolders 전체 갯수 -->
+	<select id="selectTotalCountHoderList" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		SELECT 
+	    	count(*)
+		FROM
+	    	T_TOKEN_ADDRESS
+	    where
+	    	quantity_order &gt; 0
+	    	<if test="address != null">
+				and contract_addr = #{address}
+			</if>
+	</select>
+	
+	<select id="selectTotalCountTransfers"	
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select 
+		count(*)
+		from T_TOKEN_TX
+		where 1=1
+		<if test="address != null">
+			and contract_addr = #{address}
+		</if>
+		<if test="address2 != null">
+			and (from_addr = #{address2} or to_addr = #{address2})
+		</if>
+		
+	</select>
+	
+	<!-- 페이징 오류 처리 token 전체 txCount 조회 -->
+	<select id="selectTotalTxCount" resultType="java.lang.Integer">
+		SELECT 
+	   		 SUM(transfer_count)
+		FROM
+	   		 T_CONTRACT
+	   	WHERE irc_version = 'IRC2'
+	</select>
+	
+	<!-- 특정 주소에 관한 tokenTxCount 조회 -->
+	<select id="selectAddrTokenTxCount" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+	  	SELECT 
+	   		 ifnull(sum((tx_count)), 0)  as txCount 
+		FROM
+	   		 T_TOKEN_ADDRESS
+        where 
+        	  address = #{address}
+	
+	</select>
+	
+	<select id="selectQuantityByAddress" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TokenAddress">
+		SELECT
+			ta.contract_addr contractAddr,
+			ta.quantity quantity,
+			ti.name contractName,
+			ti.symbol contractSymbol,
+			te.price tokenPrice,
+			ta.quantity*te.price totalTokenPrice
+		FROM T_TOKEN_ADDRESS ta
+			inner JOIN T_CONTRACT ti
+			ON ta.contract_addr = ti.contract_addr
+			left JOIN T_CURRENT_EXCHANGE te
+			ON te.trade_name LIKE CONCAT(LOWER(ti.symbol), 'usd')
+		WHERE ta.address = #{address}
+		ORDER BY ta.quantity_order DESC
+	</select>
+
+	<select id="selectTokenAddrCount"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+	    SELECT 
+		    COUNT(*)
+		FROM
+		    T_TOKEN_ADDRESS
+		WHERE
+		    address = #{address}
+	
+	</select>
+
+	<!-- 특정 주소에 대한    -->
+	<select id="selectTokenTxByAddressTxData" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.TokenTxDetail">
+
+		SELECT
+			v.txHash txHash,
+			t.contract_addr contractAddr,
+			c.name contractName,
+			t.irc_version ircVersion,
+			c.symbol contractSymbol,
+			c.decimals unit,
+			t.age createDate,
+			t.from_addr fromAddr,
+			t.to_addr toAddr,
+			t.quantity quantity,
+			1 state
+		FROM
+		(
+			SELECT
+				tx_hash txHash,
+				tx_index
+			FROM T_TOKEN_TX_VIEW
+			WHERE address = #{address}
+			ORDER BY id DESC LiMIT ${page} , ${counting}
+		) v, T_TOKEN_TX t, T_CONTRACT c
+		where
+		v.txHash = t.tx_hash and v.tx_index = t.tx_index
+		and t.contract_addr = c.contract_addr
+	</select>
+
+	<insert id="insertTokenTxArray" parameterType="java.util.List">
+		INSERT INTO T_TOKEN_TX (
+			tx_hash,
+			contract_addr,
+			tx_index,
+			block_height,
+			age,
+			from_addr,
+			to_addr , 
+			quantity,
+			fee,
+			irc_version)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.txHash},
+			#{element.contractAddr},
+			#{element.txIndex},
+			#{element.blockHeight},
+			#{element.age},
+			#{element.fromAddr},
+			#{element.toAddr},
+			#{element.quantity},
+			#{element.fee},
+			#{element.ircVersion}
+		</foreach>
+	</insert>
+
+	<insert id="insertTxResultLogArray" parameterType="java.util.List">
+		INSERT INTO T_TX_RESULT_LOG (
+		tx_hash,
+		contract_addr,
+		tx_index,
+		age,
+		height,
+		method,
+		event_log)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.txHash},
+			#{element.contractAddr},
+			#{element.txIndex},
+			#{element.age},
+			#{element.height},
+			#{element.method},
+			#{element.eventLog}
+		</foreach>
+	</insert>
+
+	<!--토큰주소자,토큰트랜잭션 개수를 토큰정보에 업데이트 height range-->
+	<!--deploy address 필터링-->
+	<update id="updateTokenInfoHolderCountAndTxCountRange" parameterType="java.lang.Integer">
+		UPDATE T_CONTRACT c
+		INNER JOIN
+    	(
+    		SELECT
+    			a.contract_addr,
+    			COUNT(*) AS holder_count,
+    			transfer_count
+    		FROM
+        	(
+        		SELECT
+        			contract_addr,
+        			COUNT(*) AS transfer_count
+        		FROM T_TOKEN_TX
+        		WHERE block_height BETWEEN #{height1} AND #{height2}
+        		GROUP BY contract_addr
+        	) t
+    		INNER JOIN T_TOKEN_ADDRESS a
+    			ON t.contract_addr = a.contract_addr
+    			AND a.quantity &gt; 0
+    		GROUP BY a.contract_addr
+    	  ) d
+		ON c.contract_addr = d.contract_addr
+		SET
+			c.holder_count = IFNULL(d.holder_count, 0),
+			c.transfer_count = IFNULL(c.transfer_count, 0) + d.transfer_count
+	</update>
+</mapper>

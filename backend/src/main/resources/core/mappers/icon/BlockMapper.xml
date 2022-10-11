@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.BlockMapper">
+	
+	
+	<!-- 최근 블록 정보 조회  -->
+	<select id="selectRecentBlock" 
+		parameterType="com.dfg.icon.web.v3.dto.PageReq"
+		resultType="com.dfg.icon.web.v3.dto.RecentBlock">
+	
+		select 
+			b.height as height,
+			b.create_date as createDate ,
+            b.tx_count as txCount,
+            ifnull(b.hash, '-') as hash,
+			ifnull(b.amount,'-') as amount,
+			ifnull(b.fee,'-') as fee,
+			bt.c_rep as peerId
+		from 
+			T_BLOCK b, T_BLOCK_TOTAL bt
+			where b.height=bt.height
+		order by 
+		b.height desc
+		limit ${page}, ${counting}
+			
+	</select>
+
+	<!-- 선택한 블록 상세 정보  -->
+	<select id="selectBlockDetail"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v0.dto.block.Block">
+		select 
+			height,
+			create_date as createDate ,
+            tx_count as txCount,
+            hash,
+            ifnull(c_rep,'-') as peerId,
+            prev_hash as prevHash,
+            ifnull(block_size,'0') as blockSize,
+			hash,
+			ifnull(amount,'-') as amount,
+			ifnull(fee,'-') as fee
+		from 
+			T_BLOCK_TOTAL
+		where 1=1
+		<if test="height != null">
+			AND height = #{height}
+		</if>
+		<if test="hash != null">
+			AND hash = #{hash}
+		</if>
+	</select>
+	
+	<!-- 마지막 블록의 높이 조회  -->
+	<select id="selectLastBlockHeight" resultType="java.lang.Integer">
+		select 
+			height 
+		from 
+			T_BLOCK_TOTAL
+		order by id desc limit 1;
+	</select>
+	
+	<!-- 블록 안에 있는 트랜잭션 조회  -->
+	<select id="selectTxInBlock"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v0.dto.TxInBlock">
+		select 
+			T.tx_hash as txHash,
+		    T.from_addr as fromAddr,
+		    T.to_addr as toAddr,
+		    T.amount as amount ,
+		    ifnull(T.fee ,'-') as fee,
+		    ifnull(T.state , 3) as state,
+		    ifnull(T.data_type , '-') as dataType,
+			ifnull(T.tx_type, 0) as txType,
+            T.contract_addr as targetContractAddr
+		from
+			T_TRANSACTION_TOTAL as T
+		where
+		1=1
+		<if test="height != null">
+			AND T.height = #{height}
+		</if>
+		<if test="hash != null">
+			AND T.hash = #{hash}
+		</if>
+		limit ${page} , ${counting}
+	</select>
+
+	<select id="selectTxCountInBlock"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select
+		count(*)
+		from
+		T_TRANSACTION_TOTAL
+		where
+		1=1
+		<if test="height != null">
+			AND height = #{height}
+		</if>
+		<if test="hash != null">
+			AND hash = #{hash}
+		</if>
+	</select>
+	
+		<!-- 블록 안에 있는 트랜잭션 조회  해쉬로 검색-->
+	<select id="selectTxInBlockByHash"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v0.dto.TxInBlock">
+		select 
+			tx_hash as txHash,
+		    from_addr as fromAddr,
+		    to_addr as toAddr,
+		    amount as amount ,
+		    ifnull(fee ,'-') as fee
+		from 
+			T_TRANSACTION_TOTAL 
+		where 
+			hash = #{hash}
+		limit ${page} , ${counting}
+	</select>
+	
+	<!-- 블록안에있는 트랜잭션 갯수  -->
+	<select id="selectTotalTxInBlock" resultType="String">
+		select 
+			tx_count
+		from 
+			T_BLOCK_TOTAL
+		where 
+			height = #{height}
+	</select>
+	
+	<!-- 블록안에있는 트랜잭션 갯수 해쉬로 검색  -->
+	<select id="selectTotalTxInBlockByHash" resultType="String">
+		select 
+			tx_count
+		from
+			T_BLOCK_TOTAL
+		where 
+			hash = #{hash}
+	</select>
+
+	
+	<!-- 메인 최신 블록 조회 -->
+	<select id="selectMainBlock" resultType="com.dfg.icon.web.v0.dto.main.MainBlock">
+		select 
+			block_height as blockHeight , 
+			hash ,
+            tx_count as txCount,
+            create_date as createDate
+		from 
+			T_MAIN_BLOCK 
+		order by 
+			block_height desc
+		limit 20
+	</select>
+
+	<select id="selectBlockChartDaily" resultType="com.dfg.icon.core.dao.icon.TMainChart">
+		SELECT
+			DATE_FORMAT(create_date , "%Y-%m-%d") as targetDate,
+			sum(tx_count) as txCount
+		FROM T_BLOCK_TOTAL
+		WHERE TO_DAYS(NOW()) - TO_DAYS(create_date) &lt;=  15
+		and TO_DAYS(NOW()) - TO_DAYS(create_date) !=  0
+		GROUP BY targetDate
+	</select>
+
+	<select id="selectBlockChart" resultType="com.dfg.icon.core.dao.icon.TMainChart">
+		SELECT
+			DATE_FORMAT(create_date , "%Y-%m-%d") as targetDate,
+			sum(tx_count) as txCount
+		FROM T_BLOCK
+		WHERE TO_DAYS(NOW()) - TO_DAYS(create_date) &lt;= 0
+	</select>
+
+	<insert id="insertBlockArray" parameterType="java.util.List">
+		INSERT INTO T_BLOCK (
+		hash,
+		height,
+		create_date,
+		tx_count,
+		fee,
+		amount)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.hash},
+			#{element.height},
+			#{element.createDate},
+			#{element.txCount},
+			#{element.fee},
+			#{element.amount}
+		</foreach>
+	</insert>
+
+	<insert id="insertBlockTotalArray" parameterType="java.util.List">
+		INSERT INTO T_BLOCK_TOTAL (
+		hash,
+		height,
+		create_date,
+		tx_count,
+		prev_hash,
+		block_size,
+		fee,
+		amount)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.hash},
+			#{element.height},
+			#{element.createDate},
+			#{element.txCount},
+			#{element.prevHash},
+			#{element.blockSize},
+			#{element.fee},
+			#{element.amount}
+		</foreach>
+	</insert>
+</mapper>

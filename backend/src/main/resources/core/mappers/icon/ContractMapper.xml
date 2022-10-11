@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.ContractMapper">
+
+	<!-- 컨트렉트 리스즈 조회  -->
+	<select id="selectContractList" 
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.ContractList">
+
+		select
+			c.contract_addr 			as address ,
+			c.name          			as contractName ,
+			ifnull(h.compiler,'-')      as compiler ,
+			t.balance  		as balance ,
+			ifnull(t.tx_count,0)      	as txCount ,
+			case when c.state = 0 then '-' else ifnull(h.verified_date,'-') end as verifiedDate ,
+			ifnull(c.irc_version, '-')  as ircVersion,
+			ifnull(c.state , '-') 		as status,
+			c.active_sort as activeSort,
+			c.name_sort as nameSort
+		from (
+			select
+				contract_addr,
+				irc_version,
+				version,
+				name,
+				state,
+				active_sort,
+				name_sort
+			from T_CONTRACT
+			where 1=1
+			<if test="state != null">
+				and state = #{state}
+			</if>
+			<if test="address != null">
+				and contract_addr like CONCAT(#{address}, '%')
+			</if>
+			<if test="keyword != null">
+				<choose>
+					<when test="keyword eq '-'.toString()">
+						and (name like CONCAT(#{keyword},'%') or name is null)
+					</when>
+					<otherwise>
+						and name like CONCAT(#{keyword},'%')
+					</otherwise>
+				</choose>
+			</if>
+			order by active_sort, name_sort, name
+			limit ${page} , ${counting}
+		) c, T_ADDRESS_TOTAL t, T_CONTRACT_HISTORY h
+		where c.contract_addr = t.address
+		and (c.contract_addr = h.contract_addr and c.version = h.version)
+		order by activeSort, nameSort, name
+	</select>
+
+	<!-- 컨트렉트 리스트 갯수 조회  -->
+	<select id="selectContractListCount"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		select 
+			count(*)
+		from 
+			T_CONTRACT
+		where
+			1=1
+		<if test="state != null">
+			and state = #{state}
+		</if>
+		<if test="address != null">
+			and contract_addr like CONCAT(#{address}, '%')
+		</if>
+		<if test="keyword != null">
+			<choose>
+				<when test="keyword eq '-'.toString()">
+					and (name like CONCAT(#{keyword},'%') or name is null)
+				</when>
+				<otherwise>
+					and name like CONCAT(#{keyword},'%')
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+
+
+	<!-- 컨트렉트 정보 -->
+	<select id="selectContractInfo" resultType="com.dfg.icon.web.v3.dto.ContractInfo">
+		select 
+			 address_total.address , 
+		     address_total.balance , 
+		     ROUND(address_total.balance * exchage.price, 3) as usdBalance,
+		     address_total.tx_count 			as txCount , 
+		     contract.irc_version   			as ircVersion ,
+		     ifnull(history.create_tx,'-')      as createTx , 
+		     ifnull(history.creator,'-'   )		as creator  ,
+             contract.state       				as status ,
+             contract.name						as tokenName,
+             contract.version					as contractVersion,
+             ifnull(contract.symbol,'-')         	as symbol ,
+             (select max(version) from T_CONTRACT_HISTORY where contract_addr = #{addr}) as newVersion,
+             address_total.reported_count		as reportedCount,
+             address_total.report_count			as reportCount
+		from 
+			T_ADDRESS_TOTAL as address_total
+		inner join T_CONTRACT as contract on 
+			address_total.address = contract.contract_addr
+		inner join T_CONTRACT_HISTORY as history on	
+			contract.contract_addr = history.contract_addr 
+			and contract.version = history.version 
+		inner join T_CURRENT_EXCHANGE exchage on 
+			exchage.trade_name = 'icxusd'
+		where 			
+			address_total.address = #{addr}
+	</select>
+
+	<!--다른 컨트랙트 버전 조회-->
+	<select id="selectContractVersion"
+			parameterType="com.dfg.icon.core.dao.icon.TContractHistory"
+			resultType="com.dfg.icon.web.v3.dto.ContractVersion">
+		select
+			version,
+			state as status
+		from T_CONTRACT_HISTORY
+		where 1=1
+		<if test="contractAddr != null">
+			and contract_addr = #{contractAddr}
+		</if>
+		<if test="createTx != null">
+			and create_tx = #{createTx}
+		</if>
+		<if test="verifiedTx != null">
+			and verified_tx = #{verifiedTx}
+		</if>
+		order by version desc
+	</select>
+
+	<select id="selectContractDetail" 
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.ContractDetail">
+	
+			SELECT
+		    c.state AS state,
+		    h.create_tx AS txHash,
+		    ifnull(h.verified_tx,'-') AS verifiedTx,
+		    ifnull(t.from_addr,'-') AS verifier,
+		    h.creator AS submitter
+        from
+            T_CONTRACT c
+        inner join T_CONTRACT_HISTORY h on
+			  c.contract_addr = h.contract_addr and c.version = h.version
+ 		left outer join T_TRANSACTION_TOTAL t on
+        	h.verified_tx = t.tx_hash
+		WHERE
+	   		c.contract_addr = #{address}
+	
+	</select>
+	
+	<!-- 컨트렉트 리스트 -->
+	<select id="selectNoIrcContractTxList" resultType="com.dfg.icon.web.v3.dto.ContractTx">
+	  SELECT 
+			tx_hash 		as txHash , 
+		    create_date 	as age ,
+		    from_addr 		as fromAddr , 
+		    to_addr 		as toAddr ,
+		    amount		 	as amount ,
+		    state		 	as state   
+		FROM 
+			T_TRANSACTION_TOTAL
+		where 
+			contract_addr = #{addr}
+		order by id desc
+			limit  #{page}  , #{count}
+	</select>
+	
+	<!-- 컨트렉트 token transfer 리스트 -->
+	<select id="selectContractTokenTxList"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.ContractTx">
+		select
+		 	ttx.id as id,
+			tx.tx_hash as txHash, 
+			info.name as name,
+		    info.symbol as symbol,
+		    tx.from_addr as fromAddr, 
+		    tx.to_addr as toAddr, 
+		    tx.contract_addr as tradeTokenAddr,
+		    tx.age as age,
+		    tx.quantity as quantity,
+            1 as state
+		from
+		(
+			select
+				id,
+				contract_addr
+			from T_TOKEN_TX
+			where contract_addr = #{address}
+			order by id ${orderBy}
+			limit #{page}  , #{counting}
+		) ttx, T_TOKEN_TX tx, T_CONTRACT info
+		where ttx.id = tx.id and ttx.contract_addr = info.contract_addr
+		order by id desc
+
+	</select>
+	
+	<!-- 컨트렉트 token transfer 리스트  총갯수 -->
+	<select id="selectContractTokenTxCount"
+			parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="java.lang.Integer">
+		SELECT
+			ifnull(transfer_count, 0)
+		FROM
+			T_CONTRACT
+		where
+			contract_addr = #{address}
+	</select>
+
+	<insert id="insertContractArray" parameterType="java.util.List">
+		INSERT INTO T_CONTRACT (
+		contract_addr,
+		name,
+		irc_version,
+		version,
+		symbol,
+		holder_addr,
+		holder_count,
+		transfer_count,
+		total_supply,
+		decimals,
+		state,
+		active_sort,
+		name_sort)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.contractAddr},
+			#{element.name},
+			#{element.ircVersion},
+			#{element.version},
+			#{element.symbol},
+			#{element.holderAddr},
+			#{element.holderCount},
+			#{element.transferCount},
+			#{element.totalSupply},
+			#{element.decimals},
+			#{element.state},
+			#{element.activeSort},
+			#{element.nameSort}
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		T_CONTRACT.version = IF(ISNULL(VALUES(version)), version, VALUES(version)),
+		T_CONTRACT.irc_version = IF(ISNULL(VALUES(irc_version)), irc_version, VALUES(irc_version)),
+		T_CONTRACT.name = IF(ISNULL(VALUES(name)), name, VALUES(name)),
+		T_CONTRACT.symbol = IF(ISNULL(VALUES(symbol)), symbol, VALUES(symbol)),
+		T_CONTRACT.holder_addr = IF(ISNULL(VALUES(holder_addr)), holder_addr, VALUES(holder_addr)),
+		T_CONTRACT.holder_count = IF(ISNULL(VALUES(holder_count)), holder_count, VALUES(holder_count)),
+		T_CONTRACT.transfer_count = IF(ISNULL(VALUES(transfer_count)), transfer_count, VALUES(transfer_count)),
+		T_CONTRACT.total_supply = IF(ISNULL(VALUES(total_supply)), total_supply, VALUES(total_supply)),
+		T_CONTRACT.decimals = IF(ISNULL(VALUES(decimals)), decimals, VALUES(decimals)),
+		T_CONTRACT.state = IF(ISNULL(VALUES(state)), state, VALUES(state)),
+		T_CONTRACT.active_sort = IF(ISNULL(VALUES(active_sort)), active_sort, VALUES(active_sort)),
+		T_CONTRACT.name_sort = IF(ISNULL(VALUES(name_sort)), name_sort, VALUES(name_sort))
+	</insert>
+
+
+
+	<insert id="insertContractHistoryArray" parameterType="java.util.List">
+		INSERT INTO T_CONTRACT_HISTORY (
+		contract_addr,
+		version,
+		compiler,
+		create_tx,
+		create_date,
+		verified_tx,
+		verified_date,
+		creator,
+		state )
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.contractAddr},
+			#{element.version},
+			#{element.compiler},
+			#{element.createTx},
+			#{element.createDate},
+			#{element.verifiedTx},
+			#{element.verifiedDate},
+			#{element.creator},
+			#{element.state}
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		T_CONTRACT_HISTORY.verified_tx = IF(ISNULL(VALUES(verified_tx)), verified_tx, VALUES(verified_tx)),
+		T_CONTRACT_HISTORY.verified_date = IF(ISNULL(VALUES(verified_date)), verified_date, VALUES(verified_date)),
+		T_CONTRACT_HISTORY.state = VALUES(state)
+	</insert>
+
+
+	<select id="selectHistoryForCancel" parameterType="com.dfg.icon.core.dao.icon.TContractHistory"
+			resultType="com.dfg.icon.core.dao.icon.TContractHistory">
+		SELECT
+			contract_addr contractAddr,
+			version,
+			create_tx createTx
+		FROM T_CONTRACT_HISTORY
+		WHERE
+			contract_addr = #{contractAddr} AND
+			version &lt; #{version} AND
+			state = 0
+	</select>
+
+	<!--히스토리의 펜딩 업데이트들을 캔슬로 수정-->
+	<update id="updateHistoryToCancel" parameterType="com.dfg.icon.core.dao.icon.TContractHistory">
+		UPDATE T_CONTRACT_HISTORY
+		SET state = 4
+		WHERE
+			contract_addr = #{contractAddr} AND
+			version = #{version}
+	</update>
+
+	<!--socre tx의 펜딩 업데이트들을 캔슬로 수정-->
+	<update id="updateContractTxToCancel" parameterType="com.dfg.icon.core.dao.icon.TContractHistory">
+		UPDATE T_TRANSACTION_TOTAL
+		SET tx_type = 9
+		WHERE tx_hash = #{createTx}
+	</update>
+
+	 <!--score tx view의 펜딩 업데이트들을 캔슬로 수정-->
+	<!--<update id="updateContractTxViewToCancel" parameterType="com.dfg.icon.core.dao.icon.TContractHistory">-->
+		<!--UPDATE T_CONTRACT_TX_WITH_ID-->
+		<!--SET tx_type = 9-->
+		<!--WHERE tx_hash = #{createTx}-->
+	<!--</update>-->
+
+	<select id="selectRequireContractList" parameterType="com.dfg.icon.web.v3.dto.PageReq"
+			resultType="com.dfg.icon.web.v3.dto.ContractPendingInfo">
+		SELECT
+			c.contract_addr as contractAddr,
+			ch.version as version,
+			IFNULL(name, '-') contractName,
+			IFNULL(irc_version, '-') ircVersion,
+			create_tx as createTx,
+			create_date as createDate
+		FROM (
+			SELECT
+			    ch1.contract_addr, ch1.version, create_tx, create_date
+			FROM (
+				SELECT
+				    contract_addr, MAX(version) version
+				FROM T_CONTRACT_HISTORY
+				WHERE state = 0
+				GROUP BY contract_addr
+			) ch1 INNER JOIN T_CONTRACT_HISTORY ch2 ON ch1.contract_addr = ch2.contract_addr AND ch1.version = ch2.version
+		) ch INNER JOIN T_CONTRACT c ON ch.contract_addr = c.contract_addr
+		ORDER BY createDate DESC
+		LIMIT ${page}, ${counting}
+	</select>
+
+	<select id="selectRequireContractListCount" parameterType="com.dfg.icon.core.dao.icon.TContractHistory"
+			resultType="java.lang.Integer">
+		SELECT
+			COUNT(*)
+		FROM (
+			SELECT
+				contract_addr contractAddr,
+				version
+			FROM T_CONTRACT_HISTORY
+			WHERE state = 0
+-- 			AND contract_addr != 'cx0000000000000000000000000000000000000001'
+			GROUP BY contract_addr
+		) a
+	</select>
+
+
+</mapper>
