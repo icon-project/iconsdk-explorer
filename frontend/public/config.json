@@ -1,0 +1,7 @@
+{   
+    "VERSION": "1.2.3_20220704_0",
+    "To use below variables,": "remove two underbars at the front, and then set as you want.",
+    "__TRACKER_API_URL": "https://berlin.tracker.solidwallet.io",
+    "__WALLET_API_URL": "https://berlin.net.solidwallet.io",
+    "__IS_SOLO_VERSION": false
+}
