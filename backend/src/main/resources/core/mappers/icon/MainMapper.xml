@@ -4,12 +4,8 @@
 	
 	<!-- 메인 정보 요약 조회  -->
 	<select id="selectMainInfo" resultType="com.dfg.icon.web.v0.dto.main.MainInfo">
-		select 
-			market_cap as marketCap,
-	    	icx_supply as icxSupply,
-	    	icx_circulationy as icxCirculationy,
-	    	transaction_count as transactionCount,
-	    	public_treasury as publicTreasury
+		select
+	    	transaction_count as transactionCount
 		from 
 			T_MAIN_INFO
 	</select>

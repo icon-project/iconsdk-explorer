@@ -9,17 +9,7 @@ import lombok.Data;
 
 @Data
 public class MainInfo {
-    
-    Double marketCap;
-    
-    String icxSupply;
-
-    String icxCirculationy;
-
     Integer transactionCount;
-
-    String publicTreasury;
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
