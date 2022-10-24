@@ -22,7 +22,7 @@ export async function getMainChart() {
       .then(result => {
         resolve(result.data.data)
       })
-      .catch(error => {``
+      .catch(error => {
         reject(error)
       })
   })
