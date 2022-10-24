@@ -16,7 +16,7 @@ public interface V3TokenService {
 	 * @return
 	 * @throws Exception
 	 */
-	CommonRes selectTokenSummary(String contractAddr) throws Exception;
+	CommonRes selectTokenSummary(String url, String contractAddr) throws Exception;
 	
 	/** 토큰 리스트 조회
 	 * @param req
@@ -30,7 +30,7 @@ public interface V3TokenService {
 	 * @return
 	 * @throws Exception
 	 */
-	CommonListRes selectTokenHolders(PageReq req) throws Exception;
+	CommonListRes selectTokenHolders(String url, PageReq req) throws Exception;
 	
 	/** 토큰 transferList 정보 
 	 * @param req

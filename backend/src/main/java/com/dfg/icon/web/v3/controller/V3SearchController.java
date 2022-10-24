@@ -1,6 +1,7 @@
 package com.dfg.icon.web.v3.controller;
 
 import com.dfg.icon.core.v0.service.V0SearchService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.web.v0.dto.CommonRes;
 import com.dfg.icon.web.v0.dto.SearchReq;
 import com.dfg.icon.web.v0.dto.SearchRes;
@@ -11,10 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,7 +21,7 @@ import javax.validation.Valid;
  * 2018-01-22
  */
 @Api(tags = {"v3 search"})
-@RequestMapping("v3/search")
+@RequestMapping("v3/{chainName}/search")
 @RestController
 public class V3SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(V3SearchController.class);
@@ -39,10 +37,11 @@ public class V3SearchController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/Search")
-	public SearchRes search(@Valid 
+	public SearchRes search(@PathVariable String chainName,
+			@Valid
 			@RequestParam("data") String data
-
 			) {
+		TenantContext.setTenant(chainName);
 		SearchRes res = new SearchRes();
 		try {
 
@@ -56,6 +55,8 @@ public class V3SearchController {
 		} catch (Exception e) {
 			logger.error("Search" ,e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res ;
 	}

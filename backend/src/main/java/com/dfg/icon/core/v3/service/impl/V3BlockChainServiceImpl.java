@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.dfg.icon.core.common.service.ScheduleService;
 import com.dfg.icon.core.v0.service.V0MainService;
 import com.dfg.icon.core.v2.vo.GenesisAccVo;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
@@ -126,10 +124,10 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	V0MainService v0MainService;
 
 	/**
-	 * The Schedule service.
+	 * The V 3 chain state.
 	 */
 	@Autowired
-	ScheduleService scheduleService;
+	V3ChainState chainState;
 
 	/**
 	 * The Transaction manager.
@@ -319,7 +317,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	 * @return
 	 * @throws Exception
 	 */
-	private int insertBlockFactory(List<BlockFactory> bfList) throws Exception {
+	private int insertBlockFactory(String url, List<BlockFactory> bfList) throws Exception {
 
 		int txCount = getSumBlockTxCount(bfList);
 		int startHeight = bfList.get(0).getBlockInfo().getHeight();
@@ -350,7 +348,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 
 		TAddressTotal treasuryTotal = getTreasuryAddressTotal();
 		if(treasuryTotal == null) {
-			treasuryTotal = addressService.initTreasuryTotal();
+			treasuryTotal = addressService.initTreasuryTotal(url);
 			tAddressTotalMapper.insert(treasuryTotal);
 		}
 		addressGroupList.add(treasuryTotal.getAddress());
@@ -385,7 +383,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 			tokenTxViewList.addAll(bf.getTokenTxViewList());
 			blockList.add(bf.getBlockInfo());
 			for(String address : bf.getStakeGroup()) {
-				RpcStakeRes res = blockChainAdapter.getStake(address);
+				RpcStakeRes res = blockChainAdapter.getStake(url, address);
 				// Updated by chanwo on 2020-07-06
 //				if(res != null && res.getResult() != null &&
 //						res.getResult().getUnstakeBlockHeight() != null) {
@@ -443,8 +441,8 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 			addrTotal.setAddress(addr);
 			if(Validator.isAddressPattern(addr)) {
 				if(whiteList.contains(addr)) {
-					String balance = getBalance(addr, DecimalType.ICX.getValue());
-					RpcStakeRes stakeRes = blockChainAdapter.getStake(addr);
+					String balance = getBalance(url, addr, DecimalType.ICX.getValue());
+					RpcStakeRes stakeRes = blockChainAdapter.getStake(url, addr);
 					if(stakeRes != null && stakeRes.getResult() != null) {
 						String stakeBalance = HexUtil.toDecimalString(stakeRes.getResult().getStake(), DecimalType.ICX.getValue());
 						String unstakeBalance = HexUtil.toDecimalString(stakeRes.getResult().getUnstake(), DecimalType.ICX.getValue());
@@ -463,7 +461,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 						addrTotal.setBalance(balance);
 					}
 				} else {
-					addrTotal.setBalance(getBalance(addr, DecimalType.ICX.getValue()));
+					addrTotal.setBalance(getBalance(url, addr, DecimalType.ICX.getValue()));
 				}
 			} else {
 				// 엔진에서 getBalance 주소형식을 체크하도록 되어서, 일부 주소 문제때문에 적용.
@@ -745,7 +743,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 			if(speedLogFlag) sLogger.info("###DB checkSpeed insertMainTxList = {}",
 					( System.currentTimeMillis() - startInsertTime )/1000.0f);
 		}
-		v0MainService.updateMainInfo(txList.size(), getTreasuryAddressTotal().getBalance());
+		v0MainService.updateMainInfo(url, txList.size(), getTreasuryAddressTotal().getBalance());
 
 		sLogger.info("###CHAIN checkSpeed cycleEnd  = blockCount {}, {}->{} txCount {}, DB {}s, time: {}s",
 				bfList.size(), startHeight, endHeight, txCount,
@@ -855,7 +853,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 
 	// only used once in genesis
 	//@Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class})
-	private int insertGenesis(GenesisRpcResult rpcResult, Integer blockSize) throws Exception {
+	private int insertGenesis(String url, GenesisRpcResult rpcResult, Integer blockSize) throws Exception {
 		String msg = rpcResult.getConfrimedTransactionList().get(0).getMessage();
 		String genesisFeeSum = "0";
 		int txCount = 0;
@@ -943,14 +941,14 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 		txData.setDataBody(msg);
 		tTxDataMapper.insert(txData);
 
-		v0MainService.updateMainInfo(txCount, treasury);
+		v0MainService.updateMainInfo(url, txCount, treasury);
 
 		return 1;
 	}
 
 	@Override
-	public String getBalance(String address, Integer decimals) throws Exception{
-		RpcBalanceRes res = blockChainAdapter.getBalance(address);
+	public String getBalance(String url, String address, Integer decimals) throws Exception{
+		RpcBalanceRes res = blockChainAdapter.getBalance(url, address);
 		return HexUtil.toDecimalString(res.getResult(), decimals);
 	}
 
@@ -968,7 +966,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class})
-	public void blockChainSyncUpdateAllinOne(Integer height, Integer lastHeight, Date updateDate) throws Exception {
+	public void blockChainSyncUpdateAllinOne(String url, String chainName, Integer height, Integer lastHeight) throws Exception {
 
 		Integer initHeight = height;
 		Integer updateHeight = height;
@@ -989,15 +987,15 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 			if (block == null) {
 				if (height == 0) {
 					// genesis
-					GenesisRpcRes blockRes = blockChainAdapter.getBlockInfoByGenesis();
-					insertGenesis(blockRes.getResult(), blockRes.toString().getBytes().length);
+					GenesisRpcRes blockRes = blockChainAdapter.getBlockInfoByGenesis(url);
+					insertGenesis(url, blockRes.getResult(), blockRes.toString().getBytes().length);
 				} else {
 					BlockFactory bf = null;
 					try {
 						// get factory
-						BlockFactory blockFactory = blockChainAdapter.getBlockFactoryByHeight(height);
+						BlockFactory blockFactory = blockChainAdapter.getBlockFactoryByHeight(url, height);
 						// get txResult
-						bf = txResultService.initTxResult(blockFactory);
+						bf = txResultService.initTxResult(url, blockFactory);
 						if(bf.isDelegation()) {
 							isDelegation = true;
 						}
@@ -1015,7 +1013,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 								bf.getBlockInfo().getHeight(),
 								bf.getBlockInfo().getHeight() - blockInfo0.getHeight() + 1,
 								(System.currentTimeMillis() - startTime) / 1000.0f);
-						insertBlockFactory(bfList);
+						insertBlockFactory(url, bfList);
 						if (blockInfo0.getCreateDate() != null) {
 							startBlockTimeDiff = (System.currentTimeMillis() - blockInfo0.getCreateDate().getTime()) / 1000.0f;
 							sLogger.info("[Speed] Scheduler Late Time : {}s, {}", startBlockTimeDiff, startBlockTimeDiff > 10.0f ? "DelayWarning" : "DelaySafe");
@@ -1036,9 +1034,6 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 					sLogger.info("XXXXX CHAIN MaxTxCount OVER  = block {}  , count   {}  / {}",  updateHeight, txViewSum, txTotalCount);
 					break;
 
-				} else if(DateUtil.getNowDate().getTime() - updateDate.getTime() > 60000 ) {
-					sLogger.info("XXXXX Scheduler time too late!!");
-					break;
 				}
 			}
 		}
@@ -1048,11 +1043,11 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 						bfList.get(0).getBlockInfo().getHeight(), bfList.get(bfList.size()-1).getBlockInfo().getHeight(),
 						(  System.currentTimeMillis() - startTime )/1000.0f);
 //			}
-			insertBlockFactory(bfList);
+			insertBlockFactory(url, bfList);
 			startBlockTimeDiff = (System.currentTimeMillis() - bfList.get(bfList.size()-1).getBlockInfo().getCreateDate().getTime())/1000.0f;
 			sLogger.info("[Speed] Schelduler Late Time : {}s, {}", startBlockTimeDiff, startBlockTimeDiff > 10.0f ? "DelayWarning" : "DelaySafe");
 		}
-		scheduleService.updateBlockScheduler(String.valueOf(updateHeight));
+		chainState.updateChainState(chainName, updateHeight);
 		sLogger.info("[Speed] Schelduler End : {} -> {}, {}", initHeight, updateHeight-1, (System.currentTimeMillis()-initTime)/1000.0f);
     }
 

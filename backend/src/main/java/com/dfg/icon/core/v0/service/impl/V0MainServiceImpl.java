@@ -164,8 +164,8 @@ public class V0MainServiceImpl implements V0MainService{
 	 */
 	//TODO Block explorer (delete treasury???)
 	@Override
-	public void updateMainInfo(int txAddedCount, String treasury) throws Exception {
-		RpcBalanceRes res =  blockChainAdapter.getTotalSupply();
+	public void updateMainInfo(String url, int txAddedCount, String treasury) throws Exception {
+		RpcBalanceRes res =  blockChainAdapter.getTotalSupply(url);
 		TMainInfo mainInfo = getMainInfo();
 		PageReq req = new PageReq();
 		req.setGrade((byte)0);

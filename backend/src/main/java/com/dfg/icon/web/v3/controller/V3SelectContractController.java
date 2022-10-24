@@ -2,14 +2,12 @@ package com.dfg.icon.web.v3.controller;
 
 import javax.validation.Valid;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.v3.service.V3AddressService;
@@ -34,7 +32,7 @@ import java.util.Date;
  * @author hslee
  */
 @Api(tags = {"v3 Contract"})
-@RequestMapping("v3/contract")
+@RequestMapping("v3/{chainName}/contract")
 @RestController
 public class V3SelectContractController {
 	private static final Logger logger = LoggerFactory.getLogger(V3SelectContractController.class);
@@ -57,13 +55,14 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonListRes.class)
 			})
 	@GetMapping(value = "/list")
-	public CommonListRes selectContractList(@Valid 
+	public CommonListRes selectContractList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="page", required=false, defaultValue = "1" ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value = "status", required = false) Integer status,
 			@RequestParam(value = "keyword", required = false) String keyword
 			){
-
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -93,6 +92,8 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -106,9 +107,11 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/info")
-	public CommonRes selectContractInfo(@Valid 
+	public CommonRes selectContractInfo(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="addr", required=true ) String addr
 			){
+		TenantContext.setTenant(chainName);
 		CommonRes res = new CommonRes();
 		try {
 
@@ -118,6 +121,8 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractInfo :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -129,11 +134,11 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/detail")
-	public CommonRes selectContractDetail(@Valid 
+	public CommonRes selectContractDetail(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="contractAddr", required=true ) String contractAddr
-
 			){
-
+		TenantContext.setTenant(chainName);
 		CommonRes res = new CommonRes();
 		try {
 
@@ -146,6 +151,8 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -167,12 +174,13 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/txList")
-	public CommonListRes selectContractTransactionList(@Valid 
+	public CommonListRes selectContractTransactionList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="addr", required=true ) String addr ,
 			@RequestParam(value="page", required=false, defaultValue = "1" ) int page,
 			@RequestParam(value = "count", required = false) Integer count
-
 			){
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 			PageReq req = new PageReq(10);
@@ -185,6 +193,8 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractTransactionList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -200,12 +210,13 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/tokenTxList")
-	public CommonListRes selectContractTokenTransferList(@Valid 
+	public CommonListRes selectContractTokenTransferList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="addr", required=true ) String addr , 
 			@RequestParam(value="page", required=false, defaultValue = "1" ) int page,
 			@RequestParam(value = "count", required = false,  defaultValue = "10" ) Integer count
-
 			){
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 			PageReq req = new PageReq(10);
@@ -218,6 +229,8 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractTokenTxList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return res;
@@ -231,12 +244,14 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/internalTxList")
-	public CommonListRes selectContractInternalTransferList(@Valid
+	public CommonListRes selectContractInternalTransferList(@PathVariable String chainName,
+															@Valid
 														 @RequestParam(value="addr", required=true ) String addr ,
 														 @RequestParam(value="page", required=false, defaultValue = "1" ) int page,
 														 @RequestParam(value = "count", required = false,  defaultValue = "10" ) Integer count
 
 	){
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -251,7 +266,10 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractInternalTxList Error : {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
+
 		return res;
 	}
 
@@ -266,11 +284,12 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/historyList")
-	public CommonListRes selectContractHistoryList(@Valid 
+	public CommonListRes selectContractHistoryList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="addr", required=false ) String addr , 
 			@RequestParam(value="page", required=false, defaultValue = "1" ) int page,
 			@RequestParam(value = "count", required = false,  defaultValue = "10" ) Integer count){
-
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -281,7 +300,10 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractTokenTransferList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
+
 		return res;
 	}
 
@@ -298,12 +320,13 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonListRes.class)
 			})
 	@GetMapping(value = "/eventLogList")
-	public CommonListRes getTokenEventLogList(@Valid
+	public CommonListRes getTokenEventLogList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value = "contractAddr", required = false) String contractAddr
 			)  {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -326,7 +349,10 @@ public class V3SelectContractController {
 
 			CommonUtil.printException(logger, "getTokenEventLogList error : {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
+
 		return res;
 	}
 
@@ -340,9 +366,11 @@ public class V3SelectContractController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/pendingList")
-	public CommonListRes selectRequireContractList(@Valid
+	public CommonListRes selectRequireContractList(@PathVariable String chainName,
+													@Valid
 												   @RequestParam(value="page", required=false, defaultValue = "1" ) int page,
 												   @RequestParam(value = "count", required = false,  defaultValue = "10" ) Integer count){
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 			PageReq req = new PageReq();
@@ -354,33 +382,10 @@ public class V3SelectContractController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectContractTokenTransferList :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
+
 		return res;
 	}
-
-//	@ApiOperation(value = "Contract Tx 주소별 개수 조회 " , notes="startDate(yyyy-MM-dd) 15:00:00 ~ endDate(yyyy-MM-dd) 14:59:59")
-//	@GetMapping(value = "/txCountForChallengeGroupByAddress")
-//	public CommonRes selectScoreTxCountForChallenge(@Valid
-//													@RequestParam(value="addr") String addr,
-//													@RequestParam(value="date") String date
-//	){
-//		CommonRes res = new CommonRes();
-//		long startTime = System.currentTimeMillis();
-//		try {
-//			PageReq req = new PageReq(100);
-//			req.setAddress(addr);
-//			Date dDay = DateUtil.getFormattedDate(date, "yyyy-MM-dd");
-//			req.setStartDate(
-//					DateUtil.getFormattedDateString(
-//							DateUtil.getNextDateWithDateType(dDay, Calendar.DATE, -1), "yyyy-MM-dd"
-//					) + " 15:00:00"
-//			);
-//			req.setEndDate(date + " 14:59:59");
-//			res = v3ContractService.selectContractTxCountForTxChallengeGroupByAddress(req);
-//		} catch (Exception e) {
-//			CommonUtil.printException(logger, "selectContractTransactionCount : {}", e);
-//			res.setError();
-//		}
-//		return res;
-//	}
 }

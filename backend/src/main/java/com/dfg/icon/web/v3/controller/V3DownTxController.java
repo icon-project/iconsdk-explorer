@@ -1,6 +1,7 @@
 package com.dfg.icon.web.v3.controller;
 
 import com.dfg.icon.core.v3.service.V3DownloadService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.Validator;
 import com.dfg.icon.web.v3.dto.PageReq;
 import io.swagger.annotations.Api;
@@ -8,10 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by LYJ on 2019-02-28.
  */
 @Api(tags = {"v3 download"})
-@RequestMapping("v3/download")
+@RequestMapping("v3/{chainName}/download")
 @RestController
 public class V3DownTxController {
 
@@ -34,11 +32,13 @@ public class V3DownTxController {
     public void downloadTxListCSV(
             HttpServletRequest request,
             HttpServletResponse response,
+            @PathVariable String chainName,
             @RequestParam(value="fromAddr", required = false) String address,
             @RequestParam(value="toAddr", required = false) String address2,
             @RequestParam(value="startDate") String startDate,
             @RequestParam(value="endDate") String endDate
     ) throws Exception {
+        TenantContext.setTenant(chainName);
         if(!request.getRemoteHost().equals("127.0.0.1")) {
             return;
         }
@@ -59,6 +59,7 @@ public class V3DownTxController {
 
             v3DownloadService.downloadList(req, response);
         }
+        TenantContext.clearTenant();
 
     }
 
@@ -66,12 +67,14 @@ public class V3DownTxController {
             notes="byAddress/byDate, txCount download \n\n type 0:fromAddr, 1:toAddr")
     @GetMapping(value = "/txCount")
     public void downloadTxCountCSV(
+            @PathVariable String chainName,
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(value="startDate") String startDate,
             @RequestParam(value="endDate") String endDate,
             @RequestParam(value = "type", defaultValue = "0") String type
     ) throws Exception {
+        TenantContext.setTenant(chainName);
         if(!request.getRemoteHost().equals("127.0.0.1")) {
             return;
         }
@@ -92,17 +95,20 @@ public class V3DownTxController {
 
             v3DownloadService.downloadTxCount(req, response);
         }
+        TenantContext.clearTenant();
     }
 
     @ApiOperation(value = "byDate, balance address download" ,
             notes="byDate, balance address download ")
     @GetMapping(value = "/addressCount")
     public void downloadAddressCountCSV(
+            @PathVariable String chainName,
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(value="startDate") String startDate,
             @RequestParam(value="endDate") String endDate
     ) throws Exception {
+        TenantContext.setTenant(chainName);
         if(!request.getRemoteHost().equals("127.0.0.1")) {
             return;
         }
@@ -120,5 +126,6 @@ public class V3DownTxController {
 
             v3DownloadService.downloadAddressCount(req, response);
         }
+        TenantContext.clearTenant();
     }
 }

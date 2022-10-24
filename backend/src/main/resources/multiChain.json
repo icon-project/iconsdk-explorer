@@ -1,0 +1,17 @@
+{
+  "chainInfos" : [
+    {
+      "name" : "test1",
+      "host" : "https://berlin.net.solidwallet.io",
+      "api" : "/api/v3",
+      "channel" : "343003",
+      "version" : "v3"
+    },{
+      "name" : "test2",
+      "host" : "http://20.20.1.190:9080",
+      "api" : "/api/v3/",
+      "channel" : "111111",
+      "version" : "v3"
+    }
+  ]
+}

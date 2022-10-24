@@ -66,8 +66,8 @@ public interface V3AddressService {
 	 */
 	CommonRes getBalanceAddressCount() throws Exception;
 
-	TAddressTotal initGenesisTotal() throws Exception;
-	TAddressTotal initTreasuryTotal() throws Exception;
+	TAddressTotal initGenesisTotal(String url) throws Exception;
+	TAddressTotal initTreasuryTotal(String url) throws Exception;
 
 	Set<String> getWhiteAddressList();
 }

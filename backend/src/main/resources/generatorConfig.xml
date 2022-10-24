@@ -36,30 +36,31 @@
         <javaClientGenerator targetPackage="com.dfg.icon.core.mappers.icon" targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
-        <table tableName="T_ADDRESS"/>
-        <table tableName="T_ADDRESS_HISTORY"/>
-        <table tableName="T_ADDRESS_PUSH"/>
-        <table tableName="T_ADDRESS_REPORT"/>
-        <table tableName="T_ADDRESS_TOTAL"/>
-        <table tableName="T_BLOCK"/>
-        <table tableName="T_BLOCK_TOTAL"/>
-        <table tableName="T_MAIN_BLOCK"/>
-        <table tableName="T_MAIN_INFO"/>
-        <table tableName="T_MAIN_CHART"/>
-        <table tableName="T_MAIN_TX"/>
-        <table tableName="T_SCHEDULER_FLAG"/>
-        <table tableName="T_TRANSACTION"/>
-        <table tableName="T_TRANSACTION_TOTAL"/>
-        <table tableName="T_TRANSACTION_VIEW"/>
-        <table tableName="T_TOKEN_TX"/>
-        <table tableName="T_TOKEN_TX_VIEW"/>
-        <table tableName="T_TOKEN_ADDRESS"/>
-        <table tableName="T_TX_DATA"/>
-        <table tableName="T_CONTRACT"/>
-        <table tableName="T_CONTRACT_HISTORY"/>
-        <table tableName="T_FEE_DETAILS"/>
-        <table tableName="T_TX_RESULT_LOG"/>
-        <table tableName="T_INTERNAL_TX"/>
-        <table tableName="T_INTERNAL_TX_VIEW"/>
+<!--        <table tableName="T_ADDRESS"/>-->
+<!--        <table tableName="T_ADDRESS_HISTORY"/>-->
+<!--        <table tableName="T_ADDRESS_PUSH"/>-->
+<!--        <table tableName="T_ADDRESS_REPORT"/>-->
+<!--        <table tableName="T_ADDRESS_TOTAL"/>-->
+<!--        <table tableName="T_BLOCK"/>-->
+<!--        <table tableName="T_BLOCK_TOTAL"/>-->
+<!--        <table tableName="T_MAIN_BLOCK"/>-->
+<!--        <table tableName="T_MAIN_INFO"/>-->
+<!--        <table tableName="T_MAIN_CHART"/>-->
+<!--        <table tableName="T_MAIN_TX"/>-->
+<!--        <table tableName="T_TRANSACTION"/>-->
+<!--        <table tableName="T_TRANSACTION_TOTAL"/>-->
+<!--        <table tableName="T_TRANSACTION_VIEW"/>-->
+<!--        <table tableName="T_TOKEN_TX"/>-->
+<!--        <table tableName="T_TOKEN_TX_VIEW"/>-->
+<!--        <table tableName="T_TOKEN_ADDRESS"/>-->
+<!--        <table tableName="T_TX_DATA"/>-->
+<!--        <table tableName="T_CONTRACT"/>-->
+<!--        <table tableName="T_CONTRACT_HISTORY"/>-->
+<!--        <table tableName="T_FEE_DETAILS"/>-->
+<!--        <table tableName="T_TX_RESULT_LOG"/>-->
+<!--        <table tableName="T_INTERNAL_TX"/>-->
+<!--        <table tableName="T_INTERNAL_TX_VIEW"/>-->
+<!--        <table tableName="T_CHAIN_INFO"/>-->
+        <table tableName="T_CHAIN_STATE"/>
     </context>
 </generatorConfiguration>

@@ -7,11 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 import com.dfg.icon.config.DataSourceConfig;
-import com.dfg.icon.thread.TrackerThread;
 
-import java.io.File;
 
 @SpringBootApplication
 @EnableScheduling

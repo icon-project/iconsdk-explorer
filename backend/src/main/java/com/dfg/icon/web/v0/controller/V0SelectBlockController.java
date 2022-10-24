@@ -5,14 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.mappers.icon.BlockMapper;
 import com.dfg.icon.core.v0.service.V0BlockService;
@@ -32,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
  * 2018-01-22
  */
 @Api(tags = {"v0 block"})
-@RequestMapping("v0/block")
+@RequestMapping("v0/{chainName}/block")
 @RestController
 public class V0SelectBlockController {
     private static final Logger logger = LoggerFactory.getLogger(V0SelectBlockController.class);
@@ -50,8 +48,10 @@ public class V0SelectBlockController {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
     @GetMapping(value = "/recentBlock")
-    public CommonRes recentBlock(@Valid @RequestParam(value = "page", required = false) Integer page
+    public CommonRes recentBlock(@PathVariable String chainName,
+			@Valid @RequestParam(value = "page", required = false) Integer page
     		)  {
+		TenantContext.setTenant(chainName);
     	CommonRes res = new CommonRes();
     	
     	try {
@@ -69,6 +69,8 @@ public class V0SelectBlockController {
 			} catch (Exception e) {
 				logger.error("recentBlock" , e);
 				res.setError();
+			} finally {
+			TenantContext.clearTenant();
 			}
 		return res;
     }
@@ -80,11 +82,13 @@ public class V0SelectBlockController {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
     @GetMapping(value = "/blockDetail")
-    public CommonRes blockDetail(@Valid
+    public CommonRes blockDetail(
+			@PathVariable String chainName,
+			@Valid
     		@RequestParam("height") Integer height,
     		@RequestParam(value="page", required=false) Integer page
     ) {
-    	
+		TenantContext.setTenant(chainName);
     	CommonRes cRes = new CommonRes();
     	try {
 		
@@ -115,6 +119,8 @@ public class V0SelectBlockController {
     	} catch (Exception e) {
     		logger.error("blockDetail" , e);
     		cRes.setError();
+		}finally {
+			TenantContext.clearTenant();
 		}
 		return cRes;
     }
@@ -126,10 +132,13 @@ public class V0SelectBlockController {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
     @GetMapping(value = "/blockDetailByHash")
-    public CommonRes blockDetailByHash(@Valid
+    public CommonRes blockDetailByHash(
+			@PathVariable String chainName,
+			@Valid
     		@RequestParam("hash") String hash,
     		@RequestParam(value="page", required=false) Integer page
     ) {
+		TenantContext.setTenant(chainName);
     	CommonRes cRes = new CommonRes();
     	try {
 			
@@ -165,6 +174,8 @@ public class V0SelectBlockController {
     	} catch (Exception e) {
     		logger.error("blockDetailByHash" , e);
     		cRes.setError();
+		}finally {
+			TenantContext.clearTenant();
 		}
     	 return cRes;
     }

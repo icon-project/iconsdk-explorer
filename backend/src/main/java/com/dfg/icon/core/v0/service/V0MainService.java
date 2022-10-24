@@ -51,7 +51,7 @@ public interface V0MainService {
 	/**
 	 * 메인 정보 업데이트
 	 */
-	void updateMainInfo(int txAddedCount, String treasury) throws Exception;
+	void updateMainInfo(String url, int txAddedCount, String treasury) throws Exception;
 
 	void updateMainChartDaily() throws Exception;
 

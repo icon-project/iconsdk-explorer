@@ -15,7 +15,6 @@ import com.dfg.icon.web.v3.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dfg.icon.core.common.service.ScheduleService;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.v3.service.V3AddressService;
 import com.dfg.icon.core.v3.vo.DecimalType;
@@ -254,9 +253,9 @@ public class V3AddressServiceImpl implements V3AddressService{
 	 * @see com.dfg.icon.core.v3.service.V3AddressService#initGenesisTotal()
 	 */
 	@Override
-	public TAddressTotal initGenesisTotal() throws Exception {
+	public TAddressTotal initGenesisTotal(String url) throws Exception {
 		TAddressTotal genesis = new TAddressTotal();
-		GenesisRpcRes rpcRes = blockChainAdapter.getBlockInfoByGenesis();
+		GenesisRpcRes rpcRes = blockChainAdapter.getBlockInfoByGenesis(url);
 		for(GenesisAccVo vo : rpcRes.getResult().getConfrimedTransactionList().get(0).getAccounts()) {
 			if(vo.getName().equals("god")) {
 				genesis.setAddress(vo.getAddress());
@@ -273,9 +272,9 @@ public class V3AddressServiceImpl implements V3AddressService{
 	 * @see com.dfg.icon.core.v3.service.V3AddressService#initTreasuryTotal()
 	 */
 	@Override
-	public TAddressTotal initTreasuryTotal() throws Exception {
+	public TAddressTotal initTreasuryTotal(String url) throws Exception {
 		TAddressTotal treasury = new TAddressTotal();
-		GenesisRpcRes rpcRes = blockChainAdapter.getBlockInfoByGenesis();
+		GenesisRpcRes rpcRes = blockChainAdapter.getBlockInfoByGenesis(url);
 		for(GenesisAccVo vo : rpcRes.getResult().getConfrimedTransactionList().get(0).getAccounts()) {
 			if(vo.getName().equals("treasury") || vo.getName().equals("fee_treasury")) {
 				treasury.setAddress(vo.getAddress());

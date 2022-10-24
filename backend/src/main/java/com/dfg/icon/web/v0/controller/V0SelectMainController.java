@@ -4,10 +4,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  * 2018-01-22
  */
 @Api(tags = {"v0 main"})
-@RequestMapping("v0/main")
+@RequestMapping("v0/{chainName}/main")
 @RestController
 public class V0SelectMainController {
 	private static final Logger logger = LoggerFactory.getLogger(V0SelectMainController.class);
@@ -45,7 +47,8 @@ public class V0SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/mainInfo")
-	public MainRes mainInfo() {
+	public MainRes mainInfo(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		MainRes res = new MainRes();
 
 		try {
@@ -71,6 +74,8 @@ public class V0SelectMainController {
 		} catch (Exception e) {
 			logger.error("mainInfo"  , e);
 			res.setError();
+		}finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}

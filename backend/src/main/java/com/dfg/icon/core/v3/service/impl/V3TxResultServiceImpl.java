@@ -1,6 +1,5 @@
 package com.dfg.icon.core.v3.service.impl;
 
-import com.dfg.icon.core.common.service.ScheduleService;
 import com.dfg.icon.core.dao.icon.*;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.mappers.icon.*;
@@ -127,12 +126,6 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	V0MainService v0MainService;
 
 	/**
-	 * The Schedule service.
-	 */
-	@Autowired
-	ScheduleService scheduleService;
-
-	/**
 	 * The Transaction manager.
 	 */
 	@Autowired
@@ -197,7 +190,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	 * 실패한 트랜잭션은 TTransaction에만 기록한다.
 	 *
 	 */
-	public BlockFactory initTxResult(BlockFactory bf) throws Exception {
+	public BlockFactory initTxResult(String url, BlockFactory bf) throws Exception {
 
 		// v3 블록의 수수료, icx 총 거래량
 		String sumFee = "0";
@@ -217,7 +210,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 			String txFromAddr = bf.getTransactionList().get(i).getFromAddr();
 			Date txCreateDate = bf.getTransactionList().get(i).getCreateDate();
 
-			TxResultFactory txResultfactory = blockChainAdapter.getTransactionResult(txHash);
+			TxResultFactory txResultfactory = blockChainAdapter.getTransactionResult(url, txHash);
 			sumJsonTime += txResultfactory.getJsonTime();
 			// 성공실패 0:실패 1:성공
 			boolean txStatus = txResultfactory.getStatus();
@@ -267,9 +260,9 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 						// deploy = install OR update.
 						bf.setBreak(true);
 						if(IconCode.SCORE_INSTALL_ADDR.getCode().equals(txToAddr)) {
-							bf = installContract(i, bf, txResultfactory, rootObject);
+							bf = installContract(url, i, bf, txResultfactory, rootObject);
 						} else {
-							bf = updateContract(i, bf, txResultfactory, rootObject);
+							bf = updateContract(url, i, bf, txResultfactory, rootObject);
 						}
 					} else if(IconCode.TXDATATYPE_CALL.getCode().equals(dataType)) {
 						bf.getTransactionList().get(i).setTxType(Byte.parseByte(IconCode.TX_TYPE_CALL.getCode()));
@@ -293,7 +286,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 								} else {
 									bf.getTransactionList().get(i).setContractAddr(contractHistory.getContractAddr());
 									if(IconCode.TX_METHOD_TYPE_ACCEPTSCORE.getCode().equals(targetMethod)) {
-										bf = acceptContract(i, bf, txResultfactory, contractHistory);
+										bf = acceptContract(url, i, bf, txResultfactory, contractHistory);
 									} else if(IconCode.TX_METHOD_TYPE_REJECTSCORE.getCode().equals(targetMethod)) {
 										bf = rejectContract(i, bf, txResultfactory, contractHistory);
 									}
@@ -378,9 +371,9 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return dataElement.getAsJsonObject();
 	}
 
-	private boolean isAcceptMode() {
+	private boolean isAcceptMode(String url) {
 		if (serviceConfig == -1) {
-			String res = blockChainAdapter.getIcxCall(IconCode.SCORE_INSTALL_ADDR.getCode(), "getServiceConfig");
+			String res = blockChainAdapter.getIcxCall(url, IconCode.SCORE_INSTALL_ADDR.getCode(), "getServiceConfig");
 			serviceConfig = HexUtil.changeHexToInteger(res);
 		}
 		return (serviceConfig & AUDIT_ENABLED) == 0;
@@ -395,7 +388,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	 * @return
 	 * @throws Exception
 	 */
-	private BlockFactory installContract(int i, BlockFactory bf, TxResultFactory trf, JsonObject rootObject) throws Exception {
+	private BlockFactory installContract(String url, int i, BlockFactory bf, TxResultFactory trf, JsonObject rootObject) throws Exception {
 
 		String txHash = bf.getTransactionList().get(i).getTxHash();
 		String txFromAddr = bf.getTransactionList().get(i).getFromAddr();
@@ -415,11 +408,11 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		}
 		bf.getTransactionList().get(i).setContractAddr(trfScoreAddress);
 		String contentType = rootObject.get("contentType").getAsString();
-		if (isAcceptMode() || CONTENT_TYPE_JAVA.equals(contentType)) {
+		if (isAcceptMode(url) || CONTENT_TYPE_JAVA.equals(contentType)) {
 			// Auto approval or Java contract
 			TContractHistory contractHistory = contractService.getContractHistoryForInsert(trfScoreAddress, scoreVersion, "-", txHash, txCreateDate, null, null, txFromAddr, Byte.parseByte(IconCode.SCORE_ACCEPT.getCode()));
 			bf.getContractHistoryList().add(contractHistory);
-			assignScoreApi(i, bf, /*trf,*/ contractHistory);
+			assignScoreApi(url, i, bf, contractHistory);
 		} else {
 			// 팬딩type set
 			TContractHistory contractHistory = contractService.getContractHistoryForInsert(trfScoreAddress, scoreVersion, "-", txHash, txCreateDate, null, null, txFromAddr, Byte.parseByte(IconCode.SCORE_PENDING.getCode()));
@@ -446,7 +439,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	 * @return
 	 * @throws Exception
 	 */
-	private BlockFactory updateContract(int i, BlockFactory bf, TxResultFactory trf, JsonObject rootObject) throws Exception {
+	private BlockFactory updateContract(String url, int i, BlockFactory bf, TxResultFactory trf, JsonObject rootObject) throws Exception {
 
 		String txHash = bf.getTransactionList().get(i).getTxHash();
 		String txFromAddr = bf.getTransactionList().get(i).getFromAddr();
@@ -467,11 +460,11 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		int updateVersion = contractService.getContractLastVersionForUpdate(trfScoreAddress);	// txToAddr = trfScoreAddress
 		bf.getTransactionList().get(i).setContractAddr(trfScoreAddress);
 		String contentType = rootObject.get("contentType").getAsString();
-		if (isAcceptMode() || CONTENT_TYPE_JAVA.equals(contentType)) {
+		if (isAcceptMode(url) || CONTENT_TYPE_JAVA.equals(contentType)) {
 			// Auto approval or Java contract
 			TContractHistory contractHistory = contractService.getContractHistoryForInsert(trfScoreAddress, updateVersion, "-", txHash, txCreateDate, txHash, txCreateDate, txFromAddr, Byte.parseByte(IconCode.SCORE_ACCEPT.getCode()));
 			bf.getContractHistoryList().add(contractHistory);
-			assignScoreApi(i, bf, /*trf,*/ contractHistory);
+			assignScoreApi(url, i, bf, contractHistory);
 		} else {
 			// 팬딩type set
 			TContractHistory contractHistory = contractService.getContractHistoryForInsert(trfScoreAddress, updateVersion, "-", txHash, txCreateDate, null, null, txFromAddr, Byte.parseByte(IconCode.SCORE_PENDING.getCode()));
@@ -486,7 +479,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return bf;
 	}
 
-	private BlockFactory acceptContract(int i, BlockFactory bf, TxResultFactory trf, TContractHistory contractHistory) throws Exception {
+	private BlockFactory acceptContract(String url, int i, BlockFactory bf, TxResultFactory trf, TContractHistory contractHistory) throws Exception {
 		boolean txStatus = trf.getStatus();
 
 		Integer historyVersion = contractHistory.getVersion();
@@ -505,7 +498,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		// getScoreApi를 이용하여 deploy 정보 set
 		// accept는 historyContract를 아래 assign method에서 처리.
 		// reject는 이 method 단계에서 처리.
-		assignScoreApi(i, bf, /*trf,*/ contractHistory);
+		assignScoreApi(url, i, bf, /*trf,*/ contractHistory);
 
 		if (!bf.getTokenInfoGroup().contains(historyScoreAddress)) {
 			bf.getTokenInfoGroup().add(historyScoreAddress);
@@ -547,7 +540,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return bf;
 	}
 
-	private void assignScoreApi(int i, BlockFactory bf, /*TxResultFactory trf,*/ TContractHistory contractHistory) throws Exception {
+	private void assignScoreApi(String url, int i, BlockFactory bf, TContractHistory contractHistory) throws Exception {
 		Integer historyVersion = contractHistory.getVersion();
 		String historyScoreAddress = contractHistory.getContractAddr();
 
@@ -558,7 +551,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		JsonArray scoreApiArray = null;
 
 		try {
-			scoreApiArray = blockChainAdapter.getIcxScoreApi(historyScoreAddress);
+			scoreApiArray = blockChainAdapter.getIcxScoreApi(url, historyScoreAddress);
 		} catch (Exception e) {
 			logger.error("[TxResultInit] getIcxScoreApi scoreAddress = {}", historyScoreAddress);
 			logger.error(e.getMessage());
@@ -594,7 +587,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 
 		String scoreName = "-";
 		if (nameFlag) {
-			scoreName = blockChainAdapter.getIcxCall(historyScoreAddress, "name");
+			scoreName = blockChainAdapter.getIcxCall(url, historyScoreAddress, "name");
 		}
 
 		if(scoreName == null) {
@@ -620,7 +613,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		// 스코어가 토큰일 경우
 		if (IconCode.IRC2_TOKEN.getCode().equals(ircVersion)) {
 			if(historyVersion == 1) {
-				String tokenDecimals = blockChainAdapter.getIcxCall(historyScoreAddress, "decimals");
+				String tokenDecimals = blockChainAdapter.getIcxCall(url, historyScoreAddress, "decimals");
 				if (tokenDecimals == null) {
 					tokenDecimals = IconCode.TOKEN_DEFAULT_DECIMALS.getCode();
 				} else if(HexUtil.changeHexToInteger(tokenDecimals) > 18) {
@@ -628,13 +621,13 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 					tokenDecimals = IconCode.TOKEN_DEFAULT_DECIMALS.getCode();
 				}
 				
-				String tokenSymbol = blockChainAdapter.getIcxCall(historyScoreAddress, "symbol");
+				String tokenSymbol = blockChainAdapter.getIcxCall(url, historyScoreAddress, "symbol");
 				if(tokenSymbol == null) {
 					tokenSymbol = "-";	// 토큰인데 심볼이 null인 경우가 존재...
 				} else if(tokenSymbol.length() > 8) {
 					tokenSymbol = tokenSymbol.substring(0, 8);
 				}
-				String tokenTotalSupply = blockChainAdapter.getIcxCall(historyScoreAddress, "totalSupply");
+				String tokenTotalSupply = blockChainAdapter.getIcxCall(url, historyScoreAddress, "totalSupply");
 
 				tokenTotalSupply = HexUtil.applyDecimal(tokenTotalSupply, HexUtil.changeHexToInteger(tokenDecimals));
 

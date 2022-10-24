@@ -3,13 +3,11 @@ package com.dfg.icon.web.v0.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dfg.icon.core.v0.service.V0TransactionService;
 import com.dfg.icon.web.v0.dto.CommonRes;
@@ -25,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
  * 2018-01-22
  */
 @Api(tags = {"v0 transaction"})
-@RequestMapping("v0/transaction")
+@RequestMapping("v0/{chainName}/transaction")
 @RestController
 public class V0SelectTxController {
     private static final Logger logger = LoggerFactory.getLogger(V0SelectTxController.class);
@@ -40,10 +38,11 @@ public class V0SelectTxController {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
     @GetMapping(value = "/recentTx")
-    public CommonRes recentTxList(@Valid
+    public CommonRes recentTxList(@PathVariable String chainName,
+			@Valid
     		@RequestParam(value="page",required=false ) Integer page
     )  {
-
+		TenantContext.setTenant(chainName);
     	CommonRes cRes = new CommonRes();
     	try {
 
@@ -60,6 +59,8 @@ public class V0SelectTxController {
     	} catch (Exception e) {
     		logger.error("recentTx"  , e);
 			cRes.setError();
+		}finally {
+			TenantContext.clearTenant();
 		}
 		return cRes;
     }
@@ -71,9 +72,11 @@ public class V0SelectTxController {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
     @GetMapping(value = "/txDetail")
-    public CommonRes txDetail(@Valid
+    public CommonRes txDetail(@PathVariable String chainName,
+			@Valid
     		@RequestParam("txHash") String txHash
     ) {
+		TenantContext.setTenant(chainName);
     	CommonRes cRes = new CommonRes();
 
     	try {
@@ -88,6 +91,8 @@ public class V0SelectTxController {
     	} catch (Exception e) {
     		logger.error("txDetail"  , e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return cRes;
     }

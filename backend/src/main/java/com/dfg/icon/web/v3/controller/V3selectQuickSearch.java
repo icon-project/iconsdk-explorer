@@ -4,13 +4,11 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.v3.service.V3SelectQuickSearchService;
@@ -28,7 +26,7 @@ import io.swagger.annotations.ApiResponses;
  * @author hslee
  */
 @Api(tags = {"v3 selectQuickSearch"})
-@RequestMapping("v3/selectQuickSearch")
+@RequestMapping("v3/{chainName}/selectQuickSearch")
 @RestController
 public class V3selectQuickSearch {
 	private static final Logger logger = LoggerFactory.getLogger(V3selectQuickSearch.class);
@@ -46,9 +44,11 @@ public class V3selectQuickSearch {
 					@ApiResponse(code = 200, message = "Success", response = CommonListRes.class)
 			})
 	@GetMapping(value = "/selectQuickSearch")
-	public CommonListRes selectQuickSearch(@Valid 
+	public CommonListRes selectQuickSearch(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="text", required=true ) String text
 			){
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -59,6 +59,8 @@ public class V3selectQuickSearch {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "selectQuickSearch :: {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}

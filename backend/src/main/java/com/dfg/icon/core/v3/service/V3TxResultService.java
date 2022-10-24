@@ -5,6 +5,6 @@ import com.dfg.icon.core.v3.vo.BlockFactory;
 
 public interface V3TxResultService {
 
-    BlockFactory initTxResult(BlockFactory bf) throws Exception;
+    BlockFactory initTxResult(String url, BlockFactory bf) throws Exception;
 	
 }

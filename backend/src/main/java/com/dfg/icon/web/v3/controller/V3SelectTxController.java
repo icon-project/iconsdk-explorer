@@ -1,6 +1,7 @@
 package com.dfg.icon.web.v3.controller;
 
 import com.dfg.icon.core.v3.service.V3TransactionService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import com.dfg.icon.web.v3.dto.CommonRes;
 import com.dfg.icon.web.v3.dto.CommonListRes;
@@ -12,10 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,7 +22,7 @@ import javax.validation.Valid;
  * @author LYJ
  */
 @Api(tags = {"v3 transaction"})
-@RequestMapping("v3/transaction")
+@RequestMapping("v3/{chainName}/transaction")
 @RestController
 public class V3SelectTxController {
 	private static final Logger logger = LoggerFactory.getLogger(V3SelectTxController.class);
@@ -41,13 +39,15 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/recentTx")
-	public CommonListRes recentTxList(@Valid
+	public CommonListRes recentTxList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="page",required = false) Integer page,
 			@RequestParam(value="count",required = false) Integer count
 
 			) {
 
 		try {
+			TenantContext.setTenant(chainName);
 			logger.info("====================");
 			logger.info("recentTx : {}");
 
@@ -64,6 +64,8 @@ public class V3SelectTxController {
 			CommonUtil.printException(logger, "recentTxList Error {}" ,e);
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -86,10 +88,13 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/txDetail")
-	public CommonRes getTxDetail(@Valid
+	public CommonRes getTxDetail(@PathVariable String chainName,
+			@Valid
 			@RequestParam("txHash") String txHash
 			) {
 		try {
+			TenantContext.setTenant(chainName);
+
 			logger.info("====================");
 			logger.info("txDetail : {}", txHash);
 
@@ -106,6 +111,8 @@ public class V3SelectTxController {
 			CommonUtil.printException(logger, "getTxDetail Error {}" ,e);
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -119,12 +126,13 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonListRes.class)
 			})
 	@GetMapping(value = "/internalTxList")
-	public CommonListRes getInternalTxList(@Valid
+	public CommonListRes getInternalTxList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value = "txHash", required = false) String txHash
 			)  {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -146,6 +154,8 @@ public class V3SelectTxController {
 
 			CommonUtil.printException(logger, "getInternalTxList error : {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -161,12 +171,13 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonListRes.class)
 			})
 	@GetMapping(value = "/eventLogList")
-	public CommonListRes getTxEventLogList(@Valid
+	public CommonListRes getTxEventLogList(@PathVariable String chainName,
+			@Valid
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value = "txHash", required = false) String txHash
 			)  {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
 		try {
 
@@ -189,6 +200,8 @@ public class V3SelectTxController {
 
 			CommonUtil.printException(logger, "getTokenEventLogList error : {}", e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -200,9 +213,11 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/txData")
-	public String getTxData(@Valid
-								 @RequestParam("txHash") String txHash
+	public String getTxData(@PathVariable String chainName,
+							@Valid
+							@RequestParam("txHash") String txHash
 	) {
+		TenantContext.setTenant(chainName);
 		try {
 			logger.info("====================");
 			logger.info("txData : {}", txHash);
@@ -218,6 +233,8 @@ public class V3SelectTxController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "getTxData Error : {}", e);
 			return null;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -227,9 +244,11 @@ public class V3SelectTxController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/count")
-	public Long getTxCount(@Valid
+	public Long getTxCount(@PathVariable String chainName,
+							@Valid
 							@RequestParam("type") String txType
 	) {
+		TenantContext.setTenant(chainName);
 		try {
 			logger.info("====================");
 			logger.info("count : type={}", txType);
@@ -238,6 +257,8 @@ public class V3SelectTxController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "getCount Error : {}" ,e);
 			return null;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 

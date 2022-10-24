@@ -1,6 +1,7 @@
 package com.dfg.icon.web.v3.controller;
 
 import com.dfg.icon.core.v3.service.V3PushService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import com.dfg.icon.web.v3.dto.CommonRes;
 import com.dfg.icon.web.v3.dto.PushKeyReq;
@@ -22,7 +23,7 @@ import javax.validation.Valid;
  * @author LYJ
  */
 @Api(tags = {"v3 push"})
-@RequestMapping("v3/push")
+@RequestMapping("v3/{chainName}/push")
 @RestController
 public class V3PushController {
 	private static final Logger logger = LoggerFactory.getLogger(V3PushController.class);
@@ -36,9 +37,11 @@ public class V3PushController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/isRegistered")
-	public CommonRes isRegisterPush(@Valid
+	public CommonRes isRegisterPush(@PathVariable String chainName,
+									@Valid
 								  @ModelAttribute PushKeyReq req
 	) {
+		TenantContext.setTenant(chainName);
 		try {
 
 			logger.info("====================");
@@ -51,6 +54,8 @@ public class V3PushController {
 			CommonRes cRes = new CommonRes();
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -60,9 +65,11 @@ public class V3PushController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@PostMapping(value = "/register")
-	public CommonRes registerPush(@Valid
+	public CommonRes registerPush(@PathVariable String chainName,
+			@Valid
 			@RequestBody PushReq req
 	) {
+		TenantContext.setTenant(chainName);
 		try {
 
 			logger.info("====================");
@@ -75,6 +82,8 @@ public class V3PushController {
 			CommonRes cRes = new CommonRes();
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -84,9 +93,11 @@ public class V3PushController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@DeleteMapping(value = "/withdraw")
-	public CommonRes withdrawPush(@Valid
+	public CommonRes withdrawPush(@PathVariable String chainName,
+								@Valid
 								  @ModelAttribute PushKeyReq req
 	) {
+		TenantContext.setTenant(chainName);
 		try {
 
 			logger.info("====================");
@@ -99,6 +110,8 @@ public class V3PushController {
 			CommonRes cRes = new CommonRes();
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 }

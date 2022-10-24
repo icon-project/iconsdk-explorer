@@ -4,6 +4,7 @@ import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.v2.service.V2BlockChainService;
 import com.dfg.icon.core.v3.service.V3AddressService;
 import com.dfg.icon.core.v3.service.V3TransactionService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import com.dfg.icon.util.Validator;
 import com.dfg.icon.web.v3.dto.*;
@@ -24,7 +25,7 @@ import javax.validation.Valid;
  * @author LYJ
  */
 @Api(tags = {"v3 address"})
-@RequestMapping("v3/address")
+@RequestMapping("v3/{chainName}/address")
 @RestController
 public class V3SelectAddressController {
 	private static final Logger logger = LoggerFactory.getLogger(V3SelectAddressController.class);
@@ -45,11 +46,12 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/list")
 	public CommonListRes addrList(
+			@PathVariable String chainName,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "count", required = false) Integer count
 			) {
 		try {
-
+			TenantContext.setTenant(chainName);
 			logger.info("====================");
 			logger.info("addressList : page = {}, count = {}", page, count);
 
@@ -66,6 +68,8 @@ public class V3SelectAddressController {
 			CommonListRes cRes = new CommonListRes();
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -76,8 +80,10 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/info")
 	public CommonRes addressInfo(
+			@PathVariable String chainName,
 			@RequestParam("address") String address
 			) {
+		TenantContext.setTenant(chainName);
 		try {
 			if(!Validator.isAddressPattern(address)) {
 				CommonRes cRes = new CommonRes();
@@ -96,6 +102,8 @@ public class V3SelectAddressController {
 			CommonRes cRes = new CommonRes();
 			cRes.setError();
 			return cRes;
+		} finally {
+			TenantContext.clearTenant();
 		}
 	}
 
@@ -115,6 +123,7 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/txList")
 	public CommonListRes addressTxList(
+			@PathVariable String chainName,
 			@RequestParam("address") String address,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
@@ -122,7 +131,7 @@ public class V3SelectAddressController {
 			@RequestParam(value = "id", required = false) Integer id,
 			@RequestParam(value = "pageKind", required = false) String pageKind
 		   ) {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes cRes = new CommonListRes();
 		if(!Validator.isAddressPattern(address)) {
 			cRes.setError();
@@ -159,6 +168,8 @@ public class V3SelectAddressController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "addressTxListError : {}", e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return cRes;
@@ -178,12 +189,13 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/txListForWallet")
 	public CommonListRes addressTxListForWallet(
+			@PathVariable String chainName,
 			@RequestParam("address") String address,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value = "type", required = false) Byte type
 			) {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes cRes = new CommonListRes();
 		if(!Validator.isAddressPattern(address)) {
 			cRes.setError();
@@ -207,6 +219,8 @@ public class V3SelectAddressController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "addressTxListError : {}", e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return cRes;
@@ -221,12 +235,13 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/tokenTxList")
 	public CommonListRes addressTokenTxList(
+			@PathVariable String chainName,
 			@RequestParam("address") String address,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "count", required = false) Integer count
 
 			) {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes cRes = new CommonListRes();
 		if(!Validator.isAddressPattern(address)) {
 			cRes.setError();
@@ -250,6 +265,8 @@ public class V3SelectAddressController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "addressTokenTxListError : {}", e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return cRes;
@@ -263,12 +280,13 @@ public class V3SelectAddressController {
 			})
 	@GetMapping(value = "/internalTxList")
 	public CommonListRes addressInternalTxList(
+			@PathVariable String chainName,
 			@RequestParam("address") String address,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "count", required = false) Integer count
 
 			) {
-
+		TenantContext.setTenant(chainName);
 		CommonListRes cRes = new CommonListRes();
 		if(!Validator.isAddressPattern(address)) {
 			cRes.setError();
@@ -289,6 +307,8 @@ public class V3SelectAddressController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "addressTokenTxListError : {}", e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return cRes;
@@ -301,8 +321,8 @@ public class V3SelectAddressController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/count")
-	public CommonRes addressCount() {
-
+	public CommonRes addressCount(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		CommonRes cRes = new CommonRes();
 
 		try {
@@ -313,6 +333,8 @@ public class V3SelectAddressController {
 		} catch (Exception e) {
 			CommonUtil.printException(logger, "addressTokenTxListError : {}", e);
 			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 
 		return cRes;

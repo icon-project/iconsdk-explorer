@@ -3,6 +3,7 @@ package com.dfg.icon.core.v3.adapter.impl;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.exception.IconException;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
+import com.dfg.icon.core.v3.service.V3ChainInfoService;
 import com.dfg.icon.core.v3.vo.*;
 import com.dfg.icon.util.HexUtil;
 import com.google.gson.JsonArray;
@@ -26,28 +27,17 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(V3BlockChainClient.class);
 	private static final Logger sLogger = LoggerFactory.getLogger("ScheduleLogger");
 
-	@Value("${block.host}")
-	String BLOCK_CHAIN_HOST;
-
-	@Value("${block.api.channel}")
-	String BLOCK_CHAIN_API;
-
-	String API_URL;
-
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Autowired
+	private V3ChainInfoService chainInfoService;
+
 	HttpHeaders defaultHeader = null;
+
 
 	@PostConstruct
 	public void init() {
-		if(BLOCK_CHAIN_HOST.contains("api/")) {
-			API_URL = BLOCK_CHAIN_HOST;
-		} else {
-			API_URL = (new StringBuffer()).append(BLOCK_CHAIN_HOST).append("/").append(BLOCK_CHAIN_API).toString().replace("//api/v3", "/api/v3");
-		}
-		logger.info("V3BlockChain URL = {}", API_URL);
-
 		defaultHeader = new HttpHeaders();
 		defaultHeader.setContentType(MediaType.APPLICATION_JSON);
 
@@ -58,8 +48,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	 * @see com.dfg.icon.core.v2.adapter.V2BlockChainAdapter#getBlockInfoByHeight(java.lang.Integer)
 	 */
 	@Override
-	public BlockFactory getBlockFactoryByHeight(Integer height) throws Exception {
-		String url = API_URL;
+	public BlockFactory getBlockFactoryByHeight(String url,Integer height) throws Exception {
 		logger.info("--------------------");
 		logger.info("[V3 BlockChain] getBlockByHeight. url = {}, height = {}", url, height);
 		long startTime = System.currentTimeMillis();
@@ -94,8 +83,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public Integer getHeightByBlock(Integer height) throws Exception {
-		String url = API_URL;
+	public Integer getHeightByBlock(String url,Integer height) throws Exception {
 		logger.info("--------------------");
 
 		try{
@@ -132,9 +120,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 		}
 	}
 
-	public TxResultFactory getTransactionResult(String txHash) throws Exception {
-		String url = API_URL;
-
+	public TxResultFactory getTransactionResult(String url,String txHash) throws Exception {
 		RpcReq request = new RpcReq();
 		request.setMethodGetTransactionResult(txHash);
 		long startTime = System.currentTimeMillis();
@@ -193,8 +179,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 		}
 	}
 
-	public GenesisRpcRes getBlockInfoByGenesis() throws Exception {
-		String url = API_URL;
+	public GenesisRpcRes getBlockInfoByGenesis(String url) throws Exception {
 		logger.info("--------------------");
 		logger.info("[V3 BlockChain] getGenesis. url = {}", url);
 
@@ -221,8 +206,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public RpcBalanceRes getBalance(String address) throws Exception {
-		String url = API_URL;
+	public RpcBalanceRes getBalance(String url,String address) throws Exception {
 
 		RpcReq request = new RpcReq();
 		request.setMethodGetBalance(address);
@@ -254,8 +238,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public RpcBalanceRes getTotalSupply() throws Exception {
-		String url = API_URL;
+	public RpcBalanceRes getTotalSupply(String url) throws Exception {
 
 		RpcNoParamReq request = new RpcNoParamReq();
 		request.setMethod("icx_getTotalSupply");
@@ -280,8 +263,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	/* (non-Javadoc)
 	 * @see com.dfg.icon.core.v3.adapter.V3BlockChainAdapter#getIcxScoreApi(java.lang.String)
 	 */
-	public JsonArray getIcxScoreApi(String address) throws Exception{
-		String url = API_URL;
+	public JsonArray getIcxScoreApi(String url, String address) throws Exception{
 
 		try {
 			RpcReq request = new RpcReq();
@@ -306,9 +288,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public String getIcxCall(String toAddress, String method, String... tokenAddress) {
-		String url = API_URL;
-
+	public String getIcxCall(String url, String toAddress, String method, String... tokenAddress) {
 		RpcReq request = new RpcReq();
 		request.setMethodIcxCall(toAddress, method, tokenAddress);
 
@@ -331,13 +311,13 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public JsonObject getScoreStatus(String address) {
+	public JsonObject getScoreStatus(String url, String address) {
 		RpcReq request = new RpcReq();
 		request.setMethodScoreStatus(address);
 
 		try {
 			HttpEntity<String> requestEntity = new HttpEntity<>(request.toString(), defaultHeader);
-			String jsonStr = restTemplate.postForObject(API_URL, requestEntity, String.class);
+			String jsonStr = restTemplate.postForObject(url, requestEntity, String.class);
 
 			JsonObject rootObject = getRootObject(jsonStr);
 			if (rootObject == null || rootObject.get("result") == null || rootObject.get("result").isJsonNull()) {
@@ -353,8 +333,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public RpcStakeRes getStake(String address) {
-		String url = API_URL;
+	public RpcStakeRes getStake(String url, String address) {
 		logger.info("--------------------");
 
 		try{

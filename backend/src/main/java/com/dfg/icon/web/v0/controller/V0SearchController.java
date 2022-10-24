@@ -3,13 +3,11 @@ package com.dfg.icon.web.v0.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,7 +26,7 @@ import io.swagger.annotations.ApiResponses;
  * 2018-01-22
  */
 @Api(tags = {"v0 search"})
-@RequestMapping("v0/search")
+@RequestMapping("v0/{chainName}/search")
 @RestController
 public class V0SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(V0SearchController.class);
@@ -43,10 +41,10 @@ public class V0SearchController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/Search")
-	public SearchRes search(@Valid
-			@RequestParam("data") String data
-
+	public SearchRes search(@PathVariable String chainName,
+							@Valid @RequestParam("data") String data
 			) {
+		TenantContext.setTenant(chainName);
 		SearchRes res = new SearchRes();
 		try {
 			HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -62,6 +60,8 @@ public class V0SearchController {
 		} catch (Exception e) {
 			logger.error("Search" ,e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res ;
 	}

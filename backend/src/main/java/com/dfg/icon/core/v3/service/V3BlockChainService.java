@@ -11,7 +11,7 @@ public interface V3BlockChainService {
     void updateMain() throws Exception;
     void updateChart() throws Exception;
 //    void updatePrepTerm() throws Exception;
-    String getBalance(String address, Integer decimals) throws Exception;
+    String getBalance(String url, String address, Integer decimals) throws Exception;
     String getTokenBalance(String address, String contractAddr, Integer decimals) throws Exception;
     void collectBalanceAddress() throws Exception;
     /**
@@ -21,7 +21,7 @@ public interface V3BlockChainService {
      * @return
      * @throws Exception
      */
-    void blockChainSyncUpdateAllinOne(Integer height, Integer lastHeight, Date updateDate) throws Exception;
+    void blockChainSyncUpdateAllinOne(String url, String chainName, Integer height, Integer lastHeight) throws Exception;
 
 
 

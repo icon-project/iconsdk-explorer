@@ -63,15 +63,6 @@ public class ResourceServiceImpl implements ResourceService {
     public String getServerName() {
         return serverName;
     }
-    @Override
-    public String getBlockSchedulerName() {
-        return blockSchedulerName;
-    }
-
-    @Override
-    public String getBlockSchedulerVersion() {
-        return blockSchedulerVersion;
-    }
 
     @Override
     public Integer getLimitBlock() {

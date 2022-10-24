@@ -7,6 +7,7 @@ import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.mappers.icon.MainMapper;
 import com.dfg.icon.core.mappers.icon.TransactionV3Mapper;
 import com.dfg.icon.core.v0.service.V0MainService;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.web.v0.dto.CommonRes;
 import com.dfg.icon.web.v0.dto.SimpleRes;
 import com.dfg.icon.web.v0.dto.main.MainBlock;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +33,7 @@ import java.util.List;
  * 2018-01-22
  */
 @Api(tags = {"v3 main"})
-@RequestMapping("v3/main")
+@RequestMapping("v3/{chainName}/main")
 @RestController
 public class V3SelectMainController {
 	private static final Logger logger = LoggerFactory.getLogger(V3SelectMainController.class);
@@ -51,7 +53,8 @@ public class V3SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/mainInfo")
-	public MainRes mainInfo() {
+	public MainRes mainInfo(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		MainRes res = new MainRes();
 
 		try {
@@ -76,6 +79,8 @@ public class V3SelectMainController {
 		} catch (Exception e) {
 			logger.error("mainInfo"  , e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -88,8 +93,8 @@ public class V3SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/mainChart")
-	public SimpleRes mainChart() {
-
+	public SimpleRes mainChart(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		SimpleRes res = new SimpleRes();
 
 		try {
@@ -109,6 +114,8 @@ public class V3SelectMainController {
 		} catch (Exception e) {
 			logger.error("mainChart" , e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -119,8 +126,8 @@ public class V3SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/summary")
-	public SimpleRes mainSummary() {
-
+	public SimpleRes mainSummary(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		SimpleRes res = new SimpleRes();
 
 		try {
@@ -138,6 +145,8 @@ public class V3SelectMainController {
 		} catch (Exception e) {
 			logger.error("mainChart" , e);
 			res.setError();
+		} finally {
+			TenantContext.clearTenant();
 		}
 		return res;
 	}
@@ -148,12 +157,13 @@ public class V3SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/version")
-	public SimpleRes getVersion() {
+	public SimpleRes getVersion(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		SimpleRes res = new SimpleRes();
 		res.setResult("200");
 		res.setDescription("success");
 		res.setData(resourceService.getTrackerVersion());
-
+		TenantContext.clearTenant();
 		return res;
 	}
 
@@ -163,12 +173,13 @@ public class V3SelectMainController {
 					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
 			})
 	@GetMapping(value = "/txCountIn24h")
-	public SimpleRes selectTxCountInTwoFour() {
+	public SimpleRes selectTxCountInTwoFour(@PathVariable String chainName) {
+		TenantContext.setTenant(chainName);
 		SimpleRes res = new SimpleRes();
 		res.setResult("200");
 		res.setDescription("success");
 		res.setData(mainMapper.selectTxCountInTwoFour());
-
+		TenantContext.clearTenant();
 		return res;
 	}
 }

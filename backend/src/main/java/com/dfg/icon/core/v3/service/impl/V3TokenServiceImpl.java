@@ -69,7 +69,7 @@ public class V3TokenServiceImpl implements V3TokenService {
 	 * String)
 	 */
 	@Override
-	public CommonRes selectTokenSummary(String contractAddr) throws Exception {
+	public CommonRes selectTokenSummary(String url, String contractAddr) throws Exception {
 		CommonRes res = new CommonRes();
 		TContract key = new TContract();
 		key.setContractAddr(contractAddr);
@@ -84,7 +84,7 @@ public class V3TokenServiceImpl implements V3TokenService {
 
 			// total Supply의 mint burn 반영하기 위해 엔진에 물어보는 것으로 변경
 //			String totalSupply = tokenInfo.getTotalSupply();
-			String totalSupply = blockChainAdapter.getIcxCall(contractAddr, "totalSupply");
+			String totalSupply = blockChainAdapter.getIcxCall(url, contractAddr, "totalSupply");
 			if(totalSupply == null) {
 				totalSupply = tokenInfo.getTotalSupply();
 			}
@@ -262,7 +262,7 @@ public class V3TokenServiceImpl implements V3TokenService {
 	 * web.v3.dto.PageReq)
 	 */
 	@Override
-	public CommonListRes selectTokenHolders(PageReq req) throws Exception {
+	public CommonListRes selectTokenHolders(String url, PageReq req) throws Exception {
 
 		req.setPage((req.getPage() - 1) * req.getCounting());
 		CommonListRes res = new CommonListRes();
@@ -272,7 +272,7 @@ public class V3TokenServiceImpl implements V3TokenService {
 		if (tokenInfo != null) {
 //			req.setIcxSupply(tokenInfo.getTotalSupply());
 			// LYJ 190514 : totalSupply를 노드에서 직접 부르는것으로 수정.
-			String totalSupply = blockChainAdapter.getIcxCall(req.getAddress(), "totalSupply");
+			String totalSupply = blockChainAdapter.getIcxCall(url, req.getAddress(), "totalSupply");
 			totalSupply = HexUtil.applyDecimal(totalSupply, tokenInfo.getDecimals());
 			req.setIcxSupply(totalSupply);
 		}
