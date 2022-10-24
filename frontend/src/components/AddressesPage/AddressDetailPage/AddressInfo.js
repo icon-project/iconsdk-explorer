@@ -59,7 +59,7 @@ class AddressInfo extends Component {
     }
 
     render() {
-        const { notification, icxMore, tokenMore, showNode } = this.state
+        const { icxMore, tokenMore, showNode } = this.state
 
         const { wallet, walletAddress } = this.props
         const { loading, data, error } = wallet
@@ -77,7 +77,6 @@ class AddressInfo extends Component {
                 const { address, tokenList } = data
                 const _address = !!address ? address : error
                 const isConnected = walletAddress === _address
-                const disabled = !_isNotificationAvailable
 
                 return (
                     <div className="screen0">

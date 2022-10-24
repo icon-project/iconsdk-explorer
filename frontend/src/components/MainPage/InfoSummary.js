@@ -16,29 +16,14 @@ class InfoSummary extends Component {
 
     render() {
         const { tmainInfo } = this.props.info || {}
-        const { icxSupply, marketCap, transactionCount, icxCirculationy } = tmainInfo || {}
-        const marketCapStr = numberWithCommas(Math.floor(marketCap))
+        const { icxSupply, transactionCount } = tmainInfo || {}
         return (
             <Fragment>
-                <li>
-                    <div>
-                        <span className="usd"><i className="img"></i></span>
-                        <p>Market Cap <em>(USD)</em></p>
-                        <p>{marketCapStr}</p>									
-                    </div>
-                </li>
                 <li>
                     <div>
                         <span className="icx"><i className="img"></i></span>
                         <p>ICX Supply</p>
                         <p>{convertNumberToText(icxSupply, 0)}</p>									
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <span className="icx"><i className="img"></i></span>
-                        <p>ICX Circulation</p>
-                        <p>{convertNumberToText(icxCirculationy, 0)}</p>									
                     </div>
                 </li>
                 <li>
