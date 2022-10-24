@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.quickSearchMapper">
+	
+	<!-- 메인 정보 요약 조회  -->
+	<select id="selectQuickSearch" resultType="com.dfg.icon.web.v3.dto.SearchQuickInfo">
+		select 
+			name  , 
+		    contract_addr as address , 
+		    version as ircVersion , 
+		    ifnull(transfer_count,0) as txCount
+		from ( 
+			select 
+				name , 
+			    transfer_count ,
+			    'token' as version , 
+			    contract_addr 
+			from 
+				T_CONTRACT
+			union      
+				select 
+					symbol as name, 
+					transfer_count ,
+					'token' , 
+			        contract_addr 
+				from 
+				T_CONTRACT
+		) d
+		
+	</select>
+	
+</mapper>

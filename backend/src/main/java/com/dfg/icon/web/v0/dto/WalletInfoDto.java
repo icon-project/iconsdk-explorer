@@ -15,9 +15,6 @@ public class WalletInfoDto {
 
     String balance;
 
-//    double icxUsd;
-    String icxUsd;
-
     Integer txCount;
 
     String nodeType;

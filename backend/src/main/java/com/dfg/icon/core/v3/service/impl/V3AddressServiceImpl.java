@@ -90,11 +90,6 @@ public class V3AddressServiceImpl implements V3AddressService{
 
 		CommonRes res = new CommonRes();
 
-		String selRate = mainMapper.selectRate();
-		if(selRate == null) {
-			selRate = "0";
-		}
-
 		AddressInfo result = addressMapper.selectAddressInfo(req);
 		List<TokenAddress> tokenAddrList = tokenMapper.selectQuantityByAddress(req);
 		Integer tokenTxCount = tokenMapper.selectTokenAddrCount(req);
@@ -107,7 +102,6 @@ public class V3AddressServiceImpl implements V3AddressService{
 			result = new AddressInfo();
 			result.setAddress(req.getAddress());
 			result.setBalance("0");
-			result.setIcxUsd("0");
 			result.setNodeType("-");
 			result.setTxCount(0);
 		}

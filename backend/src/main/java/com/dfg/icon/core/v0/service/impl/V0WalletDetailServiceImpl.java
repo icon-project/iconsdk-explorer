@@ -77,30 +77,17 @@ public class V0WalletDetailServiceImpl implements V0WalletDetailService{
 	 */
 	@Override
 	public WalletInfoDto selectWalletDetail(WalletTxReq req) throws Exception {
-		
-		//주소로 주소 상세 내역 조회 하기 
-		
+
+		//주소로 주소 상세 내역 조회 하기
 		WalletInfoDto result = addressMapper.selectWalletInfo(req.getAddress());
-		
+
 		if(result == null){
 			return null;
 		} else {
-		//환율 계산 
-			if(mainMapper.selectRate()==null){
-				return null;
-			}else{
-				
-				String rate = mainMapper.selectRate();
-				BigDecimal bigRate = new BigDecimal(rate);
-				
-				BigDecimal balance = new BigDecimal(result.getBalance());
-				BigDecimal icxUsd = bigRate.multiply(balance);
-				
-				result.setBalance(result.getBalance());
-				result.setIcxUsd(String.format("%.2f", icxUsd));
-			}
+			//TODO Block explorer (confirmation of necessity)
+			result.setBalance(result.getBalance());
 		}
-		
+
 		return result;
 	}
 

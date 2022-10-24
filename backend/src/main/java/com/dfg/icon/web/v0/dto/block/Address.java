@@ -12,8 +12,6 @@ public class Address {
     String address;
 
     String balance;
-
-    String icxUsd;
     
     double percentage;
     

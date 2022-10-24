@@ -7,12 +7,9 @@ import com.dfg.icon.core.common.service.ResourceService;
 import com.dfg.icon.core.dao.icon.*;
 import com.dfg.icon.core.mappers.icon.*;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
-import com.dfg.icon.core.v3.vo.DecimalType;
 import com.dfg.icon.core.v3.vo.IcxSupplyVo;
 import com.dfg.icon.core.v3.vo.RpcBalanceRes;
 import com.dfg.icon.util.DateUtil;
-import com.dfg.icon.util.HexUtil;
-import com.dfg.icon.web.v3.dto.PageReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,18 +59,6 @@ public class V0MainServiceImpl implements V0MainService{
 		if(mainInfo == null){
 			return null;
 		}
-		//환율 계산
-		String selRate = mainMapper.selectRate();
-		if(selRate == null) {
-			selRate = "0";
-		}
-		double rate =  Double.parseDouble(selRate)  ;
-//		double icxSupply =  Double.parseDouble(mainInfo.getIcxSupply());
-		double icxCirculationy = Double.parseDouble(mainInfo.getIcxSupply());
-		if(mainInfo.getIcxCirculationy() != null) {
-			icxCirculationy =  Double.parseDouble(mainInfo.getIcxCirculationy());
-		}
-		mainInfo.setMarketCap(rate * icxCirculationy );
 		
 		return mainInfo;
 	}
@@ -167,8 +152,6 @@ public class V0MainServiceImpl implements V0MainService{
 	public void updateMainInfo(String url, int txAddedCount, String treasury) throws Exception {
 		RpcBalanceRes res =  blockChainAdapter.getTotalSupply(url);
 		TMainInfo mainInfo = getMainInfo();
-		PageReq req = new PageReq();
-		req.setGrade((byte)0);
 
 		if(mainInfo == null) {
 			mainInfo = new TMainInfo();

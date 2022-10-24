@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.MainMapper">
+	
+	<!-- 메인 정보 요약 조회  -->
+	<select id="selectMainInfo" resultType="com.dfg.icon.web.v0.dto.main.MainInfo">
+		select 
+			market_cap as marketCap,
+	    	icx_supply as icxSupply,
+	    	icx_circulationy as icxCirculationy,
+	    	transaction_count as transactionCount,
+	    	public_treasury as publicTreasury
+		from 
+			T_MAIN_INFO
+	</select>
+
+	<select id="sumByTxCount" resultType="java.lang.Integer">
+		select
+			sum(tx_count) as transactionCount
+		from
+			T_BLOCK_TOTAL
+	</select>
+	
+	
+	<!-- main_tx 에 리스트 형태로 데이터 입력  -->
+	<insert id="insertMainTxList" parameterType="java.util.List">
+		INSERT INTO T_MAIN_TX (
+			tx_hash,
+			amount,
+			fee,
+			create_date,
+			state)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.txHash},
+			#{element.amount},
+			#{element.fee},
+			#{element.createDate},
+			#{element.state}
+		</foreach>
+	</insert>
+	
+	<!-- T_MAIN_BLOCK 에 리스트 형태로 데이터 입력  -->
+	<insert id="insertMainBlockList" parameterType="java.util.List">
+		insert into T_MAIN_BLOCK  (
+				block_height,
+				hash,
+				tx_count, 
+				create_date
+			)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.blockHeight},
+			#{element.hash},
+			#{element.txCount},
+			#{element.createDate}
+		</foreach>
+	</insert>
+
+	<!-- 메인 Block에서 필요한 데이터 이외는 삭제 -->
+	<delete id="deleteMainBlock" parameterType="Integer">
+
+		delete
+			T_MAIN_BLOCK
+		from
+			T_MAIN_BLOCK
+		inner join (
+			select block_height from T_MAIN_BLOCK
+			order by block_height desc
+			limit #{count} , 1
+			) b on
+		T_MAIN_BLOCK.block_height &lt; b.block_height
+	</delete>
+
+
+	<!-- 메인 Tx에서 필요한 데이터 이외는 삭제 -->
+	<delete id="deleteMainTx" parameterType="Integer">
+
+		delete
+			T_MAIN_TX
+		from
+			T_MAIN_TX
+		inner join (
+			select create_date from T_MAIN_TX
+			order by create_date desc
+			limit #{count} , 1
+			) b on
+		T_MAIN_TX.create_date &lt; b.create_date;
+
+	</delete>
+
+	<!-- 차트에서 오래된 데이터 삭제  -->
+	<delete id="deleteOldDataDaliyChart" >
+		delete from T_MAIN_CHART
+		where target_date &lt; CAST(date_add(now(), interval -15 day) AS DATE)
+	</delete>
+
+	<!-- 신규 차트 데이터 입력    -->
+	<insert id="insertNewChartData" >
+		INSERT IGNORE `T_MAIN_CHART` (`target_date`, `tx_count`)
+		select CAST(date_add(now(), interval -1 day) AS DATE) , ifnull(sum(tx_count),0) from T_BLOCK_TOTAL
+		where create_date between
+		CAST(CONCAT(CAST(date_add(now(), interval -1 day) AS DATE), ' 00:00:00') AS DATETIME) AND
+		CAST(CONCAT(CAST(date_add(now(), interval -1 day) AS DATE), ' 23:59:59') AS DATETIME)
+	</insert>
+
+	<select id="selectTxCountInTwoFour"
+			resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM T_TRANSACTION_TOTAL
+		WHERE create_date BETWEEN date_add(now(), INTERVAL -1 DAY) AND now()
+	</select>
+
+
+</mapper>

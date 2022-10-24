@@ -14,11 +14,6 @@ public interface MainMapper {
 	 * 메인 정보 조회 
 	 */
 	MainInfo selectMainInfo();
-	
-	/**
-	 * 환율 조회 
-	 */
-	String selectRate();
 
 	/**
 	 * 트랜잭션 총 개수

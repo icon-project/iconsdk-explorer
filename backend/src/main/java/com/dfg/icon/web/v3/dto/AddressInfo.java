@@ -17,9 +17,6 @@ public class AddressInfo {
 	String address;
 
     String balance;
-
-//    double icxUsd;
-    String icxUsd;
     
     Integer txCount;
 

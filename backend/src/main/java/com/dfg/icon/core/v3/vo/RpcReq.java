@@ -113,23 +113,6 @@ public class RpcReq {
         this.params = vo;
     }
 
-    public void setMethodGetPRepInfo(String address) {
-        method = "icx_call";
-        id = 1234;
-
-        ParamIcxCallVo vo = new ParamIcxCallVo();
-        vo.setTo(IconCode.SCORE_INSTALL_ADDR.getCode());
-        vo.setDataType("call");
-
-        ParamIcxCallDataVo dataVo = new ParamIcxCallDataVo();
-        dataVo.setMethod("getPRep");
-        ParamsAddressVo addressVo = new ParamsAddressVo();
-        addressVo.setAddress(address);
-        dataVo.setParams(addressVo);
-
-        vo.setData(dataVo);
-        this.params = vo;
-    }
 
     public void setMethodGetStake(String address) {
         method = "icx_call";
@@ -148,20 +131,6 @@ public class RpcReq {
         this.params = vo;
     }
 
-    public void setMethodGetPRep(String dataMethod, String start, String end) {
-        method = "icx_call";
-        id = 1234;
-
-        ParamIcxCallVo vo = new ParamIcxCallVo();
-        vo.setTo(IconCode.SCORE_INSTALL_ADDR.getCode());
-        vo.setDataType("call");
-
-        ParamIcxCallMethodVo dataVo = new ParamIcxCallMethodVo();
-        dataVo.setMethod(dataMethod);
-        vo.setData(dataVo);
-
-        this.params = vo;
-    }
 
     @Override
     public String toString() {
