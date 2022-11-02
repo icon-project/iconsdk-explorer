@@ -9,14 +9,14 @@ public class TenantContext {
     private static final Logger logger = LoggerFactory.getLogger(TenantContext.class);
     public static final String DEFAULT_DATABASE = "explorer";
 
-    private static final ThreadLocal<String> tenantHolder = new ThreadLocal<>();
+    private static final ThreadLocal<Object> tenantHolder = new ThreadLocal<>();
 
-    public static String getTenant() {
-        String tenant = tenantHolder.get();
+    public static Object getTenant() {
+        Object tenant = tenantHolder.get();
         return Objects.isNull(tenant) ? DEFAULT_DATABASE : tenant;
     }
 
-    public static void setTenant(String tenant) {
+    public static void setTenant(Object tenant) {
         tenantHolder.set(tenant);
     }
 

@@ -127,7 +127,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	 * The V 3 chain state.
 	 */
 	@Autowired
-	V3ChainState chainState;
+	V3ChainStateService chainState;
 
 	/**
 	 * The Transaction manager.

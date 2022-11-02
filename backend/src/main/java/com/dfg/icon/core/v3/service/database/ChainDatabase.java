@@ -1,7 +1,6 @@
 package com.dfg.icon.core.v3.service.database;
 
-import com.dfg.icon.core.dao.icon.TChainInfo;
-import com.dfg.icon.core.mappers.icon.TChainInfoMapper;
+import com.dfg.icon.core.v3.vo.MultiChainInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,9 +17,6 @@ import java.sql.Statement;
 @Service
 public class ChainDatabase {
     private static final Logger logger = LoggerFactory.getLogger(ChainDatabase.class);
-
-    @Autowired
-    TChainInfoMapper chainInfoMapper;
 
     @Autowired
     Environment env;
@@ -35,8 +29,7 @@ public class ChainDatabase {
 
     private MultiChainInfo chains;
 
-    @PostConstruct
-    public void init(){
+    public void crateDatabase(){
         String option = "serverTimezone=UTC";
         try{
             chains = readMultiChain(MULTICHAIN_PATH);
@@ -46,6 +39,17 @@ public class ChainDatabase {
         }
 
         //database
+        //TODO Database status check
+        createDatabase(env.getProperty("db.url")+"/?" + option,
+                env.getProperty("db.username"), env.getProperty("db.password"), "explorer");
+        try{
+            createTable(env.getProperty("db.url")+"/explorer" + "?" + option,
+                    env.getProperty("db.username"), env.getProperty("db.password"), SQL_PATH);
+        }catch (Exception e){
+            //TODO exception message
+            logger.error("e message : " + e.getMessage());
+        }
+
         for(MultiChainInfo.ChainInfo chainInfo : chains.getChainInfos()) {
             createDatabase(env.getProperty("db.url")+"/?" + option,
                     env.getProperty("db.username"), env.getProperty("db.password"), chainInfo.getChannel());
@@ -56,21 +60,15 @@ public class ChainDatabase {
                 //TODO exception message
                 logger.error("e message : " + e.getMessage());
             }
-            //TODO refactoring (add list insert for mapper)
-            TChainInfo tChainInfo = new TChainInfo();
-            tChainInfo.setChainName(chainInfo.getName());
-            tChainInfo.setApi(chainInfo.getApi());
-            tChainInfo.setVersion(chainInfo.getVersion());
-            tChainInfo.setHost(chainInfo.getHost());
-            tChainInfo.setChannel(chainInfo.getChannel());
-            chainInfoMapper.insert(tChainInfo);
         }
-
     }
+
+
 
     public MultiChainInfo getMultichainInfo(){
         return this.chains;
     }
+
 
     private MultiChainInfo readMultiChain(String path) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -99,5 +97,6 @@ public class ChainDatabase {
         Reader reader = new BufferedReader(new FileReader(sqlPath));
         sr.runScript(reader);
     }
+
 
 }

@@ -1,5 +1,8 @@
 package com.dfg.icon.web.v3.controller;
 
+import com.dfg.icon.core.dao.icon.TContract;
+import com.dfg.icon.core.exception.IconCode;
+import com.dfg.icon.core.mappers.icon.TContractMapper;
 import com.dfg.icon.core.v3.service.V3ChainInfoService;
 import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
@@ -20,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"v3 chain"})
 @RequestMapping("v3/chain")
 @RestController
-public class V3ChainInfoController {
-    private static final Logger logger = LoggerFactory.getLogger(V3ChainInfoController.class);
+public class V3MultiChainInfoController {
+    private static final Logger logger = LoggerFactory.getLogger(V3MultiChainInfoController.class);
 
     @Autowired
     V3ChainInfoService chainInfo;
@@ -53,8 +56,10 @@ public class V3ChainInfoController {
             value = {
                     @ApiResponse(code = 200, message = "Success", response = CommonRes.class)
             })
-    @GetMapping
+    @GetMapping(value = "/info")
     public CommonRes getChainInfo(@RequestParam("name") String name) {
+
+
         TenantContext.setDefaultTenant();
         try {
             return chainInfo.selectChainByName(name);

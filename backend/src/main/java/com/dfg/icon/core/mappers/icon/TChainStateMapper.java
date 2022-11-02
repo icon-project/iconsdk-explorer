@@ -103,4 +103,7 @@ public interface TChainStateMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(TChainState record);
+
+    int chainStateByName(@Param("chainName") String chainName);
+
 }

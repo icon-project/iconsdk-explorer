@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dfg.icon.core.dao.icon.*;
 import com.dfg.icon.core.mappers.icon.*;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.web.v3.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,7 +300,13 @@ public class V3ContractServiceImpl implements V3ContractService{
 	public void initContractInfo() {
 		TContract installScore = new TContract();
 		installScore.setContractAddr(IconCode.SCORE_INSTALL_ADDR.getCode());
-		installScore = tContractMapper.selectByPrimaryKey(installScore);
+		try {
+			TenantContext.setDefaultTenant();
+			installScore = tContractMapper.selectByPrimaryKey(installScore);
+			TenantContext.clearTenant();
+		}catch (Exception e){
+			logger.error(e.getMessage());
+		}
 		if(installScore == null) {
 			logger.info("[Contract] Init Install Score : ");
 			installScore = new TContract();

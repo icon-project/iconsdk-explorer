@@ -1,4 +1,4 @@
-package com.dfg.icon.core.v3.service.database;
+package com.dfg.icon.core.v3.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

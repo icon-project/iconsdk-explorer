@@ -4,6 +4,8 @@ import com.dfg.icon.core.dao.icon.TChainInfo;
 import com.dfg.icon.core.dao.icon.TChainInfoExample;
 import com.dfg.icon.core.dao.icon.TChainInfoKey;
 import java.util.List;
+
+import com.dfg.icon.web.v3.dto.ChainInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
@@ -104,6 +106,8 @@ public interface TChainInfoMapper {
      */
     int updateByPrimaryKey(TChainInfo record);
 
+    int chainInfoByName(@Param("chainName") String chainName);
 
-    List<TChainInfo> selectAll();
+    List<ChainInfo> selectAll();
+
 }

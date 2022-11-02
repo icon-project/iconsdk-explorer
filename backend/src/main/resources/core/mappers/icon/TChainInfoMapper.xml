@@ -287,8 +287,28 @@
     </if>
   </select>
 
-  <select id="selectAll" resultType="BaseResultMap">
-    SELECT * FROM T_CHAIN_INFO
+  <select id="chainInfoByName" resultType="Integer">
+    <!-- 1을 반환하면 데이터 존재 0을 반환하면 존재안함 -->
+    <![CDATA[
+		 SELECT IF( EXISTS(
+             select
+             	chain_name
+			 from
+			 	T_CHAIN_INFO
+			 where
+			 	chain_name= #{chainName , jdbcType=VARCHAR} ) , 1, 0)
+    	]]>
+
+  </select>
+
+  <select id="selectAll" resultType="com.dfg.icon.web.v3.dto.ChainInfo">
+    select
+        chain_name as chainName,
+        host,
+        api,
+        channel,
+        version
+    from T_CHAIN_INFO
   </select>
 
 </mapper>

@@ -1,7 +1,7 @@
 package com.dfg.icon.config;
 
 import com.dfg.icon.core.v3.service.database.ChainDatabase;
-import com.dfg.icon.core.v3.service.database.MultiChainInfo;
+import com.dfg.icon.core.v3.vo.MultiChainInfo;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import java.util.Map;
 @MapperScan(
         basePackages = {"com.dfg.icon.core.mappers.icon"}
 )
-public class DataSourceConfig {
+public class DataSourceConfig{
 
     private static final Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
 
@@ -36,7 +36,19 @@ public class DataSourceConfig {
     Environment env;
 
     @Autowired
-    ChainDatabase chainDatabase;
+    ChainDatabase database;
+
+    @Value("${multiChain.path}")
+    String MULTICHAIN_PATH;
+
+    @Value("${sql.path}")
+    String SQL_PATH;
+
+//    private MultiChainInfo chains;
+
+//    @Autowired
+//    TChainInfoMapper chainInfoMapper;
+
 
 //    //TODO 삭제하고 테스트 해보기
 //    @Bean
@@ -86,39 +98,37 @@ public class DataSourceConfig {
 
     @Bean
     public MultitenantDataSource multitenantDataSource() {
+
+        database.crateDatabase();
+
         MultitenantDataSource dataSource = new MultitenantDataSource();
         String option = "serverTimezone=UTC&";
         Map<Object,Object> resolvedDataSources = new HashMap<>();
-        MultiChainInfo chains = chainDatabase.getMultichainInfo();
-        Field props = null;
-        try {
-            props = DataSourceBuilder.class.getDeclaredField("properties");
-            //default
-            DataSourceBuilder defaultDataSourceBuilder = DataSourceBuilder.create()
-                    .url(env.getProperty("db.url")+"/"+ env.getProperty("db.default.name") + "?" + option)
+        //default
+        DataSourceBuilder defaultDataSourceBuilder = DataSourceBuilder.create()
+                .url(env.getProperty("db.url")+"/"+ env.getProperty("db.default.name") + "?" + option)
+                .username(env.getProperty("db.username"))
+                .password(env.getProperty("db.password"));
+        resolvedDataSources.put("explorer",defaultDataSourceBuilder.build());
+        MultiChainInfo chains = database.getMultichainInfo();
+        for (int i = 0; i < chains.getChainInfos().size(); i++) {
+            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create()
+                    .url(env.getProperty("db.url")+"/"+ chains.getChainInfos().get(i).getChannel() + "?" + option)
                     .username(env.getProperty("db.username"))
                     .password(env.getProperty("db.password"));
-            resolvedDataSources.put("explorer",defaultDataSourceBuilder.build());
-
-            for (int i = 0; i < chains.getChainInfos().size(); i++) {
-                DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create()
-                        .url(env.getProperty("db.url")+"/"+ chains.getChainInfos().get(i).getChannel() + "?" + option)
-                        .username(env.getProperty("db.username"))
-                        .password(env.getProperty("db.password"));
 //                Map<String, String> properties = (Map<String, String>) props.get(dataSourceBuilder);
-                resolvedDataSources.put(chains.getChainInfos().get(i).getChannel(),dataSourceBuilder.build());
-            }
-
-
-            dataSource.setDefaultTargetDataSource(resolvedDataSources.get("explorer"));
-            dataSource.setTargetDataSources(resolvedDataSources);
-
-            dataSource.afterPropertiesSet();
-        } catch (NoSuchFieldException e) {
-            //TODO multi chain Exception
+//            resolvedDataSources.put(chains.getChainInfos().get(i).getChannel(), dataSourceBuilder.build());
+            resolvedDataSources.put(chains.getChainInfos().get(i).getName(), dataSourceBuilder.build());
         }
 
+
+        dataSource.setDefaultTargetDataSource(resolvedDataSources.get("explorer"));
+        dataSource.setTargetDataSources(resolvedDataSources);
+        dataSource.afterPropertiesSet();
         return dataSource;
     }
+
+
+
 
 }

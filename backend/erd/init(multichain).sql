@@ -3,11 +3,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- icon_mainnet 데이터베이스 구조 내보내기
-CREATE DATABASE IF NOT EXISTS `icon_dev` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `icon_dev`;
-
-
 -- 테이블 icon_mainnet.T_ADDRESS 구조 내보내기
 CREATE TABLE IF NOT EXISTS `T_ADDRESS` (
   `address` char(42) CHARACTER SET latin1 NOT NULL COMMENT 'address / 주소',

@@ -25,6 +25,7 @@ public class Channel {
 
     private ConcurrentMap<String, Boolean> requestQueuePool = new ConcurrentHashMap<>();
     private ConcurrentMap<String, TenantAwareThread> threadPool = new ConcurrentHashMap<>();
+
     public synchronized void putRequest(String name) {
         if(requestQueuePool.get(name) == false && trackerAlive(name)){
             requestQueuePool.replace(name, true);
@@ -52,16 +53,16 @@ public class Channel {
         }
     }
 
-    public void blockSyncStart(String chainName) {
-        threadPool.put(chainName, scheduler.updateBlockSync(v3ChainInfoService.chainHost(chainName), chainName));
-        requestQueuePool.put(chainName, Boolean.FALSE);
-        threadPool.get(chainName).start();
+    public void blockSyncStart(String chainName, String threadName) {
+        threadPool.put(threadName, scheduler.updateBlockSync(v3ChainInfoService.chainHost(chainName), chainName, threadName));
+        requestQueuePool.put(threadName, Boolean.FALSE);
+        threadPool.get(threadName).start();
     }
 
-    public void mainChartSyncStart(String chainName) {
-
-        threadPool.put(chainName, scheduler.updateMainChartDailySync(v3ChainInfoService.chainHost(chainName), chainName));
-        threadPool.get(chainName).start();
+    public void mainChartSyncStart(String chainName, String threadName) {
+        threadPool.put(threadName, scheduler.updateMainChartDailySync(chainName, threadName));
+        requestQueuePool.put(threadName, Boolean.FALSE);
+        threadPool.get(threadName).start();
     }
 
 }

@@ -16,12 +16,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Value("${server.name}")
     private String serverName;
 
-    @Value("${block.scheduler.name}")
-    private String blockSchedulerName;
-
-    @Value("${block.scheduler.version}")
-    private String blockSchedulerVersion;
-
     @Value("${limit.block}")
     private Integer limitBlock;
 
@@ -50,8 +44,6 @@ public class ResourceServiceImpl implements ResourceService {
     private void init() {
         logger.info("---------------");
         logger.info("ServerName : {}", serverName);
-        logger.info("SchedulerName : {}", blockSchedulerName);
-        logger.info("SchedulerVersion : {}", blockSchedulerVersion);
         logger.info("limitBlock : {}", limitBlock);
         logger.info("limitTx : {}", limitTransaction);
         logger.info("limitAddress : {}", limitAddress);

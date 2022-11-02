@@ -6,21 +6,22 @@
 package com.dfg.icon.core.v3.scheduler;
 
 import com.dfg.icon.core.common.service.ResourceService;
-import com.dfg.icon.core.dao.icon.TChainInfo;
 import com.dfg.icon.core.dao.icon.TChainState;
 import com.dfg.icon.core.dao.icon.TContract;
 import com.dfg.icon.core.dao.icon.TContractHistory;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.mappers.icon.ContractMapper;
-import com.dfg.icon.core.mappers.icon.TChainInfoMapper;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
 import com.dfg.icon.core.v3.service.V3BlockChainService;
 import com.dfg.icon.core.v3.service.V3ChainInfoService;
-import com.dfg.icon.core.v3.service.V3ChainState;
+import com.dfg.icon.core.v3.service.V3ChainStateService;
 import com.dfg.icon.core.v3.service.V3ContractService;
+import com.dfg.icon.core.v3.service.database.tenant.Channel;
 import com.dfg.icon.core.v3.service.database.tenant.TenantAwareThread;
+import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import com.dfg.icon.util.DateUtil;
+import com.dfg.icon.web.v3.dto.ChainInfo;
 import com.dfg.icon.web.v3.dto.CommonListRes;
 import com.dfg.icon.web.v3.dto.ContractPendingInfo;
 import com.dfg.icon.web.v3.dto.PageReq;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +42,8 @@ import java.util.List;
 public class V3BlockScheduler {
 	private static final Logger logger = LoggerFactory.getLogger(V3BlockScheduler.class);
 	private static final Logger sLogger = LoggerFactory.getLogger("BlockSyncWorkerLogger");
+	private final String block = "block-";
+	private final String mainChart = "mainChart-";
 
 	@Autowired
 	private V3BlockChainAdapter blockChainAdapter;
@@ -54,22 +58,30 @@ public class V3BlockScheduler {
 	private V3ContractService contractService;
 
 	@Autowired
-	private V3ChainState chainState;
+	private V3ChainStateService chainState;
 
 	@Autowired
 	private ContractMapper contractMapper;
 
 	@Autowired
-	V3ChainInfoService chainInfoService;
+	private V3ChainInfoService chainInfoService;
 
+	@Autowired
+	private V3ChainStateService chainStateService;
+
+	@Autowired
+	private Channel channel;
 
 	private boolean isRepJsonUpdate = false;
+
+	private List<ChainInfo> chainInfoList;
+
 
 	@Value("${scheduler.MaxBlockCount}")
 	Integer maxBlockCount ;
 
 	@PostConstruct
-	public void initMain() throws Exception {
+	private void initMain() {
 		sLogger.info("--------------------");
 		sLogger.info("[Main] Init Update : {}", DateUtil.getNowDate());
 		try {
@@ -79,8 +91,10 @@ public class V3BlockScheduler {
 		}
 
 		CommonListRes resList = chainInfoService.selectChainInfoList();
-		for(TChainInfo chainInfo : (List<TChainInfo>)resList){
+		chainInfoList = (List<ChainInfo>) resList.getData();
+		for(ChainInfo chainInfo : chainInfoList){
 			String url = chainInfoService.chainHost(chainInfo.getChainName());
+			TenantContext.setTenant(chainInfo.getChannel());
 			try {
 				PageReq req = new PageReq(100);
 				req.setPage(1);
@@ -99,78 +113,124 @@ public class V3BlockScheduler {
 			} catch (Exception e) {
 				logger.error("[Main] ERROR while obtaining pending contract list: {}", e.getMessage());
 				CommonUtil.printException(logger, "initMain :: {}", e);
+			}finally {
+				TenantContext.clearTenant();
 			}
+
 		}
 	}
 
+	@PostConstruct
+	public void init() {
+		for(ChainInfo chainInfo : chainInfoList){
+			blockSyncStart(chainInfo.getChainName());
+			mainChartDailySyncStart(chainInfo.getChainName());
+		}
+	}
+
+	private void blockSyncStart(String chainName){
+		channel.blockSyncStart(chainName, this.block + chainName);
+	}
+
+	private void mainChartDailySyncStart(String chainName){
+		channel.mainChartSyncStart(chainName, this.mainChart + chainName);
+	}
+
+	@Scheduled(cron = "${block.cron.pattern}")
+	public void updateBlockSync() {
+		for(ChainInfo chainInfo : chainInfoList){
+			channel.putRequest(this.block + chainInfo.getChainName());
+		}
+	}
+
+	@Scheduled(cron = "${maintx.cron.pattern}")
+	public void updateMainChartDailySync() {
+		for(ChainInfo chainInfo : chainInfoList){
+			channel.putRequest(this.mainChart + chainInfo.getChainName());
+		}
+	}
 
 	/**
 	 *  루프체인에서 신규 데이터를 가지고 와서 조회 + 스케쥴러을 이용한 기능 구현 
 	 */
-	public TenantAwareThread updateBlockSync(String url, String chainName) {
+	public TenantAwareThread updateBlockSync(String url, String chainName, String threadName) {
 		return new TenantAwareThread(chainName, () -> {
-			sLogger.info("--------------------");
+			while (!Thread.interrupted()) {
+				if(channel.getRequestState(threadName) == true){
+					//TODO for test
+					sLogger.info("----------- updateBlockSync ---------");
 
-			//TODO refactoring (check version???)
-//		if(!IconCode.SCHEDULER_VER3.getCode().equals(resourceService.getBlockSchedulerVersion())){
-//			return ;
-//		}
+					//TODO refactoring (check version???)
+					//		if(!IconCode.SCHEDULER_VER3.getCode().equals(resourceService.getBlockSchedulerVersion())){
+					//			return ;
+					//		}
+					// 실제 데이터 수집 작업
+					try {
+						// get lastBlock
+						Integer lastHeight = blockChainAdapter.getHeightByBlock(url, null);
+						TChainState state = chainState.selectChainState(threadName.split("-")[1]);
+						if(state == null){
+							chainStateService.insertChainState(chainName, 0);
+							state = chainState.selectChainState(chainName);
+						}
+						int nextHeight = state.getBlockHeight();
+						sLogger.info("[Block] LastBlock : {}", lastHeight);
 
+						// Block 단위로 데이터 입력
+						if( (lastHeight  - nextHeight) > maxBlockCount  ){
+							lastHeight = nextHeight + maxBlockCount ;
+						}
 
-			// 실제 데이터 수집 작업
-			try {
-				// get lastBlock
-				Integer lastHeight = blockChainAdapter.getHeightByBlock(url, null);
-				TChainState state = chainState.selectChainState(chainName);
-				int nextHeight = state.getBlockHeight();
-				sLogger.info("[Block] LastBlock : {}", lastHeight);
+						// Block 단위로 데이터 입력
+						try {
+							blockChainService.blockChainSyncUpdateAllinOne(url, chainName, nextHeight, lastHeight);
+						} catch (Exception e) {
+							CommonUtil.printException(sLogger, "SyncUpdate error : {}", e);
+						}
 
-				// Block 단위로 데이터 입력
-				if( (lastHeight  - nextHeight) > maxBlockCount  ){
-					lastHeight = nextHeight + maxBlockCount ;
+						sLogger.info("[Block] nextHeight : {} , lastHeight : {} ", nextHeight , lastHeight);
+						// block update가 있었던 경우에만. 불필요한 반복과정 생략
+
+						long startTime = System.currentTimeMillis();
+						if(nextHeight <= lastHeight) {
+							// recent 테이블 관련 갯수 정리
+							blockChainService.blockLimit(resourceService.getLimitBlock());
+							sLogger.info("[Block] limit block time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
+							startTime = System.currentTimeMillis();
+							blockChainService.transactionLimit(resourceService.getLimitTx());
+							sLogger.info("[Block] limit transaction time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
+							startTime = System.currentTimeMillis();
+							blockChainService.addressLimit(resourceService.getLimitAddress());
+							sLogger.info("[Block] limit address time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
+							startTime = System.currentTimeMillis();
+							blockChainService.updateMain();
+							sLogger.info("[Block] update main time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
+						}
+
+					} catch(Exception e) {
+						CommonUtil.printException(sLogger, "[Block] Update ERROR : {}", e);
+					} finally {
+						channel.takeRequest(threadName);
+					}
 				}
-
-				// Block 단위로 데이터 입력
-				try {
-					blockChainService.blockChainSyncUpdateAllinOne(url, chainName, nextHeight, lastHeight);
-				} catch (Exception e) {
-					CommonUtil.printException(sLogger, "SyncUpdate error : {}", e);
-				}
-
-				sLogger.info("[Block] nextHeight : {} , lastHeight : {} ", nextHeight , lastHeight);
-				// block update가 있었던 경우에만. 불필요한 반복과정 생략
-
-				long startTime = System.currentTimeMillis();
-				if(nextHeight <= lastHeight) {
-					// recent 테이블 관련 갯수 정리
-					blockChainService.blockLimit(resourceService.getLimitBlock());
-					sLogger.info("[Block] limit block time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
-					startTime = System.currentTimeMillis();
-					blockChainService.transactionLimit(resourceService.getLimitTx());
-					sLogger.info("[Block] limit transaction time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
-					startTime = System.currentTimeMillis();
-					blockChainService.addressLimit(resourceService.getLimitAddress());
-					sLogger.info("[Block] limit address time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
-					startTime = System.currentTimeMillis();
-					blockChainService.updateMain();
-					sLogger.info("[Block] update main time : {} s ", (System.currentTimeMillis() - startTime) / 1000.0f);
-				}
-
-			} catch(Exception e) {
-				CommonUtil.printException(sLogger, "[Block] Update ERROR : {}", e);
 			}
+
 		});
 	}
 
 	//TODO refactoring merge tenantAwareThread
-	public TenantAwareThread updateMainChartDailySync(String url, String chainName) {
-		return new TenantAwareThread(chainName, () -> {
-			sLogger.info("--------------------");
-			try {
-				blockChainService.updateChart();
-				blockChainService.collectBalanceAddress();
-			} catch(Exception e) {
-				sLogger.error("[Main] DailyChart Update ERROR : {}", e.getMessage());
+	public TenantAwareThread updateMainChartDailySync(String chainName, String threadName) {
+		return new TenantAwareThread(threadName, () -> {
+			while (!Thread.interrupted()) {
+				if (channel.getRequestState(threadName) == true) {
+					sLogger.info("---------- updateMainChartDailySync ----------");
+					try {
+						blockChainService.updateChart();
+						blockChainService.collectBalanceAddress();
+					} catch(Exception e) {
+						sLogger.error("[Main] DailyChart Update ERROR : {}", e.getMessage());
+					}
+				}
 			}
 		});
 

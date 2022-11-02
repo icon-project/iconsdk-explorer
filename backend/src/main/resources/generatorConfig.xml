@@ -60,7 +60,7 @@
 <!--        <table tableName="T_TX_RESULT_LOG"/>-->
 <!--        <table tableName="T_INTERNAL_TX"/>-->
 <!--        <table tableName="T_INTERNAL_TX_VIEW"/>-->
-<!--        <table tableName="T_CHAIN_INFO"/>-->
-        <table tableName="T_CHAIN_STATE"/>
+        <table tableName="T_CHAIN_INFO"/>
+<!--        <table tableName="T_CHAIN_STATE"/>-->
     </context>
 </generatorConfiguration>

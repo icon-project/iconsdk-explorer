@@ -239,4 +239,19 @@
       order by ${orderByClause}
     </if>
   </select>
+
+  <select id="chainStateByName" resultType="Integer">
+    <!-- 1을 반환하면 데이터 존재 0을 반환하면 존재안함 -->
+    <![CDATA[
+		 SELECT IF( EXISTS(
+             select
+             	chain_name
+			 from
+			 	T_CHAIN_STATE
+			 where
+			 	chain_name= #{chainName , jdbcType=VARCHAR} ) , 1, 0)
+    	]]>
+
+  </select>
+
 </mapper>
