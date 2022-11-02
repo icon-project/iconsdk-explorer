@@ -116,17 +116,11 @@ public class V3BlockScheduler {
 			}finally {
 				TenantContext.clearTenant();
 			}
-
-		}
-	}
-
-	@PostConstruct
-	public void init() {
-		for(ChainInfo chainInfo : chainInfoList){
 			blockSyncStart(chainInfo.getChainName());
 			mainChartDailySyncStart(chainInfo.getChainName());
 		}
 	}
+
 
 	private void blockSyncStart(String chainName){
 		channel.blockSyncStart(chainName, this.block + chainName);
