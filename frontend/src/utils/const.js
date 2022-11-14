@@ -21,9 +21,16 @@ export const INITIAL_OBJECT_STATE = {
   error: ''
 };
 
+export const INITIAL_OBJECT_ARRAY_STATE = {
+  loading: true,
+  data: [],
+  error: ''
+}
+
 export const INITIAL_STATE = {
   ARR: INITIAL_ARRAY_STATE,
-  OBJ: INITIAL_OBJECT_STATE
+  OBJ: INITIAL_OBJECT_STATE,
+  OBJARR: INITIAL_OBJECT_ARRAY_STATE
 };
 
 export const CONTRACT_STATUS = {

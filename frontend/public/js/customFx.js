@@ -12,6 +12,18 @@ $(document).ready(function() {
         }
     })
 
+    $('.footer-wrap .chain')
+        .mouseenter(function() {
+            $('.footer-wrap .chain ul')
+                .stop()
+                .slideDown(300, 'swing')
+        })
+        .mouseleave(function() {
+            $('.footer-wrap .chain ul')
+                .stop()
+                .slideUp(300, 'swing')
+        })
+
     addMouseInOutListener('.header-wrap ul li, .header-wrap .connect.join')
 })
 

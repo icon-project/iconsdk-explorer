@@ -16,6 +16,7 @@ import TokenListPageContainer from './TokensPage/TokenListPageContainer'
 import TokenDetailPageContainer from './TokensPage/TokenDetailPageContainer'
 
 import HeaderContainer from './CommonPage/HeaderContainer'
+import FooterContainer from "./CommonPage/FooterContainer";
 import NotFoundPageContainer from './CommonPage/NotFoundPageContainer'
 import TxPageContainer from './CommonPage/TxPageContainer'
 
@@ -38,6 +39,7 @@ export {
   TokenDetailPageContainer,
  
   HeaderContainer,
+  FooterContainer,
   NotFoundPageContainer,
   TxPageContainer,
 

@@ -127,6 +127,125 @@
     background: #262626;
     height: 100%;
 }
+.footer-wrap .wrap-holder .selector {
+    position: absolute;
+    float: right;
+    right: 50px;
+    bottom: 0px;
+    height: 52px;
+}
+.footer-wrap .wrap-holder .selector ul {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 13px;
+}
+.footer-wrap .wrap-holder .selector li:not(:first-child) {
+    margin-left: 10px;
+}
+.footer-wrap .wrap-holder .selector li span {
+    width: 26px;
+    height: 26px;
+    display: inline-block;
+}
+.footer-wrap .wrap-holder .selector .icon .img {
+    background-position: 0px -150px;
+}
+.footer-wrap .wrap-holder .selector .medium .img {
+    background-position: -50px -150px;
+}
+.footer-wrap .wrap-holder .selector .brunch .img {
+    background-position: -100px -150px;
+}
+.footer-wrap .wrap-holder .selector .twitter .img {
+    background-position: -150px -150px;
+}
+.footer-wrap .wrap-holder .selector .facebook .img {
+    background-position: -200px -150px;
+}
+.footer-wrap .wrap-holder .selector .github .img {
+    background-position: -250px -150px;
+}
+
+.footer-wrap .wrap-holder .selector .icon .img:hover {
+    background-position: 0px -200px;
+}
+.footer-wrap .wrap-holder .selector .medium .img:hover {
+    background-position: -50px -200px;
+}
+.footer-wrap .wrap-holder .selector .brunch .img:hover {
+    background-position: -100px -200px;
+}
+.footer-wrap .wrap-holder .selector .twitter .img:hover {
+    background-position: -150px -200px;
+}
+.footer-wrap .wrap-holder .selector .facebook .img:hover {
+    background-position: -200px -200px;
+}
+.footer-wrap .wrap-holder .selector .github .img:hover {
+    background-position: -250px -200px;
+}
+
+.footer-wrap .wrap-holder .selector .chain {
+    display: inline-block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    position: relative;
+    margin-left: 60px;
+}
+.footer-wrap .wrap-holder .selector .chain:before {
+    content: '';
+    width: 1px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.2);
+    position: absolute;
+    left: -30px;
+    top: 20px;
+}
+.footer-wrap .wrap-holder .selector .chain p {
+    cursor: pointer;
+}
+.footer-wrap .wrap-holder .selector .chain p:hover {
+    color: #fff;
+}
+.footer-wrap .wrap-holder .selector .chain p:hover .img {
+    background-position: -250px -100px;
+}
+.footer-wrap .wrap-holder .selector .chain .img {
+    background-position: -250px -50px;
+    width: 7px;
+    height: 5px;
+    margin-left: 6px;
+}
+.footer-wrap .wrap-holder .selector .chain ul {
+    font-size: 12px;
+    font-weight: 100;
+    background: #262626;
+    border-radius: 4px;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.15);
+    color: #ccc;
+    bottom: 46px;
+    left: -30px;
+    position: absolute;
+    border: 1px solid #404040;
+    display: none;
+}
+.footer-wrap .wrap-holder .selector .chain ul li {
+    display: block;
+    padding: 7px 24px;
+    margin-left: 0;
+    text-align: center;
+    cursor: pointer;
+}
+.footer-wrap .wrap-holder .selector .chain ul li:hover {
+    color: #1aaaba;
+}
+.footer-wrap .wrap-holder .selector .chain ul li:not(:last-child) {
+    border-bottom: 1px solid #404040;
+}
+.footer-wrap .wrap-holder .selector .chain ul li span {
+    width: auto;
+    height: auto;
+}
 .footer-wrap .wrap-holder .mail {
     position: relative;
     margin-right: 60px;

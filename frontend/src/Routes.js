@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Footer, Popup } from './components/';
-import { HeaderContainer } from './containers/'
+import { Popup } from './components/';
+import { HeaderContainer, FooterContainer } from './containers/'
 import MainPage from './pages/MainPage';
 import AddressListPage from './pages/AddressListPage';
 import AddressDetailPage from './pages/AddressDetailPage';
@@ -112,7 +112,7 @@ class Routes extends Component {
             </div>
             <div className="blank"></div>
           </div>
-          <Footer />
+          <FooterContainer />
           <Popup />
         </div>
       </BodyClassName>

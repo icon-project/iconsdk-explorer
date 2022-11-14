@@ -1,4 +1,4 @@
-import actionTypes from '../actionTypes/actionTypes'
+ import actionTypes from '../actionTypes/actionTypes'
 import {
   getState
 } from 'utils/utils'

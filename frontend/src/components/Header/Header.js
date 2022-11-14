@@ -5,14 +5,34 @@ import { Connect } from 'components'
 import { withRouter } from 'react-router-dom'
 
 class Header extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            chainName: ""
+        };
+    }
+
+    componentWillMount() {
+        this.props.chainInfoList();
+    }
+
     render() {
+        const { loading, data, } = this.props.chainInfos;
+        if(!loading) {
+        	const chainName = localStorage.getItem('chainName');
+        	if(chainName === null || chainName === 'undefined' || chainName === '') {
+        		localStorage.setItem("chainName", data[0].chainName);
+        	}
+        }
+
         return (
             <div className="header-wrap">
                 <div className="wrap-holder">
                     <div className="content">
                         <Link to="/">
                             <div className="logo">
-                                <font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>ICONSDK Explorer</font>
+                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>ICONSDK Explorer</font></p>
+                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>{localStorage.getItem("chainName")}</font></p>
                             </div>
                         </Link>
                         <div className="link">
@@ -48,6 +68,14 @@ class Header extends Component {
                                 </li>
                                 <li
                                     onClick={() => {
+                                        // this.props.history.push('/btps')
+                                        this.props.history.push('/blocks')
+                                    }}
+                                >
+                                    <span>BTP</span>
+                                </li>
+                                <li
+                                    onClick={() => {
                                         this.props.history.push('/transactions')
                                     }}
                                 >
@@ -65,6 +93,14 @@ class Header extends Component {
                                             }}
                                         >
                                             <span>Tokens List</span>
+                                        </li>
+                                        <li
+                                            onClick={() => {
+                                                // this.props.history.push('/nfts')
+                                                this.props.history.push('/tokens')
+                                            }}
+                                        >
+                                            <span>NFT List</span>
                                         </li>
                                         <li
                                             onClick={() => {

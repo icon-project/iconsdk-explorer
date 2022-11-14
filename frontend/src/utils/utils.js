@@ -293,6 +293,54 @@ export function tokenText(name, symbol, address, spanClassName) {
     }
 }
 
+export function getObjectArrayState(step, state, action, dataType) {
+    const { payload } = action
+    switch (step) {
+        case REDUX_STEP.READY:
+            return {
+                ...state,
+                [dataType]: {
+                    ...state[dataType],
+                    loading: true,
+                    error: '',
+                },
+            }
+        case REDUX_STEP.FULFILLED:
+            const { data } = payload
+            return {
+                ...state,
+                [dataType]: {
+                    ...state[dataType],
+                    loading: false,
+                    data: data || [],
+                    error: '',
+                },
+            }
+        case REDUX_STEP.REJECTED:
+            const { error } = action
+            return {
+                ...state,
+                [dataType]: {
+                    ...state[dataType],
+                    loading: false,
+                    data: [],
+                    error: error,
+                },
+            }
+        case REDUX_STEP.INIT:
+            return {
+                ...state,
+                [dataType]: {
+                    loading: false,
+                    data: [],
+                    error: '',
+                },
+            }
+        default:
+            return state
+    }
+}
+
 export function getArrayState(step, state, action, dataType) {
     const { payload } = action
     switch (step) {
@@ -406,6 +454,8 @@ export function getState(type, step, state, action, dataType) {
             return getArrayState(step, state, action, dataType)
         case 'OBJ':
             return getObjectState(step, state, action, dataType)
+        case 'OBJARR':
+            return getObjectArrayState(step, state, action, dataType)
         default:
             return state
     }

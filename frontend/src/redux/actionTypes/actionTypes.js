@@ -141,6 +141,10 @@ const actionTypes = {
   clearWallet: 'CLEAR_WALLET',
   clearWalletSuccess: 'CLEAR_WALLET_SUCCESS',
 
+  chainInfoList: 'CHAIN_INFO_LIST',
+  chainInfoListFulfilled: 'CHAIN_INFO_LIST_FULFILLED',
+  chainInfoListRejected: 'CHAIN_INFO_LIST_REJECTED',
+
 }
 
 export default actionTypes

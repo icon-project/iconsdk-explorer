@@ -9,6 +9,7 @@ import { tokensReducer } from './tokensReducer'
 import { contractsReducer } from './contractsReducer'
 import { popupReducer } from './popupReducer'
 import { storageReducer } from './storageReducer'
+import { chainsReducer } from "./chainsReducer";
 
 const rootReducer = combineReducers({
   mainPage: mainPageReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   contracts: contractsReducer,
   popup: popupReducer,
   storage: storageReducer,
+  chains: chainsReducer,
 });
 
 export default rootReducer;

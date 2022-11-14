@@ -55,6 +55,10 @@ import {
     getBalance
 } from './icx'
 
+import {
+    chainInfoList
+} from './chains'
+
 export {
     getMainInfo,
     getMainChart,
@@ -96,5 +100,8 @@ export {
     getTransaction,
     getBalance,
 
-    getTransactionResultNotSdk
+    getTransactionResultNotSdk,
+
+    chainInfoList
 }
+

@@ -440,7 +440,7 @@ body {
   font-weight: 600;
   z-index: 10;
   background: #00b8cc;
-  height: 60px;
+  height: 80px;
   top: 0;
 }
 .header-wrap .wrap-holder {
@@ -457,7 +457,7 @@ body {
   display: inline-block;
 }
 .header-wrap .logo {
-  width: 200px;
+  width: 300px;
   height: 24px;
   display: inline-block;
   vertical-align: top;
