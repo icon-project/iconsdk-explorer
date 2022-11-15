@@ -53,3 +53,9 @@ yarn-error.log*
 *.zip
 
 .vscode
+frontend/.gitlab-ci.yml
+frontend/build_backup_creation.sh
+frontend/gencfg.py
+frontend/yarn.lock
+frontend/.github/workflows/build.yml
+frontend/.github/workflows/release.yml
