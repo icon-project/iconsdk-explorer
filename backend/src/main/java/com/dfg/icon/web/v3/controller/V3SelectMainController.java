@@ -120,37 +120,6 @@ public class V3SelectMainController {
 		return res;
 	}
 
-	@ApiOperation(value = "실제 유통량" , notes="실 유통량 조회")
-	@ApiResponses(
-			value = {
-					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
-			})
-	@GetMapping(value = "/summary")
-	public SimpleRes mainSummary(@PathVariable String chainName) {
-		TenantContext.setTenant(chainName);
-		SimpleRes res = new SimpleRes();
-
-		try {
-			logger.info("====================");
-			logger.info("icx circulation request : {}");
-
-			MainInfo info = mainService.selectMainSummary();
-			IcxCirculation icx = new IcxCirculation();
-			icx.setIcxCirculation(info.getIcxCirculationy());
-
-			res.setResult("200");
-			res.setDescription("success");
-			res.setData(icx);
-
-		} catch (Exception e) {
-			logger.error("mainChart" , e);
-			res.setError();
-		} finally {
-			TenantContext.clearTenant();
-		}
-		return res;
-	}
-
 	@ApiOperation(value = "tracker version" , notes="get tracker version")
 	@ApiResponses(
 			value = {
