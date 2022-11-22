@@ -20,8 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.web3j.rlp.RlpDecoder;
+import org.web3j.rlp.RlpList;
+import org.web3j.rlp.RlpString;
+import org.web3j.rlp.RlpType;
 
-import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -304,7 +308,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 							}
 							// 2020.09.08 거버넌스 트랜잭션에 대한 이벤트로그 전체 저장하도록 변경
 							// 이벤트로그가 없는 경우 empty list로 나오므로 무관
-							bf = setEventResultLog(i, bf, txResultfactory);
+							bf = setEventResultLog(url, i, bf, txResultfactory);
 
 						} else if(IconCode.SCORE_INSTALL_ADDR.getCode().equals(txToAddr)) {
 							bf.setDelegation(true);
@@ -314,13 +318,13 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 							// 토큰 전송 txType
 							bf.getTransactionList().get(i).setTxType(Byte.parseByte(IconCode.TX_TYPE_TOKEN.getCode()));
 							int bItxCount = bf.getInternalTransactionList().size();
-							bf = setTokenTxEventLog(i, bf, txResultfactory);
+							bf = setTxEventLog(url, i, bf, txResultfactory);
 							int fItxCount = bf.getInternalTransactionList().size();
 							bf.getTransactionList().get(i).setInternalTxCount(fItxCount - bItxCount);
 						}
 					} else {
 						int bItxCount = bf.getInternalTransactionList().size();
-						bf = setTokenTxEventLog(i, bf, txResultfactory);
+						bf = setTxEventLog(url, i, bf, txResultfactory);
 						int fItxCount = bf.getInternalTransactionList().size();
 						bf.getTransactionList().get(i).setInternalTxCount(fItxCount - bItxCount);
 					}
@@ -340,6 +344,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 			if(bf.getTransactionList().get(i).getInternalTxCount() == null) {
 				bf.getTransactionList().get(i).setInternalTxCount(0);
 			}
+
 		}
 
 		bf.getBlockInfo().setAmount(sumAmount);
@@ -657,7 +662,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	 * @return
 	 * @throws Exception
 	 */
-	private BlockFactory setEventResultLog(int i, BlockFactory bf, TxResultFactory trf) throws Exception {
+	private BlockFactory setEventResultLog(String url, int i, BlockFactory bf, TxResultFactory trf) throws Exception {
 
 		String txHash = bf.getTransactionList().get(i).getTxHash();
 		String txToAddr = bf.getTransactionList().get(i).getToAddr();
@@ -669,6 +674,18 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		for(EventLog event : txEventLog) {
 			if(event.getIndexed().size() > 0) {
 				String eventMethod = event.getIndexed().get(0);
+				if(IconCode.SCORE_METHOD_BTP_NETWORK_OPEN.getCode().equals(eventMethod)){
+					JsonObject networkInfo  = blockChainAdapter.getBtpNetworkInfo(url, event.getIndexed().get(2));
+
+					//TODO rlp refactoring
+					TBtpNetwork btpNetwork = new TBtpNetwork();
+					btpNetwork.setNetworkId(networkInfo.get("networkID").getAsString());
+					btpNetwork.setNetworkName(networkInfo.get("networkName").getAsString());
+					btpNetwork.setNetworkTypeId(networkInfo.get("networkTypeID").getAsString());
+					btpNetwork.setNetworkTypeName(networkInfo.get("networkTypeName").getAsString());
+					btpNetwork.setStartHeight(Integer.decode(networkInfo.get("startHeight").getAsString()));
+					bf.getBtpNetworkList().add(btpNetwork);
+				}
 
 				TTxResultLogWithBLOBs resultLog = new TTxResultLogWithBLOBs();
 				resultLog.setTxHash(txHash);
@@ -685,6 +702,38 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return bf;
 	}
 
+	private BlockFactory setBaseEventResultLog(int i, BlockFactory bf, TxResultFactory trf) throws Exception {
+		String txHash = bf.getTransactionList().get(i).getTxHash();
+		Date txCreateDate = bf.getTransactionList().get(i).getCreateDate();
+		int blockHeight = bf.getBlockInfo().getHeight();
+
+		List<EventLog> txEventLog = trf.getEventLogs();
+		int indexCount = 0;
+		for(EventLog event : txEventLog) {
+			if(event.getIndexed().size() > 0) {
+				String eventMethod = event.getIndexed().get(0);
+				String scoreAddress = event.getScoreAddress();
+
+				if(IconCode.SCORE_METHOD_REWARDFUND_TRANSFER.getCode().equals(eventMethod)) { // RewardFundTransferred(str,Address,Address,int)
+					bf.getTransactionList().get(i).setTxType(Byte.parseByte(IconCode.TX_TYPE_ICX.getCode()));
+					List<String> eventData = event.getData();
+					if(eventData != null) {
+						if (eventData.get(1) != null && !bf.getAddressGroup().contains(eventData.get(1))) { // from
+							bf.getAddressGroup().add(eventData.get(1));
+						}
+						if (eventData.get(2) != null && !bf.getAddressGroup().contains(eventData.get(2))) { // to
+							bf.getAddressGroup().add(eventData.get(2));
+						}
+					}
+				}
+				TTxResultLogWithBLOBs resultLog = getTxResultLogForInsert(txHash, eventMethod, scoreAddress, blockHeight, txCreateDate, indexCount, event.toString());
+				bf.getTxResultLogList().add(resultLog);
+			}
+			indexCount++;
+		}
+		return bf;
+	}
+
 	/**
 	 *  EventLog Token/InternalTx 입력 set
 	 * @param i
@@ -693,11 +742,10 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 	 * @return
 	 * @throws Exception
 	 */
-	private BlockFactory setTokenTxEventLog(int i, BlockFactory bf, TxResultFactory trf) throws Exception {
+	private BlockFactory setTxEventLog(String url, int i, BlockFactory bf, TxResultFactory trf) throws Exception {
 
 		String txHash = bf.getTransactionList().get(i).getTxHash();
 		String txFee = trf.getFee();
-//		int txStatus = trf.getStatus();
 		String txToAddr = bf.getTransactionList().get(i).getToAddr();
 		Date txCreateDate = bf.getTransactionList().get(i).getCreateDate();
 		int blockHeight = bf.getBlockInfo().getHeight();
@@ -710,6 +758,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 			if(event.getIndexed().size() > 0) {
 
 				String eventMethod = event.getIndexed().get(0);
+
 
 				TTxResultLogWithBLOBs resultLog = getTxResultLogForInsert(txHash, eventMethod, txToAddr, blockHeight, txCreateDate, indexCount, event.toString());
 				bf.getTxResultLogList().add(resultLog);
@@ -768,6 +817,16 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 							bf.getTokenAddressGroup().add(key2);
 						}
 					} else {/* method가 tokenTransfer인데 score가 IRC2가 아닌경우 */}
+				} else if(IconCode.SCORE_METHOD_BTP_MESSAGE.getCode().equals(eventMethod)){ /* btp message */
+					TBtpHeader btpHeader = addBtpHeader(url, event.getIndexed().get(1), bf);
+					if(btpHeader != null){
+						bf.getBtpHeaderMap().put(event.getIndexed().get(1), btpHeader);
+					}
+
+					bf.getTransactionList().get(i).setBtpHeaderBlockHeight(bf.getBlockInfo().getHeight());
+					bf.getTransactionList().get(i).setBtpHeaderNetworkId(event.getIndexed().get(1));
+					bf.getTransactionList().get(i).setBtpMessageSn(Integer.decode(event.getIndexed().get(2)));
+
 				} else {/* method가 icxTransfer/tokenTransfer 둘 다 아닌 경우 */}
 			}
 			indexCount++;
@@ -775,36 +834,27 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return bf;
 	}
 
-	private BlockFactory setBaseEventResultLog(int i, BlockFactory bf, TxResultFactory trf) throws Exception {
-		String txHash = bf.getTransactionList().get(i).getTxHash();
-		Date txCreateDate = bf.getTransactionList().get(i).getCreateDate();
-		int blockHeight = bf.getBlockInfo().getHeight();
+	private TBtpHeader addBtpHeader(String url, String networkId, BlockFactory bf) throws Exception {
+		TBtpHeader btpHeader = null;
+		if(!bf.getBtpHeaderMap().containsKey(networkId)){
+			String strBtpBlock = blockChainAdapter.getBtpHeader(url, networkId, bf.getBlockInfo().getHeight()+1);
+			RlpList btpBlock = RlpDecoder.decode(Base64.getDecoder().decode(strBtpBlock));
+			List<RlpType> rlpList = ((RlpList)(btpBlock.getValues().get(0))).getValues();
 
-		List<EventLog> txEventLog = trf.getEventLogs();
-		int indexCount = 0;
-		for(EventLog event : txEventLog) {
-			if(event.getIndexed().size() > 0) {
-				String eventMethod = event.getIndexed().get(0);
-				String scoreAddress = event.getScoreAddress();
-
-				if(IconCode.SCORE_METHOD_REWARDFUND_TRANSFER.getCode().equals(eventMethod)) { // RewardFundTransferred(str,Address,Address,int)
-					bf.getTransactionList().get(i).setTxType(Byte.parseByte(IconCode.TX_TYPE_ICX.getCode()));
-					List<String> eventData = event.getData();
-					if(eventData != null) {
-						if (eventData.get(1) != null && !bf.getAddressGroup().contains(eventData.get(1))) { // from
-							bf.getAddressGroup().add(eventData.get(1));
-						}
-						if (eventData.get(2) != null && !bf.getAddressGroup().contains(eventData.get(2))) { // to
-							bf.getAddressGroup().add(eventData.get(2));
-						}
-					}
-				}
-				TTxResultLogWithBLOBs resultLog = getTxResultLogForInsert(txHash, eventMethod, scoreAddress, blockHeight, txCreateDate, indexCount, event.toString());
-				bf.getTxResultLogList().add(resultLog);
-			}
-			indexCount++;
+			//TODO rlp refactoring
+			btpHeader = new TBtpHeader();
+			btpHeader.setBlockHeight(Integer.decode(((RlpString) rlpList.get(0)).asString()));
+			btpHeader.setNetworkId(networkId);
+			btpHeader.setUpdateNumber(((RlpString) rlpList.get(5)).asString());
+			btpHeader.setPrev(((RlpString) rlpList.get(6)).asString());
+			btpHeader.setMessageCnt(Integer.decode(((RlpString) rlpList.get(7)).asString()));
+			btpHeader.setMessageRoot(((RlpString) rlpList.get(8)).asString());
+			btpHeader.setCreateDate(bf.getBlockInfo().getCreateDate());
+			btpHeader.setBtpNetworkNetworkId(networkId);
 		}
-		return bf;
+
+
+		return btpHeader;
 	}
 
 

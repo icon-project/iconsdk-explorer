@@ -39,6 +39,8 @@ public class BlockV3Factory implements BlockFactory{
 	private Set<String> tokenInfoGroup;
 	private List<TInternalTx> internalTxList;
 	private List<TInternalTxView> internalTxViewList;
+	private Map<String, TBtpHeader> btpHeaderMap;
+	private List<TBtpNetwork> btpNetworkList;
 
 	private Set<String> stakeGroup;
 
@@ -80,6 +82,8 @@ public class BlockV3Factory implements BlockFactory{
 		delegateGroup = new HashSet<>();
 		feeDetailList = new ArrayList<>();
 		stakeGroup = new HashSet<>();
+		btpHeaderMap = new HashMap<>();
+		btpNetworkList = new ArrayList<>();
 
 
 		blockObject = resultObject;
@@ -272,6 +276,16 @@ public class BlockV3Factory implements BlockFactory{
 	@Override
 	public List<TFeeDetails> getFeeDetailList() {
 		return feeDetailList;
+	}
+
+	@Override
+	public List<TBtpNetwork> getBtpNetworkList() {
+		return btpNetworkList;
+	}
+
+	@Override
+	public Map<String, TBtpHeader> getBtpHeaderMap() {
+		return btpHeaderMap;
 	}
 
 	@Override

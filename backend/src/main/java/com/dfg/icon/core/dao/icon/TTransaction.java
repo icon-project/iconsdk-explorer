@@ -10,7 +10,7 @@ public class TTransaction extends TTransactionKey {
      *
      * @mbg.generated
      */
-    private Integer height;
+    private Long height;
 
     /**
      *
@@ -92,7 +92,7 @@ public class TTransaction extends TTransactionKey {
      *
      * @mbg.generated
      */
-    public Integer getHeight() {
+    public Long getHeight() {
         return height;
     }
 
@@ -104,7 +104,7 @@ public class TTransaction extends TTransactionKey {
      *
      * @mbg.generated
      */
-    public void setHeight(Integer height) {
+    public void setHeight(Long height) {
         this.height = height;
     }
 

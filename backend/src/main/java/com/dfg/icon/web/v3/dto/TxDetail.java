@@ -58,6 +58,12 @@ public class TxDetail {
 	String targetContractAddr;
 
 	String contractVersion;
+
+	String btpHeaderBlockHeight;
+
+	String btpHeaderNetworkId;
+
+	String btpMessageSn;
 	
 	List<TxDetailTokenTx> tokenTxList ;
 

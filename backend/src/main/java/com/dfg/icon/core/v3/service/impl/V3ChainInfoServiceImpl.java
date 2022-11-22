@@ -51,6 +51,7 @@ public class V3ChainInfoServiceImpl implements V3ChainInfoService {
             //TODO check key
             TChainInfo tChainInfo = new TChainInfo();
             tChainInfo.setChainName(chainInfo.getName());
+            tChainInfo.setTitle(chainInfo.getTitle());
             tChainInfo.setApi(chainInfo.getApi());
             tChainInfo.setVersion(chainInfo.getVersion());
             tChainInfo.setHost(chainInfo.getHost());

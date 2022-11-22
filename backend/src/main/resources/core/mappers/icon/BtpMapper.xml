@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dfg.icon.core.mappers.icon.BtpMapper">
+
+
+
+	<select id="selectBtpNetworkList" resultType="com.dfg.icon.web.v3.dto.BtpNetwork">
+
+		select
+			network_id as networkId,
+			network_type_id as networkTypeId,
+			network_name as networkName,
+			network_type_name as networkTypeName,
+			start_height as startHeight
+		from
+			T_BTP_NETWORK
+		order by start_height desc
+			limit #{page, jdbcType=INTEGER} , 20
+
+	</select>
+
+	<select id="selectCountBtpNetworkList" resultType="java.lang.Integer">
+		select
+			count(*)
+		from
+			T_BTP_NETWORK
+	</select>
+
+
+	<select id="selectBtpHeaderList" resultType="com.dfg.icon.web.v3.dto.BtpHeader">
+
+		select
+			block_height as blockHeight,
+			network_id as networkId,
+			update_number as updateNumber,
+			prev as prev,
+			message_cnt as messageCnt,
+			message_root as mesasgeRoot,
+			create_date as createDate,
+			btp_network_network_id as btpNetworkId
+		from
+			T_BTP_HEADER
+		order by block_height desc
+			limit #{page, jdbcType=INTEGER} , 20
+
+	</select>
+
+	<select id="selectCountBtpHeaderList" resultType="java.lang.Integer">
+		select
+			count(*)
+		from
+			T_BTP_HEADER
+	</select>
+
+	<select id="selectBtpHeaderListByNetworkId" parameterType="java.lang.String" resultType="com.dfg.icon.web.v3.dto.BtpHeader">
+
+		select
+			block_height as blockHeight,
+			network_id as networkId,
+			update_number as updateNumber,
+			prev as prev,
+			message_cnt as messageCnt,
+			message_root as mesasgeRoot,
+			create_date as createDate,
+			btp_network_network_id as btpNetworkId
+		from
+			T_BTP_HEADER
+		where network_id = #{networkId}
+
+	</select>
+
+
+
+	<insert id="insertBtpNetworkArray" parameterType="java.util.List">
+		INSERT INTO T_BTP_NETWORK (
+		network_id,
+		network_type_id,
+		network_name,
+		network_type_name,
+		start_height)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.networkId},
+			#{element.networkTypeId},
+			#{element.networkName},
+			#{element.networkTypeName},
+			#{element.startHeight}
+		</foreach>
+	</insert>
+
+	<insert id="insertBtpHeaderArray" parameterType="java.util.List">
+		INSERT INTO T_BTP_HEADER (
+		block_height,
+		network_id,
+		update_number,
+		prev,
+		message_cnt,
+		message_root,
+		create_date ,
+		btp_network_network_id)
+		VALUES
+		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
+			#{element.blockHeight},
+			#{element.networkId},
+			#{element.updateNumber},
+			#{element.prev},
+			#{element.messageCnt},
+			#{element.messageRoot},
+			#{element.createDate},
+			#{element.btpNetworkNetworkId}
+		</foreach>
+	</insert>
+</mapper>

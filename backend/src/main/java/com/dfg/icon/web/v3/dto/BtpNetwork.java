@@ -4,22 +4,13 @@ import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.Date;
-
 @Data
-public class ChainInfo {
-	
-	String chainName;
-
-    String title;
-
-    String host;
-
-    String api;
-    
-    String channel;
-    
-    String version;
+public class BtpNetwork {
+    String networkId;
+    String networkTypeId;
+    String networkName;
+    String networkTypeName;
+    int startHeight;
 
     @Override
     public String toString() {

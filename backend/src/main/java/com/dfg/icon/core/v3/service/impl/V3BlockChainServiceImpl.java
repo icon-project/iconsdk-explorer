@@ -112,6 +112,12 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	TokenMapper tokenMapper;
 
 	/**
+	 * The BTP mapper.
+	 */
+	@Autowired
+	BtpMapper btpMapper;
+
+	/**
 	 * The Block chain adapter.
 	 */
 	@Autowired
@@ -317,6 +323,7 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 	 * @return
 	 * @throws Exception
 	 */
+	//TODO kbg 여기 insert
 	private int insertBlockFactory(String url, List<BlockFactory> bfList) throws Exception {
 
 		int txCount = getSumBlockTxCount(bfList);
@@ -345,6 +352,8 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 		List<TokenAddressGroupKey> tokenAddressGroupList = new ArrayList<>();
 		List<TBalanceQueue> stakeList = new ArrayList<>();
 		List<TFeeDetails> feeDetailsList = new ArrayList<>();
+		List<TBtpNetwork> btpNetworkList = new ArrayList<>();
+		List<TBtpHeader> btpHeaderList = new ArrayList<>();
 
 		TAddressTotal treasuryTotal = getTreasuryAddressTotal();
 		if(treasuryTotal == null) {
@@ -361,6 +370,11 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 			canceledHistoryList.addAll(bf.getCanceledHistoryList());
 			tokenTxList.addAll(bf.getTokenTxList());
 			txResultLogList.addAll(bf.getTxResultLogList());
+			btpNetworkList.addAll(bf.getBtpNetworkList());
+			for(String networkId : bf.getBtpHeaderMap().keySet()){
+				btpHeaderList.add(bf.getBtpHeaderMap().get(networkId));
+			}
+
 			if(bf.getFeeDetailList() != null) {
 				feeDetailsList.addAll(bf.getFeeDetailList());
 			}
@@ -490,6 +504,34 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 				middleTime = System.currentTimeMillis();
 			}
 		}
+
+		// btp network
+		if(btpNetworkList.size() > 0) {
+			btpMapper.insertBtpNetworkArray(btpNetworkList);
+			if(resourceService.isLogSpeed()) {
+				sLogger.info("[InsertSpeed] insertBtpNetworkArray {}s, {}s",
+						(System.currentTimeMillis() - middleTime )/1000.0f,
+						(System.currentTimeMillis() - startTime )/1000.0f);
+				middleTime = System.currentTimeMillis();
+			}
+		}
+
+		// btp header
+		if(btpHeaderList.size() > 0) {
+			try{
+				btpMapper.insertBtpHeaderArray(btpHeaderList);
+			}catch (Exception e){
+				//TODO kbg exception
+				logger.error(e.getMessage());
+			}
+			if(resourceService.isLogSpeed()) {
+				sLogger.info("[InsertSpeed] btpHeaderList {}s, {}s",
+						(System.currentTimeMillis() - middleTime )/1000.0f,
+						(System.currentTimeMillis() - startTime )/1000.0f);
+				middleTime = System.currentTimeMillis();
+			}
+		}
+
 		if(txList.size() > 0) {
 			transactionMapper.insertTxArray(txList);
 			if (resourceService.isLogSpeed()) {
@@ -633,6 +675,9 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 				middleTime = System.currentTimeMillis();
 			}
 		}
+
+
+
 
 		// accept/reject 되지 못한 transaction's txType to cancel(9)
 		for(TContractHistory history : canceledHistoryList) {
@@ -899,6 +944,9 @@ public class V3BlockChainServiceImpl implements V3BlockChainService {
 				transaction.setStepUsedTx("0");
 				transaction.setStepPrice("0");
 				transaction.setInternalTxCount(0);
+				transaction.setBtpHeaderNetworkId(null);
+				transaction.setBtpHeaderBlockHeight(0);
+				transaction.setBtpMessageSn(0);
 				txList.add(transaction);
 				TTransactionView view = new TTransactionView();
 				view.setTxHash(transaction.getTxHash());

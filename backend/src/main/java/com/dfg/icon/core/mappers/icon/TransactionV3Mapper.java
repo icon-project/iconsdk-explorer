@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 
 public interface TransactionV3Mapper {
 
+
+	List<TxDetailDto> selectTxBtpList(@Param("height") int height, @Param("networkId") String networkId);
 	
 	/** 
 	 * Tx 메인 페이징 조회

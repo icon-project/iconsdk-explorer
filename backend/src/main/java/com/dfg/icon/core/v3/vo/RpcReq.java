@@ -2,6 +2,8 @@ package com.dfg.icon.core.v3.vo;
 
 import com.dfg.icon.core.exception.IconCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -22,6 +24,33 @@ public class RpcReq {
 
     public RpcReq() {
         jsonrpc = "2.0";
+    }
+
+    public void setMethodGetBtpNetworkInfo(String networkId){
+        method = "btp_getNetworkInfo";
+        id = 1234;
+        ParamsBtpIdVo vo = new ParamsBtpIdVo();
+        vo.setId(networkId);
+        this.params = vo;
+    }
+
+    public void setMethodGetBtpHeader(String networkId,Integer height){
+        method = "btp_getHeader";
+        id = 1234;
+        ParamsBtpBlockVo vo = new ParamsBtpBlockVo();
+        vo.setHeight("0x" + Integer.toHexString(height));
+        vo.setNetworkID(networkId);
+        this.params = vo;
+    }
+
+
+    public void setMethodGetBtpMessage(String networkId,Integer height){
+        method = "btp_getMessages";
+        id = 1234;
+        ParamsBtpBlockVo vo = new ParamsBtpBlockVo();
+        vo.setHeight("0x" + Integer.toHexString(height));
+        vo.setNetworkID(networkId);
+        this.params = vo;
     }
 
     public void setMethodLastBlock() {
@@ -113,6 +142,23 @@ public class RpcReq {
         this.params = vo;
     }
 
+    public void setMethodGetPRepInfo(String address) {
+        method = "icx_call";
+        id = 1234;
+
+        ParamIcxCallVo vo = new ParamIcxCallVo();
+        vo.setTo(IconCode.SCORE_INSTALL_ADDR.getCode());
+        vo.setDataType("call");
+
+        ParamIcxCallDataVo dataVo = new ParamIcxCallDataVo();
+        dataVo.setMethod("getPRep");
+        ParamsAddressVo addressVo = new ParamsAddressVo();
+        addressVo.setAddress(address);
+        dataVo.setParams(addressVo);
+
+        vo.setData(dataVo);
+        this.params = vo;
+    }
 
     public void setMethodGetStake(String address) {
         method = "icx_call";
@@ -131,9 +177,32 @@ public class RpcReq {
         this.params = vo;
     }
 
+    public void setMethodGetPRep(String dataMethod, String start, String end) {
+        method = "icx_call";
+        id = 1234;
+
+        ParamIcxCallVo vo = new ParamIcxCallVo();
+        vo.setTo(IconCode.SCORE_INSTALL_ADDR.getCode());
+        vo.setDataType("call");
+
+        ParamIcxCallMethodVo dataVo = new ParamIcxCallMethodVo();
+        dataVo.setMethod(dataMethod);
+        vo.setData(dataVo);
+
+        this.params = vo;
+    }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+//TODO refactoring
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String str = null;
+//        try {
+//            str = objectMapper.writeValueAsString(this);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        return str;
     }
 }

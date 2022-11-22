@@ -46,7 +46,10 @@
 				ifnull(T.amount,'-') as amount,
 				ifnull(T.fee,'-') as fee,
 				ifnull(T.state, 2) as state,
-                T.contract_addr  as targetContractAddr
+                T.contract_addr  as targetContractAddr,
+				ifnull(T.btp_header_block_height, -1) as btpHeaderBlockHeight,
+				ifnull(T.btp_header_network_id,'-') as btpHeaderNetworkId,
+				ifnull(T.btp_message_sn, -1) as btpMessageSn,
 			from (
 				SELECT id, tx_hash
 				FROM T_TRANSACTION_VIEW
@@ -281,7 +284,10 @@
 				T.reported_count as reportedCount,
 				ifnull(T.error_code, '-') as errorCode,
 				ifnull(T.error_msg, '-') as errorMsg,
-				T.contract_addr as targetContractAddr
+				T.contract_addr as targetContractAddr,
+				ifnull(T.btp_header_block_height, -1) as btpHeaderBlockHeight,
+				ifnull(T.btp_header_network_id,'-') as btpHeaderNetworkId,
+				ifnull(T.btp_message_sn, -1) as btpMessageSn
 				<!--  
 				TToken.to_addr as toTokenAddr ,
 				TToken.quantity as quantity ,
@@ -448,7 +454,10 @@
 			amount,
 			state,
 			internal_tx_count internalTxCount,
-			contract_addr contractAddr
+			contract_addr contractAddr,
+			ifnull(btp_header_block_height, -1) as btpHeaderBlockHeight,
+			ifnull(btp_header_network_id,'-') as btpHeaderNetworkId,
+			ifnull(btp_message_sn, -1) as btpMessageSn,
 		FROM
 			T_TRANSACTION_TOTAL
 		WHERE (create_date BETWEEN
@@ -475,4 +484,27 @@
 		(create_date BETWEEN CAST(#{startDate} AS DATETIME) AND CAST(#{endDate} AS DATETIME))
 		group by contract_addr
 	</select>
+
+	<!-- 전체 트랜잭션 정보 조회 -->
+	<select id="selectTxBtpList"
+			resultType="com.dfg.icon.web.v3.dto.TxDetailDto">
+		select
+		tx_hash as txHash ,
+		height as height ,
+		DATE_FORMAT(create_date, "%Y-%m-%d %H:%i:%s") as createDate ,
+		from_addr as fromAddr ,
+		to_addr as toAddr ,
+		ifnull(tx_type , -1) as txType,
+		ifnull(data_type,'-') as dataType,
+		ifnull(amount,'-') as amount,
+		ifnull(fee,'-') as fee,
+		ifnull(state,3) as state,
+		ifnull(btp_header_block_height, -1) as btpHeaderBlockHeight,
+		ifnull(btp_header_network_id,'-') as btpHeaderNetworkId,
+		ifnull(btp_message_sn, -1) as btpMessageSn
+		from
+		T_TRANSACTION_TOTAL
+		where btp_header_block_height = #{height} and btp_header_network_id = #{networkId}
+	</select>
+
 </mapper>

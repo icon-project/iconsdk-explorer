@@ -40,7 +40,10 @@
 				ifnull(data_type,'-') as dataType,
 				ifnull(amount,'-') as amount,
 				ifnull(fee,'-') as fee,
-				ifnull(state,3) as state
+				ifnull(state,3) as state,
+			    ifnull(btp_header_block_height, -1) as btpHeaderBlockHeight,
+				ifnull(btp_header_network_id,'-') as btpHeaderNetworkId,
+				ifnull(btp_message_sn, -1) as btpMessageSn,
 			from
 				T_TRANSACTION_TOTAL
 			where 1=1
@@ -87,22 +90,22 @@
 				ifnull(T.step_used_tx, '-') as stepUsedByTxn,
 				ifnull(T.step_price, '-') as stepPrice,
 				TData.data_body as dataString
-				<!--  
+				<!--
 				TToken.to_addr as toTokenAddr ,
 				TToken.quantity as quantity ,
 				TToken.irc_version as ircVersion
 				-->
-				
+
 			from 
 				T_TRANSACTION_TOTAL as T
 				inner join T_TX_DATA as TData on T.tx_hash = TData.tx_hash
-			
-				<!--  
+
+				<!--
 				LEFT JOIN T_TOKEN_TX as TToken ON T.tx_hash = TToken.tx_hash
 				-->
-			where 
+			where
 				T.tx_hash = #{txHash , jdbcType=VARCHAR}
-		
+
 		</select>
 
 
@@ -155,7 +158,10 @@
 		tx_type,
 		state,
 		internal_tx_count,
-		contract_addr)
+		contract_addr,
+		btp_header_block_height,
+		btp_header_network_id,
+		btp_message_sn)
 		VALUES
 		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
 			#{element.txHash},
@@ -176,7 +182,10 @@
 			#{element.txType} ,
 			#{element.state} ,
 			#{element.internalTxCount} ,
-			#{element.contractAddr}
+			#{element.contractAddr} ,
+			#{element.btpHeaderBlockHeight} ,
+			#{element.btpHeaderNetworkId} ,
+			#{element.btpMessageSn}
 		</foreach>
 	</insert>
 

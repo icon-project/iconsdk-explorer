@@ -202,6 +202,16 @@ public class BlockV2Factory implements BlockFactory{
 	}
 
 	@Override
+	public List<TBtpNetwork> getBtpNetworkList() {
+		return null;
+	}
+
+	@Override
+	public Map<String, TBtpHeader> getBtpHeaderMap() {
+		return null;
+	}
+
+	@Override
 	public boolean isBreak(){
 		return isBreak;
 	}

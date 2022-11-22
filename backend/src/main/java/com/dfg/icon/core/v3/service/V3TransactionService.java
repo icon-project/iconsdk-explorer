@@ -36,4 +36,7 @@ public interface V3TransactionService {
 
 	String selectTxDataImage(String txHash) throws Exception;
 	Long selectCount(String txType) throws Exception;
+
+	CommonListRes selectTxBtp(String networkId, int height) throws Exception;
+
 }

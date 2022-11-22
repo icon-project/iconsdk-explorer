@@ -38,6 +38,12 @@ public class TxDetailDto {
 
 	Integer id;
 
+	String btpHeaderBlockHeight;
+
+	String btpHeaderNetworkId;
+
+	String btpMessageSn;
+
 //	Integer confirmation;
 
 	@Override

@@ -1594,6 +1594,196 @@ public class TTransactionTotalExample {
             addCriterion("reported_count not between", value1, value2, "reportedCount");
             return (Criteria) this;
         }
+
+        public Criteria andBtpHeaderBlockHeightIsNull() {
+            addCriterion("btp_header_block_height is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightIsNotNull() {
+            addCriterion("btp_header_block_height is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightEqualTo(Integer value) {
+            addCriterion("btp_header_block_height =", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightNotEqualTo(Integer value) {
+            addCriterion("btp_header_block_height <>", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightGreaterThan(Integer value) {
+            addCriterion("btp_header_block_height >", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightGreaterThanOrEqualTo(Integer value) {
+            addCriterion("btp_header_block_height >=", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightLessThan(Integer value) {
+            addCriterion("btp_header_block_height <", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightLessThanOrEqualTo(Integer value) {
+            addCriterion("btp_header_block_height <=", value, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightIn(List<Integer> values) {
+            addCriterion("btp_header_block_height in", values, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightNotIn(List<Integer> values) {
+            addCriterion("btp_header_block_height not in", values, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightBetween(Integer value1, Integer value2) {
+            addCriterion("btp_header_block_height between", value1, value2, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderBlockHeightNotBetween(Integer value1, Integer value2) {
+            addCriterion("btp_header_block_height not between", value1, value2, "btpHeaderBlockHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdIsNull() {
+            addCriterion("btp_header_network_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdIsNotNull() {
+            addCriterion("btp_header_network_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdEqualTo(String value) {
+            addCriterion("btp_header_network_id =", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdNotEqualTo(String value) {
+            addCriterion("btp_header_network_id <>", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdGreaterThan(String value) {
+            addCriterion("btp_header_network_id >", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdGreaterThanOrEqualTo(String value) {
+            addCriterion("btp_header_network_id >=", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdLessThan(String value) {
+            addCriterion("btp_header_network_id <", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdLessThanOrEqualTo(String value) {
+            addCriterion("btp_header_network_id <=", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdLike(String value) {
+            addCriterion("btp_header_network_id like", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdNotLike(String value) {
+            addCriterion("btp_header_network_id not like", value, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdIn(List<String> values) {
+            addCriterion("btp_header_network_id in", values, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdNotIn(List<String> values) {
+            addCriterion("btp_header_network_id not in", values, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdBetween(String value1, String value2) {
+            addCriterion("btp_header_network_id between", value1, value2, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpHeaderNetworkIdNotBetween(String value1, String value2) {
+            addCriterion("btp_header_network_id not between", value1, value2, "btpHeaderNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnIsNull() {
+            addCriterion("btp_message_sn is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnIsNotNull() {
+            addCriterion("btp_message_sn is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnEqualTo(Integer value) {
+            addCriterion("btp_message_sn =", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnNotEqualTo(Integer value) {
+            addCriterion("btp_message_sn <>", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnGreaterThan(Integer value) {
+            addCriterion("btp_message_sn >", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnGreaterThanOrEqualTo(Integer value) {
+            addCriterion("btp_message_sn >=", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnLessThan(Integer value) {
+            addCriterion("btp_message_sn <", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnLessThanOrEqualTo(Integer value) {
+            addCriterion("btp_message_sn <=", value, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnIn(List<Integer> values) {
+            addCriterion("btp_message_sn in", values, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnNotIn(List<Integer> values) {
+            addCriterion("btp_message_sn not in", values, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnBetween(Integer value1, Integer value2) {
+            addCriterion("btp_message_sn between", value1, value2, "btpMessageSn");
+            return (Criteria) this;
+        }
+
+        public Criteria andBtpMessageSnNotBetween(Integer value1, Integer value2) {
+            addCriterion("btp_message_sn not between", value1, value2, "btpMessageSn");
+            return (Criteria) this;
+        }
     }
 
     /**

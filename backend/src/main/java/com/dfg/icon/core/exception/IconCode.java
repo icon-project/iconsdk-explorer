@@ -24,6 +24,7 @@ public enum IconCode implements CustomErrorCode {
 	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Invalid Password"),
 	PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "Permission Denied"),
 	BLOCK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Block Error"),
+	BTP_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "BTP Error"),
 	TRANSACTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Transaction Error"),
 	BALANCE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GetBalance Error"),
 	PREP_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Prep Request Errror"),
@@ -96,6 +97,10 @@ public enum IconCode implements CustomErrorCode {
 	/* End - Event Log Method of TX (DataType is base) */
 	SCORE_METHOD_TRANSFER("Transfer(Address,Address,int,bytes)","Transfer method "),
 	SCORE_METHOD_ICXSEND("ICXTransfer(Address,Address,int)","icx send method  "),
+
+	/* BTP Event Log */
+	SCORE_METHOD_BTP_NETWORK_OPEN("BTPNetworkOpened(int,int)","btp network open method  "),
+	SCORE_METHOD_BTP_MESSAGE("BTPMessage(int,int)","btp message method  "),
 
 	SCORE_METHOD_ACCEPT("Accepted(str)", "score deploy accept method"),
 	SCORE_METHOD_REJECT("Rejected(str,str)", "score deploy reject method"),

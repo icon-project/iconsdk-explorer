@@ -7,19 +7,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Date;
 
 @Data
-public class ChainInfo {
-	
-	String chainName;
-
-    String title;
-
-    String host;
-
-    String api;
-    
-    String channel;
-    
-    String version;
+public class BtpHeader {
+    int blockHeight;
+    String networkId;
+    String updateNumber;
+    String prev;
+    int messageCnt;
+    String messageRoot;
+    Date createDate;
+    String btpNetworkId;
 
     @Override
     public String toString() {

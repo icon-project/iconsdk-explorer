@@ -47,4 +47,14 @@ public interface V3BlockChainAdapter {
 
     RpcStakeRes getStake(String url,String address);
 
+
+    JsonObject getBtpNetworkInfo(String url, String networkId) throws Exception;
+
+    String getBtpHeader(String url, String networkId, Integer height) throws Exception;
+
+    String getBtpMessage(String url, String networkId, Integer height) throws Exception;
+
+
+
+
 }

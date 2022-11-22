@@ -262,4 +262,33 @@ public class V3SelectTxController {
 		}
 	}
 
+
+	@ApiOperation(value = "BTP Tx 조회" , notes="btp message가 포함된 tx 조회(tx)")
+	@ApiResponses(
+			value = {
+					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
+			})
+	@GetMapping(value = "/btp")
+	public CommonListRes getBtpTx(@PathVariable String chainName,
+						   @Valid
+						   @RequestParam("height") int height,
+						 @RequestParam("networkId") String networkId
+	) {
+		TenantContext.setTenant(chainName);
+		CommonListRes res = new CommonListRes();
+		try {
+			logger.info("====================");
+			logger.info("btp : height={}, networkId={}", height, networkId);
+			res =  transactionService.selectTxBtp(networkId, height);
+
+		} catch (Exception e) {
+			CommonUtil.printException(logger, "getCount Error : {}" ,e);
+			return null;
+		} finally {
+			TenantContext.clearTenant();
+		}
+		return res;
+	}
+
+
 }

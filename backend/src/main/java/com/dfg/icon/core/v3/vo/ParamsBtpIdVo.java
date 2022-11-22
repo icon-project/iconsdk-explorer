@@ -1,25 +1,14 @@
-package com.dfg.icon.web.v3.dto;
+package com.dfg.icon.core.v3.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.Date;
-
 @Data
-public class ChainInfo {
-	
-	String chainName;
-
-    String title;
-
-    String host;
-
-    String api;
-    
-    String channel;
-    
-    String version;
+public class ParamsBtpIdVo {
+    @JsonProperty("id")
+    String id;
 
     @Override
     public String toString() {

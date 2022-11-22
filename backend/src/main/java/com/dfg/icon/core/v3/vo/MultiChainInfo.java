@@ -13,6 +13,7 @@ public class MultiChainInfo {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ChainInfo {
         private String name;
+        private String title;
         private String host;
         private String api;
         private String channel;

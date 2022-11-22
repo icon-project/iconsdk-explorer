@@ -18,4 +18,5 @@ public interface V0TransactionService {
 	 * @throws Exception
 	 */
 	CommonRes selectTxDetail(PageReq req) throws Exception;
+
 }

@@ -1,5 +1,7 @@
 package com.dfg.icon.core.v3.adapter.impl;
 
+import com.dfg.icon.core.dao.icon.TBtpHeader;
+import com.dfg.icon.core.dao.icon.TBtpNetwork;
 import com.dfg.icon.core.exception.IconCode;
 import com.dfg.icon.core.exception.IconException;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
@@ -120,6 +122,8 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 		}
 	}
 
+
+	//TODO getTransactionResult refactoring ( wait for txResult )
 	public TxResultFactory getTransactionResult(String url,String txHash) throws Exception {
 		RpcReq request = new RpcReq();
 		request.setMethodGetTransactionResult(txHash);
@@ -352,6 +356,87 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 			return null;
 		}
 	}
+
+
+	//TODO refactoring btp method
+	@Override
+	public JsonObject getBtpNetworkInfo(String url, String networkId) throws Exception{
+		try{
+			HttpEntity requestEntity = null;
+			logger.info("[V3 BlockChain] getBtpNetworkInfo. url = {}, networkId = {}", url, networkId);
+			RpcReq request = new RpcReq();
+			request.setMethodGetBtpNetworkInfo(networkId);
+			requestEntity = new HttpEntity(request.toString(), defaultHeader);
+
+			String jsonStr = restTemplate.postForObject(url, requestEntity, String.class);
+
+			JsonObject rootObject =  getRootObject(jsonStr);
+			if(rootObject == null || rootObject.get("result") == null || rootObject.get("result").isJsonNull()) {
+				return null;
+			}
+			return rootObject.get("result").getAsJsonObject();
+		} catch (HttpClientErrorException re) {
+			logger.error("HttpClientError getBtpNetworkInfo. errMsg = [{}]", re.getResponseBodyAsString());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		} catch (Exception re) {
+			re.printStackTrace();
+			logger.error("Exception getBtpNetworkInfo. errMsg = [{}]", re.getMessage());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		}
+	}
+
+	@Override
+	public String getBtpHeader(String url, String networkId, Integer height) throws Exception{
+		try{
+			HttpEntity requestEntity = null;
+			logger.info("[V3 BlockChain] getBtpHeader. url = {}, networkId = {}, height = {}", url, networkId, height);
+			RpcReq request = new RpcReq();
+			request.setMethodGetBtpHeader(networkId, height);
+			requestEntity = new HttpEntity(request.toString(), defaultHeader);
+
+			String jsonStr = restTemplate.postForObject(url, requestEntity, String.class);
+
+			JsonObject rootObject =  getRootObject(jsonStr);
+			if(rootObject == null || rootObject.get("result") == null || rootObject.get("result").isJsonNull()) {
+				return null;
+			}
+			return rootObject.get("result").getAsString();
+		} catch (HttpClientErrorException re) {
+			logger.error("HttpClientError getBtpHeader. errMsg = [{}]", re.getResponseBodyAsString());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		} catch (Exception re) {
+			re.printStackTrace();
+			logger.error("Exception getBtpHeader. errMsg = [{}]", re.getMessage());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		}
+	}
+
+	@Override
+	public String getBtpMessage(String url, String networkId, Integer height) throws Exception{
+		try{
+			HttpEntity requestEntity = null;
+			logger.info("[V3 BlockChain] getBtpMessage. url = {}, networkId = {}", url, networkId);
+			RpcReq request = new RpcReq();
+			request.setMethodGetBtpMessage(networkId, height);
+			requestEntity = new HttpEntity(request.toString(), defaultHeader);
+
+			String jsonStr = restTemplate.postForObject(url, requestEntity, String.class);
+
+			JsonObject rootObject =  getRootObject(jsonStr);
+			if(rootObject == null || rootObject.get("result") == null || rootObject.get("result").isJsonNull()) {
+				return null;
+			}
+			return rootObject.get("result").getAsString();
+		} catch (HttpClientErrorException re) {
+			logger.error("HttpClientError getBtpMessage. errMsg = [{}]", re.getResponseBodyAsString());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		} catch (Exception re) {
+			re.printStackTrace();
+			logger.error("Exception getBtpMessage. errMsg = [{}]", re.getMessage());
+			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());
+		}
+	}
+
 
 	private ResponseEntity<String> sendGet(String url) {
 		try {

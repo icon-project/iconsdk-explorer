@@ -239,4 +239,22 @@ public class V3TransactionServiceImpl implements V3TransactionService {
 		return null;
 	}
 
+	@Override
+	public CommonListRes selectTxBtp(String networkId, int height) throws Exception {
+		CommonListRes res = new CommonListRes();
+
+		List<TxDetailDto> txBtpList = transactionV3Mapper.selectTxBtpList(height, networkId);
+		res.setData(txBtpList);
+
+		if (!txBtpList.isEmpty()) {
+			res.setData(FormatUtil.txDetailV3Format(txBtpList));
+			res.setCode(IconCode.SUCCESS);
+		} else {
+			res.setListSize(0);
+			res.setTotalSize(0);
+			res.setCode(IconCode.NO_DATA);
+		}
+		return res;
+	}
+
 }

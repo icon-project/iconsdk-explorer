@@ -275,52 +275,52 @@ public class TTransactionExample {
             return (Criteria) this;
         }
 
-        public Criteria andHeightEqualTo(Integer value) {
+        public Criteria andHeightEqualTo(Long value) {
             addCriterion("height =", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightNotEqualTo(Integer value) {
+        public Criteria andHeightNotEqualTo(Long value) {
             addCriterion("height <>", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightGreaterThan(Integer value) {
+        public Criteria andHeightGreaterThan(Long value) {
             addCriterion("height >", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightGreaterThanOrEqualTo(Integer value) {
+        public Criteria andHeightGreaterThanOrEqualTo(Long value) {
             addCriterion("height >=", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightLessThan(Integer value) {
+        public Criteria andHeightLessThan(Long value) {
             addCriterion("height <", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightLessThanOrEqualTo(Integer value) {
+        public Criteria andHeightLessThanOrEqualTo(Long value) {
             addCriterion("height <=", value, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightIn(List<Integer> values) {
+        public Criteria andHeightIn(List<Long> values) {
             addCriterion("height in", values, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightNotIn(List<Integer> values) {
+        public Criteria andHeightNotIn(List<Long> values) {
             addCriterion("height not in", values, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightBetween(Integer value1, Integer value2) {
+        public Criteria andHeightBetween(Long value1, Long value2) {
             addCriterion("height between", value1, value2, "height");
             return (Criteria) this;
         }
 
-        public Criteria andHeightNotBetween(Integer value1, Integer value2) {
+        public Criteria andHeightNotBetween(Long value1, Long value2) {
             addCriterion("height not between", value1, value2, "height");
             return (Criteria) this;
         }

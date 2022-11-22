@@ -91,6 +91,10 @@ public interface BlockFactory {
 
 	public List<TFeeDetails> getFeeDetailList();
 
+	public List<TBtpNetwork> getBtpNetworkList();
+
+	public Map<String, TBtpHeader> getBtpHeaderMap();
+
 	/**
 	 * contract deploy tx가 있는 경우 중간 insert를 구분하기 위한 flag
 	 * @return
