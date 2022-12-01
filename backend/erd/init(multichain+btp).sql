@@ -413,6 +413,7 @@ CREATE TABLE IF NOT EXISTS `T_BTP_NETWORK` (
     `network_type_id` char(11) CHARACTER SET latin1 NOT NULL,
     `network_name` char(66) CHARACTER SET latin1 NOT NULL,
     `network_type_name` char(66) CHARACTER SET latin1 NOT NULL,
+    `url` char(66) CHARACTER SET latin1 NOT NULL,
     `start_height` int(11) DEFAULT NULL,
     PRIMARY KEY (`network_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
