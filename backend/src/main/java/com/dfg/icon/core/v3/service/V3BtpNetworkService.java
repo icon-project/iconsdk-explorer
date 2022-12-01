@@ -11,6 +11,6 @@ public interface V3BtpNetworkService {
 
 	CommonListRes getBtpNetworkList(PageReq req);
 
-	CommonRes getBtpNetwork(String networkId);
+	CommonRes getBtpNetwork(String networkId) throws Exception;
 
 }

@@ -128,11 +128,22 @@ public class V3SelectBtpController {
 	@GetMapping(value = "/header/list/networkId")
 	public CommonListRes getBtpHeaderByNetworkId(@PathVariable String chainName,
 								 @Valid
-								 @RequestParam(value = "networkId", required = false) String networkId
+								 @RequestParam(value = "networkId", required = false) String networkId,
+								 @RequestParam(value = "page", required = false) Integer page,
+								 @RequestParam(value = "count", required = false) Integer count
 	) {
 		TenantContext.setTenant(chainName);
 		CommonListRes cRes = new CommonListRes();
 		try {
+
+			logger.info("====================");
+			logger.info("BTP Header : {}", page);
+
+			PageReq req = new PageReq();
+			req.setPage(CommonUtil.changeUnderZero(page) );
+			if(count != null) {
+				req.setCounting(count);
+			}
 
 			if("".equals(networkId)) {
 				networkId = null;
@@ -144,7 +155,7 @@ public class V3SelectBtpController {
 
 			logger.info("====================");
 			logger.info("BTP header list by network id : {}", networkId);
-			cRes = btpHeaderService.getBtpHeaderListByNetworkId(networkId);
+			cRes = btpHeaderService.getBtpHeaderListByNetworkId(networkId, req);
 		} catch (Exception e) {
 			logger.error("blockDetail" , e);
 			cRes.setError();

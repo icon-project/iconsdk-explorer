@@ -8,7 +8,7 @@ public interface V3BtpHeaderService {
 
 	CommonListRes getBtpHeaderList(PageReq req);
 
-	CommonListRes getBtpHeaderListByNetworkId(String networkId);
+	CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req);
 
 	CommonRes getBtpHeader(int height, String networkId);
 

@@ -36,8 +36,9 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
         Integer totalBtpHeader = btpMapper.selectCountBtpHeaderList();
 
         res.setData(headerList);
-        res.setListSize(totalBtpHeader);
         if(headerList != null || headerList.size() >0){
+            res.setListSize(headerList.size());
+            res.setTotalSize(totalBtpHeader);
             res.setCode(IconCode.SUCCESS);
         } else {
             res.setCode(IconCode.NO_DATA);
@@ -46,12 +47,21 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
     }
 
     @Override
-    public CommonListRes getBtpHeaderListByNetworkId(String networkId) {
+    public CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req) {
         CommonListRes res = new CommonListRes();
 
-        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(networkId);
+        int page = (req.getPage() - 1) * req.getCounting();
+
+        req.setPage(page);
+
+        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, networkId);
+
+        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderListByNetworkId(networkId);
+
         res.setData(headerList);
         if(headerList != null || headerList.size() >0){
+            res.setListSize(headerList.size());
+            res.setTotalSize(totalBtpHeader);
             res.setCode(IconCode.SUCCESS);
         } else {
             res.setCode(IconCode.NO_DATA);

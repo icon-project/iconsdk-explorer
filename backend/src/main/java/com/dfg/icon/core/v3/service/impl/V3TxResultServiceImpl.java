@@ -684,6 +684,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 					btpNetwork.setNetworkTypeId(networkInfo.get("networkTypeID").getAsString());
 					btpNetwork.setNetworkTypeName(networkInfo.get("networkTypeName").getAsString());
 					btpNetwork.setStartHeight(Integer.decode(networkInfo.get("startHeight").getAsString()));
+					btpNetwork.setUrl(url);
 					bf.getBtpNetworkList().add(btpNetwork);
 				}
 

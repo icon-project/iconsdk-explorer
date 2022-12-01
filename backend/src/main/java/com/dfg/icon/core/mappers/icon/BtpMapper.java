@@ -20,11 +20,15 @@ public interface BtpMapper {
 
 	Integer selectCountBtpHeaderList();
 
-	List<BtpHeader> selectBtpHeaderListByNetworkId(@Param("networkId") String networkId);
+	List<BtpHeader> selectBtpHeaderListByNetworkId(@Param("page") int page, @Param("networkId") String networkId);
 
 	int insertBtpNetworkArray(List<TBtpNetwork> list);
 
 	int insertBtpHeaderArray(List<TBtpHeader> list);
+
+	Integer selectCountBtpHeaderListByNetworkId(@Param("networkId") String networkId);
+
+
 
 }
 

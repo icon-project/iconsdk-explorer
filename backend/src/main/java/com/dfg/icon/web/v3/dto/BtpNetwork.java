@@ -11,6 +11,7 @@ public class BtpNetwork {
     String networkName;
     String networkTypeName;
     int startHeight;
+    String url;
 
     @Override
     public String toString() {

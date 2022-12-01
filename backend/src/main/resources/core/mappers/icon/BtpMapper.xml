@@ -11,7 +11,8 @@
 			network_type_id as networkTypeId,
 			network_name as networkName,
 			network_type_name as networkTypeName,
-			start_height as startHeight
+			start_height as startHeight,
+		    url
 		from
 			T_BTP_NETWORK
 		order by start_height desc
@@ -52,7 +53,7 @@
 			T_BTP_HEADER
 	</select>
 
-	<select id="selectBtpHeaderListByNetworkId" parameterType="java.lang.String" resultType="com.dfg.icon.web.v3.dto.BtpHeader">
+	<select id="selectBtpHeaderListByNetworkId" resultType="com.dfg.icon.web.v3.dto.BtpHeader">
 
 		select
 			block_height as blockHeight,
@@ -66,7 +67,18 @@
 		from
 			T_BTP_HEADER
 		where network_id = #{networkId}
+		order by block_height desc
+			limit #{page, jdbcType=INTEGER} , 20
 
+	</select>
+
+
+	<select id="selectCountBtpHeaderListByNetworkId" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+			count(*)
+		from
+			T_BTP_HEADER
+		where network_id = #{networkId}
 	</select>
 
 
@@ -77,14 +89,16 @@
 		network_type_id,
 		network_name,
 		network_type_name,
-		start_height)
+		start_height,
+		url)
 		VALUES
 		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
 			#{element.networkId},
 			#{element.networkTypeId},
 			#{element.networkName},
 			#{element.networkTypeName},
-			#{element.startHeight}
+			#{element.startHeight},
+			#{element.url}
 		</foreach>
 	</insert>
 
