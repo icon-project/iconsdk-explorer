@@ -40,7 +40,7 @@ public class V3BtpNetworkServiceImpl implements V3BtpNetworkService {
         req.setPage(page);
 
         // 총 주소 정보 조회
-        List<BtpNetwork> networkList = btpMapper.selectBtpNetworkList(page);
+        List<BtpNetwork> networkList = btpMapper.selectBtpNetworkList(page, req.getCounting());
 
         //전체 주소 갯수 조회
         Integer totalBtpNetwork = btpMapper.selectCountBtpNetworkList();

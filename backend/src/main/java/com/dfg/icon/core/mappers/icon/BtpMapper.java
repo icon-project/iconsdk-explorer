@@ -12,15 +12,15 @@ import java.util.List;
 
 public interface BtpMapper {
 
-	List<BtpNetwork> selectBtpNetworkList(@Param("page") int page);
+	List<BtpNetwork> selectBtpNetworkList(@Param("page") int page, @Param("counting") int counting);
 
 	Integer selectCountBtpNetworkList();
 
-	List<BtpHeader> selectBtpHeaderList(@Param("page") int page);
+	List<BtpHeader> selectBtpHeaderList(@Param("page") int page, @Param("counting") int counting);
 
 	Integer selectCountBtpHeaderList();
 
-	List<BtpHeader> selectBtpHeaderListByNetworkId(@Param("page") int page, @Param("networkId") String networkId);
+	List<BtpHeader> selectBtpHeaderListByNetworkId(@Param("page") int page, @Param("counting") int counting, @Param("networkId") String networkId);
 
 	int insertBtpNetworkArray(List<TBtpNetwork> list);
 

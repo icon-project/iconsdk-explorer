@@ -16,7 +16,7 @@
 		from
 			T_BTP_NETWORK
 		order by start_height desc
-			limit #{page, jdbcType=INTEGER} , 20
+			limit #{page}  , #{counting}
 
 	</select>
 
@@ -42,7 +42,7 @@
 		from
 			T_BTP_HEADER
 		order by block_height desc
-			limit #{page, jdbcType=INTEGER} , 20
+			limit #{page}  , #{counting}
 
 	</select>
 
@@ -68,7 +68,7 @@
 			T_BTP_HEADER
 		where network_id = #{networkId}
 		order by block_height desc
-			limit #{page, jdbcType=INTEGER} , 20
+			limit #{page}  , #{counting}
 
 	</select>
 

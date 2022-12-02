@@ -30,7 +30,7 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
         req.setPage(page);
 
         // 총 주소 정보 조회
-        List<BtpHeader> headerList = btpMapper.selectBtpHeaderList(page);
+        List<BtpHeader> headerList = btpMapper.selectBtpHeaderList(page, req.getCounting());
 
         //전체 주소 갯수 조회
         Integer totalBtpHeader = btpMapper.selectCountBtpHeaderList();
@@ -54,7 +54,7 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
 
         req.setPage(page);
 
-        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, networkId);
+        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, req.getCounting(), networkId);
 
         Integer totalBtpHeader = btpMapper.selectCountBtpHeaderListByNetworkId(networkId);
 
