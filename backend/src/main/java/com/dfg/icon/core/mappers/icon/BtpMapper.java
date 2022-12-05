@@ -16,18 +16,13 @@ public interface BtpMapper {
 
 	Integer selectCountBtpNetworkList();
 
-	List<BtpHeader> selectBtpHeaderList(@Param("page") int page, @Param("counting") int counting);
+	List<BtpHeader> selectBtpHeaderList(@Param("page") int page, @Param("counting") int counting, @Param("networkId") String networkId);
 
-	Integer selectCountBtpHeaderList();
-
-	List<BtpHeader> selectBtpHeaderListByNetworkId(@Param("page") int page, @Param("counting") int counting, @Param("networkId") String networkId);
+	Integer selectCountBtpHeaderList(@Param("networkId") String networkId);
 
 	int insertBtpNetworkArray(List<TBtpNetwork> list);
 
 	int insertBtpHeaderArray(List<TBtpHeader> list);
-
-	Integer selectCountBtpHeaderListByNetworkId(@Param("networkId") String networkId);
-
 
 
 }

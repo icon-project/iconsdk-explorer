@@ -41,47 +41,25 @@
 			btp_network_network_id as btpNetworkId
 		from
 			T_BTP_HEADER
+		where 1=1
+		<if test="networkId != null">
+			and network_id = #{networkId}
+		</if>
 		order by block_height desc
 			limit #{page}  , #{counting}
 
 	</select>
 
-	<select id="selectCountBtpHeaderList" resultType="java.lang.Integer">
+	<select id="selectCountBtpHeaderList" parameterType="java.lang.String" resultType="java.lang.Integer">
 		select
 			count(*)
 		from
 			T_BTP_HEADER
+		where 1=1
+		<if test="networkId != null">
+			and network_id = #{networkId}
+		</if>
 	</select>
-
-	<select id="selectBtpHeaderListByNetworkId" resultType="com.dfg.icon.web.v3.dto.BtpHeader">
-
-		select
-			block_height as blockHeight,
-			network_id as networkId,
-			update_number as updateNumber,
-			prev as prev,
-			message_cnt as messageCnt,
-			message_root as mesasgeRoot,
-			create_date as createDate,
-			btp_network_network_id as btpNetworkId
-		from
-			T_BTP_HEADER
-		where network_id = #{networkId}
-		order by block_height desc
-			limit #{page}  , #{counting}
-
-	</select>
-
-
-	<select id="selectCountBtpHeaderListByNetworkId" parameterType="java.lang.String" resultType="java.lang.Integer">
-		select
-			count(*)
-		from
-			T_BTP_HEADER
-		where network_id = #{networkId}
-	</select>
-
-
 
 	<insert id="insertBtpNetworkArray" parameterType="java.util.List">
 		INSERT INTO T_BTP_NETWORK (

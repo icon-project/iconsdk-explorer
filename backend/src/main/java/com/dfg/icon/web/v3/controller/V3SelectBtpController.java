@@ -50,6 +50,7 @@ public class V3SelectBtpController {
     @GetMapping(value = "/header/list")
     public CommonListRes getBtpHeaderList(@PathVariable String chainName,
 			@Valid
+			@RequestParam(value = "networkId", required = false) String networkId,
     		@RequestParam(value = "page", required = false) Integer page,
     		@RequestParam(value = "count", required = false) Integer count
     		)  {
@@ -66,7 +67,7 @@ public class V3SelectBtpController {
                 req.setCounting(count);
             }
 	
-	        return btpHeaderService.getBtpHeaderList(req) ;
+	        return btpHeaderService.getBtpHeaderList(req, networkId) ;
 	        
 	    	
 			} catch (Exception e) {
@@ -119,51 +120,6 @@ public class V3SelectBtpController {
 		}
 		return cRes;
     }
-
-	@ApiOperation(value = "BTP Header List" , notes="Network ID로 BTP Header List 조회")
-	@ApiResponses(
-			value = {
-					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
-			})
-	@GetMapping(value = "/header/list/networkId")
-	public CommonListRes getBtpHeaderByNetworkId(@PathVariable String chainName,
-								 @Valid
-								 @RequestParam(value = "networkId", required = false) String networkId,
-								 @RequestParam(value = "page", required = false) Integer page,
-								 @RequestParam(value = "count", required = false) Integer count
-	) {
-		TenantContext.setTenant(chainName);
-		CommonListRes cRes = new CommonListRes();
-		try {
-
-			logger.info("====================");
-			logger.info("BTP Header : {}", page);
-
-			PageReq req = new PageReq();
-			req.setPage(CommonUtil.changeUnderZero(page) );
-			if(count != null) {
-				req.setCounting(count);
-			}
-
-			if("".equals(networkId)) {
-				networkId = null;
-			}
-
-			if(networkId == null) {
-				throw new IconException(IconCode.BTP_ERROR);
-			}
-
-			logger.info("====================");
-			logger.info("BTP header list by network id : {}", networkId);
-			cRes = btpHeaderService.getBtpHeaderListByNetworkId(networkId, req);
-		} catch (Exception e) {
-			logger.error("blockDetail" , e);
-			cRes.setError();
-		} finally {
-			TenantContext.clearTenant();
-		}
-		return cRes;
-	}
 
 
 	@ApiOperation(value = "BTP Network List 페이징 조회" , notes="BTP Network list 조회")

@@ -22,7 +22,7 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
     BtpMapper btpMapper;
 
     @Override
-    public CommonListRes getBtpHeaderList(PageReq req) {
+    public CommonListRes getBtpHeaderList(PageReq req, String networkId) {
         CommonListRes res = new CommonListRes();
         //페이징
         int page = (req.getPage() - 1) * req.getCounting();
@@ -30,10 +30,10 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
         req.setPage(page);
 
         // 총 주소 정보 조회
-        List<BtpHeader> headerList = btpMapper.selectBtpHeaderList(page, req.getCounting());
+        List<BtpHeader> headerList = btpMapper.selectBtpHeaderList(page, req.getCounting(), networkId);
 
         //전체 주소 갯수 조회
-        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderList();
+        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderList(networkId);
 
         res.setData(headerList);
         if(headerList != null || headerList.size() >0){
@@ -46,28 +46,28 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
         return res;
     }
 
-    @Override
-    public CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req) {
-        CommonListRes res = new CommonListRes();
-
-        int page = (req.getPage() - 1) * req.getCounting();
-
-        req.setPage(page);
-
-        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, req.getCounting(), networkId);
-
-        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderListByNetworkId(networkId);
-
-        res.setData(headerList);
-        if(headerList != null || headerList.size() >0){
-            res.setListSize(headerList.size());
-            res.setTotalSize(totalBtpHeader);
-            res.setCode(IconCode.SUCCESS);
-        } else {
-            res.setCode(IconCode.NO_DATA);
-        }
-        return res;
-    }
+//    @Override
+//    public CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req) {
+//        CommonListRes res = new CommonListRes();
+//
+//        int page = (req.getPage() - 1) * req.getCounting();
+//
+//        req.setPage(page);
+//
+//        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, req.getCounting(), networkId);
+//
+//        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderListByNetworkId(networkId);
+//
+//        res.setData(headerList);
+//        if(headerList != null || headerList.size() >0){
+//            res.setListSize(headerList.size());
+//            res.setTotalSize(totalBtpHeader);
+//            res.setCode(IconCode.SUCCESS);
+//        } else {
+//            res.setCode(IconCode.NO_DATA);
+//        }
+//        return res;
+//    }
 
     @Override
     public CommonRes getBtpHeader(int height, String networkId) {

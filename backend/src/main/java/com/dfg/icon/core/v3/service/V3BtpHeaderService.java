@@ -6,9 +6,7 @@ import com.dfg.icon.web.v3.dto.PageReq;
 
 public interface V3BtpHeaderService {
 
-	CommonListRes getBtpHeaderList(PageReq req);
-
-	CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req);
+	CommonListRes getBtpHeaderList(PageReq req, String networkId);
 
 	CommonRes getBtpHeader(int height, String networkId);
 
