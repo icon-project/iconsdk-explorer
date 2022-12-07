@@ -10,7 +10,8 @@ class TxBottom extends Component {
       txData,
       goAllTx,
       txType,
-      address
+      address,
+      networks
     } = this.props
 
     const tableClassName =
@@ -29,6 +30,7 @@ class TxBottom extends Component {
         address={address}
         tableClassName={tableClassName}
         noBoxText={noBoxText}
+        networks={networks}
       />
     )
   }

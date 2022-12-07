@@ -89,7 +89,6 @@ export function* contractInfoFunc(action) {
     const payload = yield call(CONTRACT_INFO_API, action.payload);
     if (payload.result === '200' && payload.data !== "NO_DATA") {
       const { depositInfo } = yield call(getScoreStatus, action.payload.addr)
-      console.log("DepositInfo : ", depositInfo);
       payload.data.depositInfo = depositInfo
         yield put({ type: AT.contractInfoFulfilled, payload });
     }

@@ -32,7 +32,7 @@ class Header extends Component {
                         <Link to="/">
                             <div className="logo">
                                 <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>ICONSDK Explorer</font></p>
-                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>{localStorage.getItem("chainName")}</font></p>
+                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>[{localStorage.getItem("chainName")}]</font></p>
                             </div>
                         </Link>
                         <div className="link">
@@ -66,13 +66,27 @@ class Header extends Component {
                                 >
                                     <span>Block</span>
                                 </li>
-                                <li
-                                    onClick={() => {
-                                        // this.props.history.push('/btps')
-                                        this.props.history.push('/blocks')
-                                    }}
-                                >
-                                    <span>BTP</span>
+                                <li>
+                                    <span>
+                                        BTP
+                                        <em className="img" />
+                                    </span>
+                                    <ol className="sub-menu">
+                                        <li
+                                            onClick={() => {
+                                                this.props.history.push('/networks')
+                                            }}
+                                        >
+                                            <span>Networks</span>
+                                        </li>
+                                        <li
+                                            onClick={() => {
+                                                this.props.history.push('/btps')
+                                            }}
+                                        >
+                                            <span>BTPs</span>
+                                        </li>
+                                    </ol>
                                 </li>
                                 <li
                                     onClick={() => {

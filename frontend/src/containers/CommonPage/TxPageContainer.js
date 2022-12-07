@@ -27,6 +27,16 @@ import {
   blockList,
   blockTxList,
 } from '../../redux/actions/blocksActions';
+import {
+  btpList,
+  btpTxList
+  // btpInfo,
+} from "../../redux/actions/btpsActions";
+import {
+  networkList,
+  networkBTPList
+  // networkInfo
+} from "../../redux/actions/networksActions"
 
 function mapStateToProps(state) {
   return {
@@ -47,6 +57,10 @@ function mapStateToProps(state) {
     tokenHolders: state.tokens.tokenHolders,
     transactionEvents: state.transactions.transactionEvents,
     transactionInternalTx: state.transactions.transactionInternalTx,
+    btps: state.btps.btps,
+    btpTx: state.btps.btpTx,
+    networks: state.networks.networks,
+    networkBTPs: state.networks.networkBTPs
   };
 }
 
@@ -68,6 +82,10 @@ function mapDispatchToProps(dispatch) {
     tokenHoldersList: payload => dispatch(tokenHoldersList(payload)),
     transactionEventLogList: payload => dispatch(transactionEventLogList(payload)),
     transactionInternalTxList: payload => dispatch(transactionInternalTxList(payload)),
+    btpList: payload => dispatch(btpList(payload)),
+    btpTxList: payload => dispatch(btpTxList(payload)),
+    networkList: payload => dispatch(networkList(payload)),
+    networkBTPList: payload => dispatch(networkBTPList(payload))
   };
 }
 

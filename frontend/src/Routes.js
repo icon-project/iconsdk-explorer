@@ -9,6 +9,10 @@ import ContractDetailPage from './pages/ContractDetailPage'
 import ContractListPage from './pages/ContractListPage'
 import BlockListPage from './pages/BlockListPage';
 import BlockDetailPage from './pages/BlockDetailPage';
+import BTPListPage from "./pages/BTPListPage";
+import BTPDetailPage from "./pages/BTPDetailPage";
+import NetworkListPage from "./pages/NetworkListPage";
+import NetworkDetailPage from "./pages/NetworkDetailPage";
 import TransactionListPage from './pages/TransactionListPage';
 import TransactionDetailPage from './pages/TransactionDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -18,6 +22,7 @@ import TxPage from './pages/TxPage'
 import { TX_TYPE, SEARCH_TYPE } from './utils/const'
 import { getIsSolo } from './utils/utils'
 import BodyClassName from 'react-body-classname'
+
 
 class Routes extends Component {
   constructor(props) {
@@ -60,6 +65,20 @@ class Routes extends Component {
                 <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.CONTRACTS}/:pageId`} component={ContractListPage} />
                 <Route onEnter={window.scroll(0, 0)} path='/contract/:contractId' component={ContractDetailPage} exact />
 
+                {/*BTP*/}
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.BTPS}`} component={BTPListPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.BTPS}/:pageId`} component={BTPListPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path='/btp/:btpId/:networkId' component={BTPDetailPage} exact />
+
+                {/*NETWORK*/}
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NETWORKS}`} component={NetworkListPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NETWORKS}/:pageId`} component={NetworkListPage} />
+                <Route onEnter={window.scroll(0, 0)} path='/network/:networkId' component={NetworkDetailPage} exact />
+
+                {/*NETWORK BTPs*/}
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NETWORK_BTPS}/:networkId`} component={TxPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NETWORK_BTPS}/:networkId/:pageId`} component={TxPage} />
+
                 <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.TOKENS}`} component={TokenListPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.TOKENS}/:pageId`} component={TokenListPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path='/token/:tokenId' component={TokenDetailPage} exact />
@@ -69,9 +88,6 @@ class Routes extends Component {
 
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_TX}/:addressId/`} component={TxPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_TX}/:addressId/:pageId`} component={TxPage} />
-
-                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_VOTED}/:addressId/`} component={TxPage} exact />
-                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_VOTED}/:addressId/:pageId`} component={TxPage} />
 
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_INTERNAL_TX}/:addressId/`} component={TxPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESS_INTERNAL_TX}/:addressId/:pageId`} component={TxPage} />

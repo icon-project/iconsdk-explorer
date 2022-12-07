@@ -59,6 +59,18 @@ import {
     chainInfoList
 } from './chains'
 
+import {
+    btpList,
+    btpInfo,
+    btpTxList
+} from './btp'
+
+import {
+    networkList,
+    networkInfo,
+    networkBTPList
+} from "./network";
+
 export {
     getMainInfo,
     getMainChart,
@@ -102,6 +114,13 @@ export {
 
     getTransactionResultNotSdk,
 
-    chainInfoList
-}
+    chainInfoList,
 
+    btpList,
+    btpInfo,
+    btpTxList,
+
+    networkList,
+    networkInfo,
+    networkBTPList
+}

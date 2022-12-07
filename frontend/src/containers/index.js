@@ -9,6 +9,12 @@ import ContractListPageContainer from './ContractsPage/ContractListPageContainer
 import BlockListPageContainer from './BlocksPage/BlockListPageContainer'
 import BlockDetailPageContainer from './BlocksPage/BlockDetailPageContainer'
 
+import BTPListPageContainer from "./BTPsPage/BTPListPageContainer";
+import BTPDetailPageContainer from "./BTPsPage/BTPDetailPageContainer";
+
+import NetworkListPageContainer from "./NetworksPage/NetworkListPageContainer";
+import NetworkDetailPageContainer from "./NetworksPage/NetworkDetailPageContainer";
+
 import TransactionListPageContainer from './TransactionsPage/TransactionListPageContainer'
 import TransactionDetailPageContainer from './TransactionsPage/TransactionDetailPageContainer'
 
@@ -31,6 +37,12 @@ export {
 
   BlockListPageContainer,
   BlockDetailPageContainer,
+
+  BTPListPageContainer,
+  BTPDetailPageContainer,
+
+  NetworkListPageContainer,
+  NetworkDetailPageContainer,
   
   TransactionListPageContainer,
   TransactionDetailPageContainer,

@@ -62,6 +62,7 @@ class TxPage extends Component {
             page: isNumeric(page) ? page : 1,
             count: isNumeric(count) ? count : 25,
         }
+
         switch (this.txType) {
             case TX_TYPE.CONTRACT_TX:
             case TX_TYPE.CONTRACT_INTERNAL_TX:
@@ -71,6 +72,8 @@ class TxPage extends Component {
             case TX_TYPE.ADDRESS_TX:
             case TX_TYPE.ADDRESS_INTERNAL_TX:
             case TX_TYPE.ADDRESS_TOKEN_TX:
+                query.address = urlIndex
+                break
             case TX_TYPE.BLOCK_TX:
                 query.height = urlIndex
                 break
@@ -80,6 +83,8 @@ class TxPage extends Component {
                 query.contractAddr = urlIndex
                 break
             case TX_TYPE.BLOCKS:
+            case TX_TYPE.BTPS:
+            case TX_TYPE.NETWORKS:
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
@@ -88,7 +93,10 @@ class TxPage extends Component {
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
                 query.txHash = urlIndex
                 break
-
+            case TX_TYPE.NETWORK_BTPS:
+                query.networkId = urlIndex
+                break
+            // case TX_TYPE.BTP_NETWORKS:
             default:
         }
         this._getTxList(query)
@@ -108,6 +116,7 @@ class TxPage extends Component {
         const { pathname } = url
         this.txType = pathname.split('/')[1] || ''
         this._getTxList = this.props[this.getTxTypeData()['getTxList']] || (() => {})
+
         switch (this.txType) {
             case TX_TYPE.CONTRACT_TX:
             case TX_TYPE.CONTRACT_INTERNAL_TX:
@@ -121,13 +130,26 @@ class TxPage extends Component {
             case TX_TYPE.TOKEN_HOLDERS:
             case TX_TYPE.TRANSACTION_EVENTS:
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
+                this.urlIndex = pathname.split('/')[2] || ''
+                this.pageId = pathname.split('/')[3] || 1
+                break
+            case TX_TYPE.NETWORK_BTPS:
+                this.props.networkList({page: 1, count: 50});
+                this.urlIndex = pathname.split('/')[2] || ''
+                this.pageId = pathname.split('/')[3] || 1
+                break
             case TX_TYPE.BLOCKS:
+            case TX_TYPE.NETWORKS:
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
                 this.pageId = pathname.split('/')[2] || 1
                 break
-
+            case TX_TYPE.BTPS:
+                this.props.networkList({page: 1, count: 50});
+                this.pageId = pathname.split('/')[2] || 1
+                break
+            // case TX_TYPE.BTP_NETWORKS:
             default:
         }
     }
@@ -152,17 +174,22 @@ class TxPage extends Component {
             case TX_TYPE.ADDRESS_INTERNAL_TX:
             case TX_TYPE.ADDRESS_TOKEN_TX:
             case TX_TYPE.BLOCK_TX:
+            case TX_TYPE.NETWORK_BTPS:
             case TX_TYPE.TOKEN_TX:
             case TX_TYPE.TOKEN_HOLDERS:
             case TX_TYPE.TRANSACTION_EVENTS:
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
+                url = this.makeUrl(page, count, this.urlIndex)
+                break
             case TX_TYPE.BLOCKS:
+            case TX_TYPE.BTPS:
+            case TX_TYPE.NETWORKS:
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
                 url = this.makeUrl(page, count)
                 break
-
+            // case TX_TYPE.BTP_NETWORKS:
             default:
                 return
         }
@@ -182,7 +209,6 @@ class TxPage extends Component {
         if (count) {
             url += `?count=${count}`
         }
-
         return url
     }
 
@@ -190,7 +216,13 @@ class TxPage extends Component {
         const tx = this.props[this.getTxTypeData()['tx']] || {}
         const className = this.getTxTypeData()['className'] || ''
         const noBoxText = this.getTxTypeData()['noBoxText'] || ''
-        const { loading, page, count, data, listSize, totalSize } = tx
+        // const { loading, page, count, data, listSize, totalSize } = tx
+        const { loading, page, count, data, totalSize } = tx
+        let { listSize } = tx
+
+        if(this.txType === TX_TYPE.NETWORKS || this.txType === TX_TYPE.BTPS || this.txType === TX_TYPE.NETWORK_BTPS) {
+            listSize = totalSize
+        }
         const noData = !(data && data.length !== 0)
         const TableContent = () => {
             if (noData) {
@@ -200,18 +232,18 @@ class TxPage extends Component {
                     <div className="table-box" key="table">
                         <table className={className}>
                             <thead>
-                                <TxTableHead txType={this.txType} />
+                            <TxTableHead txType={this.txType} />
                             </thead>
                             <tbody>
-                                {data.map((item, index) => {
-                                    if(TX_TYPE.CONTRACT_EVENTS === this.txType) {
-                                        if (item.method !== null && item.method.length > 30) {
-                                            const words = item.method.split('(');
-                                            item.method = words[0] + '\n(' + words[1];
-                                        }
+                            {data.map((item, index) => {
+                                if(TX_TYPE.CONTRACT_EVENTS === this.txType) {
+                                    if (item.method !== null && item.method.length > 30) {
+                                        const words = item.method.split('(');
+                                        item.method = words[0] + '\n(' + words[1];
                                     }
-                                    return <TxTableBody key={index} data={item} txType={this.txType} address={this.urlIndex}/>
-                                })}
+                                }
+                                return <TxTableBody key={index} data={item} txType={this.txType} address={this.urlIndex} networks={this.props.networks}/>
+                            })}
                             </tbody>
                         </table>
                     </div>,
@@ -266,3 +298,4 @@ class TxPage extends Component {
 }
 
 export default withRouter(TxPage)
+

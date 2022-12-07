@@ -163,6 +163,36 @@ class TxPageTitle extends Component {
                             </span>
                         </p>
                     )
+                case TX_TYPE.BTPS:
+                    return (
+                        <p className="title token">
+                            BTPs
+                            <span />
+                            <span className="right">
+                                A total of<em>{_totalSize}</em> total btp(s) found<em className="gray">(Showing the last {_listSize} record(s) only)</em>
+                            </span>
+                        </p>
+                    )
+                case TX_TYPE.NETWORKS:
+                    return (
+                        <p className="title token">
+                            Networks
+                            <span />
+                            <span className="right">
+                                A total of<em>{_listSize}</em> total network(s) found<em className="gray">(Showing the last {_listSize} record(s) only)</em>
+                            </span>
+                        </p>
+                    )
+                case TX_TYPE.NETWORK_BTPS:
+                    return (
+                        <p className="title">
+                            BTPs
+                            <span>for Network ID {urlIndex}</span>
+                            <span className="right">
+                                A total of<em>{_listSize}</em> btp block(s) found
+                            </span>
+                        </p>
+                    )
                 default:
                     return <p />
             }

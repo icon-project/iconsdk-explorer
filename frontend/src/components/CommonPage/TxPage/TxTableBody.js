@@ -10,9 +10,11 @@ import {
 import {
 	TransactionLink,
 	BlockLink,
+	BTPLink,
 	AddressCell,
 	AddressSet,
-	AmountCell
+	AmountCell,
+	NetworkLink
 } from 'components'
 import {
 	TX_TYPE,
@@ -63,18 +65,45 @@ const BlockCell = ({ height }) => {
 	return <td className="on"><BlockLink to={height} label={numberWithCommas(height)} /></td>
 }
 
+const BTPCell = ({ height, networkId }) => {
+	return <td className="on"><BTPLink to={height} networkId={networkId} label={numberWithCommas(height)} /></td>
+}
+
+const NetworkCell = ({ networkId }) => {
+	return <td className="on"><NetworkLink to={networkId} label={networkId} /></td>
+}
+
+const getNetworkName = (networks, networkId) => {
+	return networks.map(network => {
+		if(network.networkId === networkId){
+			return network.networkName;
+		}
+		return null;
+	});
+}
+
+const getNetworkType = (networks, btpNetworkNetworkId) => {
+	return networks.map(network => {
+		if (network.networkTypeId === btpNetworkNetworkId) {
+			return network.networkTypeName;
+		}
+		return null;
+	});
+}
+
 class TxTableBody extends Component {
+
 	render() {
 		const TableRow = (_props) => {
 			const {
 				txType,
 				data,
-				address
+				address,
+				networks
 			} = this.props
-			
+
 			const addressInData = data.address
 			const isError = data.state === 0
-
 			switch (txType) {
 				case TX_TYPE.ADDRESS_TX:
 					return (
@@ -200,6 +229,44 @@ class TxTableBody extends Component {
 							<td><BlockLink label={data.hash} to={data.height} ellipsis /></td>
 							<AmountCell amount={data.amount} symbol="ICX" />
 							<AmountCell amount={data.fee} symbol="ICX" />
+						</tr>
+					)
+				case TX_TYPE.BTPS:
+					return (
+						<tr>
+							<BTPCell height={data.blockHeight} networkId={data.networkId} />
+							<td>{getNetworkType(networks.data, data.btpNetworkId)}</td>
+							<td>{getNetworkName(networks.data, data.networkId)}</td>
+							<DateCell date={data.createDate} />
+							<td>{data.messageCnt}</td>
+						</tr>
+					)
+				// TODO view btp message
+				case TX_TYPE.BTP_TX:
+					return (
+						<tr>
+							<td>{data.btpMessageSn}</td>
+							<TxHashCell isError={isError} txHash={data.txHash} />
+							<td>message View Button</td>
+						</tr>
+					)
+				case TX_TYPE.NETWORKS:
+					return (
+						<tr>
+							<NetworkCell networkId={data.networkId} />
+							<td>{data.networkTypeName}</td>
+							<td>{data.networkName}</td>
+							<td>{data.startHeight}</td>
+						</tr>
+					)
+				case TX_TYPE.NETWORK_BTPS:
+					return (
+						<tr>
+							<BTPCell height={data.blockHeight} networkId={data.networkId} />
+							<td>{getNetworkType(networks.data, data.btpNetworkId)}</td>
+							<td>{getNetworkName(networks.data, data.networkId)}</td>
+							<DateCell date={data.createDate} />
+							<td>{data.messageCnt}</td>
 						</tr>
 					)
 				case TX_TYPE.CONTRACT_EVENTS:

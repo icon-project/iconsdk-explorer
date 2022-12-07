@@ -10,6 +10,8 @@ import { contractsReducer } from './contractsReducer'
 import { popupReducer } from './popupReducer'
 import { storageReducer } from './storageReducer'
 import { chainsReducer } from "./chainsReducer";
+import { btpsReducer } from "./btpsReducer";
+import { networksReducer } from "./networksReducer";
 
 const rootReducer = combineReducers({
   mainPage: mainPageReducer,
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
   popup: popupReducer,
   storage: storageReducer,
   chains: chainsReducer,
+  btps: btpsReducer,
+  networks: networksReducer
 });
 
 export default rootReducer;

@@ -154,6 +154,43 @@ class TxTableHead extends Component {
                             <th>TxFee</th>
                         </tr>
                     )
+                case TX_TYPE.BTPS:
+                    return (
+                        <tr>
+                            <th>Block</th>
+                            <th>Network Type</th>
+                            <th>Network</th>
+                            <th>Age</th>
+                            <th>No of Msgs</th>
+                        </tr>
+                    )
+                case TX_TYPE.BTP_TX:
+                    return (
+                        <tr>
+                            <th>Seq</th>
+                            <th>TxHash</th>
+                            <th>Message</th>
+                        </tr>
+                    )
+                case TX_TYPE.NETWORKS:
+                    return (
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Start Height(src)</th>
+                        </tr>
+                    )
+                case TX_TYPE.NETWORK_BTPS:
+                    return (
+                        <tr>
+                            <th>Block</th>
+                            <th>Network Type</th>
+                            <th>Network</th>
+                            <th>Age</th>
+                            <th>No of Msgs</th>
+                        </tr>
+                    )
                 case TX_TYPE.CONTRACT_EVENTS:
                     return (
                         <tr>

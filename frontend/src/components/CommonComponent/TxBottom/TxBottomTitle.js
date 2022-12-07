@@ -18,7 +18,7 @@ class TxPageTitle extends Component {
             totalSize,
             goAllTx,
             fromAddr,
-            toAddr
+            toAddr,
         } = this.props
 
         const Content = () => {
@@ -27,6 +27,7 @@ class TxPageTitle extends Component {
             const listSizeUnder10 = (listSizeNum || 0) < 10 ? listSizeNum : 10
             const _listSize = numberWithCommas(listSizeNum)
             const _totalSize = numberWithCommas(totalSizeNum)
+
             switch (txType) {
                 case TX_TYPE.CONTRACT_TX:
                     return (
@@ -107,6 +108,19 @@ class TxPageTitle extends Component {
                                 <em className="mint" onClick={goAllTx}>{_listSize} transaction(s)</em>
                             </span>
                         </p>
+                    )
+                case TX_TYPE.NETWORK_BTPS:
+                    return (
+                        <p className="txt">
+                            <span>
+                                Latest<em>{listSizeUnder10}</em> BTP Block(s) from a total of
+                                <em className="mint" onClick={goAllTx}>{_totalSize} btp block(s)</em>
+                            </span>
+                        </p>
+                    )
+                case TX_TYPE.BTP_TX:
+                    return (
+                        <p></p>
                     )
                 case TX_TYPE.TOKEN_TX:
                     return (

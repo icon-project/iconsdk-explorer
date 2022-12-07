@@ -7,9 +7,6 @@ const chainInfo = () => {
 }
 
 export async function contractList(payload) {
-  console.log("CONTRACT INFO");
-  console.log("PAYLOAD: ", payload);
-  console.log("URL", makeUrl('/v3/' + chainInfo() + '/contract/list', payload));
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/list', payload))
@@ -23,9 +20,6 @@ export async function contractList(payload) {
 }
 
 export async function contractInfo(payload) {
-  console.log("CONTRACT INFO");
-  console.log("PAYLOAD: ", payload);
-  console.log("URL", makeUrl('/v3/' + chainInfo() + '/contract/info', payload));
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/info', payload))

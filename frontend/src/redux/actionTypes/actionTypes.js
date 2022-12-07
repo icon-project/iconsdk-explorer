@@ -145,6 +145,29 @@ const actionTypes = {
   chainInfoListFulfilled: 'CHAIN_INFO_LIST_FULFILLED',
   chainInfoListRejected: 'CHAIN_INFO_LIST_REJECTED',
 
+  btpList: 'BTP_LIST',
+  btpListFulfilled: 'BTP_LIST_FULFILLED',
+  btpListRejected: 'BTP_LIST_REJECTED',
+
+  btpInfo: 'BTP_INFO',
+  btpInfoFulfilled: 'BTP_INFO_FULFILLED',
+  btpInfoRejected: 'BTP_INFO_REJECTED',
+
+  btpTxList: 'BTP_TX_LIST',
+  btpTxListFulfilled: 'BTP_TX_LIST_FULFILLED',
+  btpTxListRejected: 'BTP_TX_LIST_REJECTED',
+
+  networkList: 'NETWORK_LIST',
+  networkListFulfilled: 'NETWORK_LIST_FULFILLED',
+  networkListRejected: 'NETWORK_LIST_REJECTED',
+
+  networkInfo: 'NETWORK_INFO',
+  networkInfoFulfilled: 'NETWORK_INFO_FULFILLED',
+  networkInfoRejected: 'NETWORK_INFO_REJECTED',
+
+  networkBTPList: 'NETWORK_BTP_LIST',
+  networkBTPListFulfilled: 'NETWORK_BTP_LIST_FULFILLED',
+  networkBTPListRejected: 'NETWORK_BTP_LIST_REJECTED',
 }
 
 export default actionTypes

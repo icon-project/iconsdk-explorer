@@ -10,6 +10,12 @@ import AddressDetailPage from './AddressesPage/AddressDetailPage'
 import BlockListPage from './BlocksPage/BlockListPage'
 import BlockDetailPage from './BlocksPage/BlockDetailPage'
 
+import BTPListPage from "./BTPsPage/BTPListPage";
+import BTPDetailPage from "./BTPsPage/BTPDetailPage";
+
+import NetworkListPage from "./NetworksPage/NetworkListPage";
+import NetworkDetailPage from "./NetworksPage/NetworkDetailPage";
+
 import ContractListPage from './ContractsPage/ContractListPage'
 import ContractDetailPage from './ContractsPage/ContractDetailPage'
 import ContractRead from './ContractsPage/ContractDetailPage/ContractTabs/ContractRead'
@@ -27,6 +33,7 @@ import Popup from './Popup'
 
 import AddressLink from './CommonComponent/Link/AddressLink'
 import BlockLink from './CommonComponent/Link/BlockLink'
+import BTPLink from "./CommonComponent/Link/BTPLink";
 import TransactionLink from './CommonComponent/Link/TransactionLink'
 import TokenLink from './CommonComponent/Link/TokenLink'
 
@@ -42,6 +49,7 @@ import QrCodeComponent from './CommonComponent/QrCode/QrCodeComponent'
 import AddressCell from './CommonComponent/AddressCell'
 import AddressSet from './CommonComponent/AddressSet'
 import AmountCell from './CommonComponent/AmountCell'
+import NetworkLink from "./CommonComponent/Link/NetworkLink";
 
 import TxBottom from './CommonComponent/TxBottom'
 import TabTable from './CommonComponent/TabTable'
@@ -70,6 +78,12 @@ export {
   BlockListPage,
   BlockDetailPage,
 
+  BTPListPage,
+  BTPDetailPage,
+
+  NetworkListPage,
+  NetworkDetailPage,
+
   ContractListPage,
   ContractDetailPage,
   ContractRead,
@@ -87,8 +101,10 @@ export {
 
   AddressLink,
   BlockLink,
+  BTPLink,
   TransactionLink,
   TokenLink,
+  NetworkLink,
 
   LoadingComponent,
   Pagination,

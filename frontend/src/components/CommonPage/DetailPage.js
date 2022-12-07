@@ -43,10 +43,16 @@ class DetailPage extends Component {
     }
 
     setInitialData = (url) => {
-        const query = url.pathname.split("/")[2]
+        const urlPath = url.pathname.split("/");
+        const query = urlPath[2]
+        const param = urlPath[3]
         if (query) {
             const { TABS } = this.props
-            this.props.getInfo(query)
+            if(param) {
+                this.props.getInfo(query, param)
+            } else {
+                this.props.getInfo(query)
+            }
             this.setTab(findTabIndex(TABS, url.hash), query)
         }
     }
@@ -62,8 +68,13 @@ class DetailPage extends Component {
 
     setList = (getListFunc, query) => {
         const _query = query ? query : this.props.url.pathname.split("/")[2]
+        const param = this.props.url.pathname.split("/")[3]
         if (typeof getListFunc === 'function') {
-            getListFunc(_query)
+            if(param) {
+                getListFunc(_query, param)
+            } else {
+                getListFunc(_query)
+            }
         }
     }
 

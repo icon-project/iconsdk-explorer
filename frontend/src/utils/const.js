@@ -82,6 +82,8 @@ export const CONTRACT_TABS = [
   'Events'
 ];
 export const BLOCK_TABS = ['Transactions'];
+export const BTP_TABS = ['BTP Messages'];
+export const NETWORK_TABS = ['BTPs'];
 export const TOKEN_TABS = ['Token Transfers', 'Token Holders', 'Read Contract'];
 export const TRANSACTION_TABS = ['Internal Transactions', 'Events'];
 
@@ -135,6 +137,11 @@ export const TX_TYPE = {
   TOKEN_TX: 'tokentx',
   ADDRESSES: 'addresses',
   BLOCKS: 'blocks',
+  BTPS: 'btps',
+  BTP_TX: 'btptx',
+  BTP_NETWORKS: 'btpNetworks',
+  NETWORKS: 'networks',
+  NETWORK_BTPS: 'networkbtps',
   CONTRACT_EVENTS: 'contractevents',
   TRANSACTION_EVENTS: 'transactionevents',
   TRANSACTION_INTERNAL_TX: 'transactioninternaltx',
@@ -213,6 +220,30 @@ export const TX_TYPE_DATA = {
     getTxList: 'blockList',
     className: 'table-typeE',
     noBoxText: 'No Block'
+  },
+  [TX_TYPE.BTPS]: {
+    tx: 'btps',
+    getTxList: 'btpList',
+    className: 'table-typeBTP',
+    noBoxText: 'No BTP'
+  },
+  [TX_TYPE.BTP_TX]: {
+    tx: 'btpTx',
+    getTxList: 'btpTxList',
+    className: 'table-typeBTX',
+    noBoxText: 'No Message'
+  },
+  [TX_TYPE.NETWORKS]: {
+    tx: 'networks',
+    getTxList: 'networkList',
+    className: 'table-typeNetwork',
+    noBoxText: 'No Network'
+  },
+  [TX_TYPE.NETWORK_BTPS]: {
+    tx: 'networkBTPs',
+    getTxList: 'networkBTPList',
+    className: 'table-typeBTP',
+    noBoxText: 'No BTP Block'
   },
   [TX_TYPE.CONTRACT_EVENTS]: {
     tx: 'contractEvents',

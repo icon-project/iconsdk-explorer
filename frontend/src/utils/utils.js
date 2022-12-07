@@ -3,8 +3,8 @@ import moment from 'moment'
 import { getTrackerApiUrl } from 'redux/api/restV3/config'
 import BigNumber from 'bignumber.js'
 import { IconConverter, IconAmount } from 'icon-sdk-js'
-import { TokenLink } from 'components'
-import { REDUX_STEP, SERVER_TX_TYPE } from './const'
+import {TokenLink} from 'components'
+import {REDUX_STEP, SERVER_TX_TYPE} from './const'
 import { getIsSoloVersion } from 'redux/api/restV3/config'
 
 moment.updateLocale('en', {
@@ -732,4 +732,17 @@ export function hexToDecimal(num) {
         return parseInt(num.substring(2),16);
     }
     return "";
+}
+
+export function getNetworkStateAsString(state) {
+    switch (state) {
+        case '0x1' :
+            return 'open'
+        case  '0x0' :
+            return 'close'
+        case 'NA' :
+            return 'N/A'
+        default:
+            return 'N/A'
+    }
 }
