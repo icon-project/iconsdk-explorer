@@ -6,6 +6,7 @@ import com.dfg.icon.core.mappers.icon.BtpMapper;
 import com.dfg.icon.core.mappers.icon.TBtpNetworkMapper;
 import com.dfg.icon.core.v3.adapter.V3BlockChainAdapter;
 import com.dfg.icon.core.v3.service.V3BtpNetworkService;
+import com.dfg.icon.core.v3.vo.BtpNetworkVo;
 import com.dfg.icon.web.v0.dto.block.Address;
 import com.dfg.icon.web.v3.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,16 +59,30 @@ public class V3BtpNetworkServiceImpl implements V3BtpNetworkService {
 
     @Override
     public CommonRes getBtpNetwork(String networkId) throws Exception{
+
+        BtpNetworkVo btpNetwork = new BtpNetworkVo();
         TBtpNetworkKey key = new TBtpNetworkKey();
+        JsonObject networkInfo;
+        CommonRes res = new CommonRes();
         key.setNetworkId(networkId);
         TBtpNetwork tBtpNetwork = tBtpNetworkMapper.selectByPrimaryKey(key);
 
-        JsonObject networkInfo  = blockChainAdapter.getBtpNetworkInfo(
-                tBtpNetwork.getUrl(), tBtpNetwork.getNetworkId());
-
-
-        CommonRes res = new CommonRes();
-        res.setData(new ObjectMapper().readValue(networkInfo.toString(), Map.class));
+        btpNetwork.setNetworkId(tBtpNetwork.getNetworkId());
+        btpNetwork.setNetworkName(tBtpNetwork.getNetworkName());
+        btpNetwork.setNetworkTypeId(tBtpNetwork.getNetworkTypeId());
+        btpNetwork.setNetworkTypeName(tBtpNetwork.getNetworkTypeName());
+        btpNetwork.setStartHeight(tBtpNetwork.getStartHeight());
+        try{
+            networkInfo  = blockChainAdapter.getBtpNetworkInfo(
+                    tBtpNetwork.getUrl(), tBtpNetwork.getNetworkId());
+        }catch (Exception e){
+            btpNetwork.setOpen("NA");
+            res.setData(btpNetwork);
+            res.setCode(IconCode.SUCCESS);
+            return res;
+        }
+        btpNetwork.setOpen(networkInfo.get("open").getAsString());
+        res.setData(btpNetwork);
         res.setCode(IconCode.SUCCESS);
         return res;
     }

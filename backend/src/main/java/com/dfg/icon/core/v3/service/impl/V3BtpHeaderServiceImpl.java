@@ -46,29 +46,6 @@ public class V3BtpHeaderServiceImpl implements V3BtpHeaderService {
         return res;
     }
 
-//    @Override
-//    public CommonListRes getBtpHeaderListByNetworkId(String networkId, PageReq req) {
-//        CommonListRes res = new CommonListRes();
-//
-//        int page = (req.getPage() - 1) * req.getCounting();
-//
-//        req.setPage(page);
-//
-//        List<BtpHeader> headerList = btpMapper.selectBtpHeaderListByNetworkId(page, req.getCounting(), networkId);
-//
-//        Integer totalBtpHeader = btpMapper.selectCountBtpHeaderListByNetworkId(networkId);
-//
-//        res.setData(headerList);
-//        if(headerList != null || headerList.size() >0){
-//            res.setListSize(headerList.size());
-//            res.setTotalSize(totalBtpHeader);
-//            res.setCode(IconCode.SUCCESS);
-//        } else {
-//            res.setCode(IconCode.NO_DATA);
-//        }
-//        return res;
-//    }
-
     @Override
     public CommonRes getBtpHeader(int height, String networkId) {
         TBtpHeaderKey key = new TBtpHeaderKey();
