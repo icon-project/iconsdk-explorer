@@ -87,7 +87,8 @@ public class V3SelectTokenController {
 			@Valid
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
-			@RequestParam(value = "keyword", required = false) String keyword
+			@RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value="ircVersion" , required=true) String ircVersion
 			)  {
 		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
@@ -97,6 +98,7 @@ public class V3SelectTokenController {
 			logger.info("getTokenList : page = {}, count = {}", page, count);
 
 			PageReq req = new PageReq();
+			req.setIrcVersion(ircVersion);
 			req.setPage(CommonUtil.changeUnderZero(page));
 			if(count != null) {
 				req.setCounting(count);
@@ -145,7 +147,8 @@ public class V3SelectTokenController {
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
 			@RequestParam(value="contractAddr" , required=false) String contractAddr,
-			@RequestParam(value="tokenAddr" , required=false) String tokenAddr
+			@RequestParam(value="tokenAddr" , required=false) String tokenAddr,
+			@RequestParam(value="ircVersion" , required=true) String ircVersion
 			)  {
 		TenantContext.setTenant(chainName);
 		CommonListRes res = new CommonListRes();
@@ -155,6 +158,7 @@ public class V3SelectTokenController {
 			logger.info("getTokenTransfers : page ={} , count={} , contractAddr = {}, tokenAddr = {}" , page, count, contractAddr, tokenAddr);
 
 			PageReq req = new PageReq();
+			req.setIrcVersion(ircVersion);
 			req.setPage(CommonUtil.changeUnderZero(page));
 			if(count != null) {
 				req.setCounting(count);
@@ -195,7 +199,8 @@ public class V3SelectTokenController {
 			@Valid
 			@RequestParam(value="page",required=false ) Integer page,
 			@RequestParam(value = "count", required = false) Integer count,
-			@RequestParam(value="contractAddr") String contractAddr
+			@RequestParam(value="contractAddr") String contractAddr,
+			@RequestParam(value="ircVersion" , required=true) String ircVersion
 			)  {
 
 		String url = chainInfoService.chainHost(chainName);
@@ -207,6 +212,7 @@ public class V3SelectTokenController {
 			logger.info("getTokenHolders : page = {}, count = {}, contractAddr = {}" , page, count, contractAddr);
 
 			PageReq req = new PageReq();
+			req.setIrcVersion(ircVersion);
 			req.setPage(CommonUtil.changeUnderZero(page));
 			if(count != null) {
 				req.setCounting(count);

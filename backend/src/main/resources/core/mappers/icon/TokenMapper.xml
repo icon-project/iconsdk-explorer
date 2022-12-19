@@ -14,7 +14,10 @@
 			total_supply as totalSupply,
 			decimals
 		from T_CONTRACT
-		where irc_version = 'IRC2'
+		where
+		<if test="ircVersion != null">
+			and irc_version = #{ircVersion}
+		</if>
 		<if test="address != null">
 			and contract_addr = #{address}
 		</if>
@@ -34,7 +37,10 @@
 		select
 			count(*)
 		from T_CONTRACT
-		where irc_version = 'IRC2'
+		where
+		<if test="ircVersion != null">
+			and irc_version = #{ircVersion}
+		</if>
 		<if test="address != null">
 			and contract_addr = #{address}
 		</if>
@@ -71,7 +77,7 @@
 			ORDER BY id ${orderBy}
 			limit ${page} , ${counting}
 		) tx, T_TOKEN_TX T, T_CONTRACT I
-		WHERE tx.id = T.id and T.contract_addr = I.contract_addr
+		WHERE tx.id = T.id and T.contract_addr = I.contract_addr and T.irc_version = I.irc_version
 		ORDER BY tx.id DESC
 	</select>
 
@@ -101,6 +107,7 @@
 		) tv, T_TOKEN_TX T, T_CONTRACT I
 		WHERE tv.tx_hash = T.tx_hash AND tv.tx_index = T.tx_index
 			and T.contract_addr = I.contract_addr
+			and T.irc_version = I.irc_version
 		ORDER BY tv.id desc
 	</select>
 	
@@ -168,12 +175,13 @@
 	</select>
 	
 	<!-- 페이징 오류 처리 token 전체 txCount 조회 -->
-	<select id="selectTotalTxCount" resultType="java.lang.Integer">
+	<select id="selectTotalTxCount" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT 
 	   		 SUM(transfer_count)
 		FROM
 	   		 T_CONTRACT
-	   	WHERE irc_version = 'IRC2'
+	   	WHERE
+	   	      irc_version = #{ircVersion}
 	</select>
 	
 	<!-- 특정 주소에 관한 tokenTxCount 조회 -->

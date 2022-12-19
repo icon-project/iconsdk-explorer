@@ -33,6 +33,7 @@ public enum IconCode implements CustomErrorCode {
 	/* IRC Version*/
 	IRC_NOIRC("-", "No IRC Format"),
 	IRC2_TOKEN("IRC2", "Token IRC"),
+	IRC3_TOKEN("IRC3", "NON FUNGIBLE Token IRC"),
 
 	/* API Version*/
 	SCHEDULER_VER0("v0", "version0"),
@@ -95,7 +96,9 @@ public enum IconCode implements CustomErrorCode {
 	SCORE_METHOD_TERM_STARTED("TermStarted(int,int,int)", "term started"),
 	SCORE_METHOD_PREP_ISSUED("PRepIssued(int,int,int,int)", "prep issued"),
 	/* End - Event Log Method of TX (DataType is base) */
-	SCORE_METHOD_TRANSFER("Transfer(Address,Address,int,bytes)","Transfer method "),
+	SCORE_METHOD_IRC2_TRANSFER("Transfer(Address,Address,int,bytes)","IRC2 Transfer method "),
+	SCORE_METHOD_IRC3_TRANSFER("Transfer(Address,Address,int)","IRC3 Transfer method "),
+	SCORE_METHOD_IRC3_APPROVAL("Approval(Address,Address,int)","IRC3 Approval method "),
 	SCORE_METHOD_ICXSEND("ICXTransfer(Address,Address,int)","icx send method  "),
 
 	/* BTP Event Log */

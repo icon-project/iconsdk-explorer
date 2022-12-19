@@ -651,6 +651,32 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 					bf.getTokenAddressGroup().add(key1);
 				}
 			} else {/* 인스톨이 아닌 업데이트 토큰 승인일때 할 작업. 현재는 없다.*/}
+		} else if(IconCode.IRC3_TOKEN.getCode().equals(ircVersion)){
+			if(historyVersion == 1) {
+				String tokenSymbol = blockChainAdapter.getIcxCall(url, historyScoreAddress, "symbol");
+				if(tokenSymbol == null) {
+					tokenSymbol = "-";	// 토큰인데 심볼이 null인 경우가 존재...
+				} else if(tokenSymbol.length() > 8) {
+					tokenSymbol = tokenSymbol.substring(0, 8);
+				}
+
+				String tokenTotalSupply = blockChainAdapter.getIcxCall(url, historyScoreAddress, "totalSupply");
+
+				TContract info = getContractForInsert(
+						historyScoreAddress,
+						historyVersion,
+						scoreName,
+						tokenSymbol,
+						contractHistory.getCreator(),
+						tokenTotalSupply,
+						0);
+				bf.getContractList().add(info);
+
+				TokenAddressGroupKey key1 = new TokenAddressGroupKey(contractHistory.getCreator(), historyScoreAddress, 0);
+				if (!bf.getTokenAddressGroup().contains(key1)) {
+					bf.getTokenAddressGroup().add(key1);
+				}
+			}
 		}
 	}
 
@@ -779,7 +805,8 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 					if (!bf.getAddressGroup().contains(tInternalTx.getToAddr())) {
 						bf.getAddressGroup().add(tInternalTx.getToAddr());
 					}
-				} else if(IconCode.SCORE_METHOD_TRANSFER.getCode().equals(eventMethod)) {
+				} else if(IconCode.SCORE_METHOD_IRC2_TRANSFER.getCode().equals(eventMethod) ||
+						IconCode.SCORE_METHOD_IRC3_TRANSFER.getCode().equals(eventMethod)) {
 					TContract contractInfo = contractService.getContractByAddress(scoreAddress);
 					if(contractInfo == null) {
 						for(int idx=bf.getContractList().size()-1; idx>-1; idx--) {
@@ -793,31 +820,40 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 							continue;
 						}
 					}
-
+					TTokenTx tokenTx = null;
 					if(IconCode.IRC2_TOKEN.getCode().equals(contractInfo.getIrcVersion())) {
+						tokenTx = getTokenTxForInsert(scoreAddress, blockHeight, txHash, indexTokenTx,
+								txCreateDate, event.getIndexed().get(1), event.getIndexed().get(2),
+								HexUtil.toDecimalString(event.getIndexed().get(3), contractInfo.getDecimals()), contractInfo.getIrcVersion(),
+								txFee, "");
+					} else if(IconCode.IRC3_TOKEN.getCode().equals(contractInfo.getIrcVersion())) {
+						tokenTx = getTokenTxForInsert(scoreAddress, blockHeight, txHash, indexTokenTx,
+								txCreateDate, event.getIndexed().get(1), event.getIndexed().get(2),
+								HexUtil.toDecimalString(event.getIndexed().get(3), contractInfo.getDecimals()), contractInfo.getIrcVersion(),
+								txFee, event.getIndexed().get(1)); //TODO irc3 event check
+					}
+					bf.getTokenTxList().add(tokenTx);
+					bf.getTokenTxViewList().addAll(getTokenTxViewForInsert(tokenTx));
+					indexTokenTx++;
 
-						TTokenTx tokenTx = getTokenTxForInsert(scoreAddress, blockHeight, txHash, indexTokenTx, txCreateDate, event.getIndexed().get(1), event.getIndexed().get(2), HexUtil.toDecimalString(event.getIndexed().get(3), contractInfo.getDecimals()), contractInfo.getIrcVersion(), txFee);
-						bf.getTokenTxList().add(tokenTx);
-						bf.getTokenTxViewList().addAll(getTokenTxViewForInsert(tokenTx));
-						indexTokenTx++;
+					TokenAddressGroupKey key1 = new TokenAddressGroupKey(tokenTx.getFromAddr(), tokenTx.getContractAddr(), contractInfo.getDecimals());
+					TokenAddressGroupKey key2 = new TokenAddressGroupKey(tokenTx.getToAddr(), tokenTx.getContractAddr(), contractInfo.getDecimals());
 
-						TokenAddressGroupKey key1 = new TokenAddressGroupKey(tokenTx.getFromAddr(), tokenTx.getContractAddr(), contractInfo.getDecimals());
-						TokenAddressGroupKey key2 = new TokenAddressGroupKey(tokenTx.getToAddr(), tokenTx.getContractAddr(), contractInfo.getDecimals());
+					if (!bf.getAddressGroup().contains(tokenTx.getFromAddr())) {
+						bf.getAddressGroup().add(tokenTx.getFromAddr());
+					}
+					if (!bf.getAddressGroup().contains(tokenTx.getToAddr())) {
+						bf.getAddressGroup().add(tokenTx.getToAddr());
+					}
 
-						if (!bf.getAddressGroup().contains(tokenTx.getFromAddr())) {
-							bf.getAddressGroup().add(tokenTx.getFromAddr());
-						}
-						if (!bf.getAddressGroup().contains(tokenTx.getToAddr())) {
-							bf.getAddressGroup().add(tokenTx.getToAddr());
-						}
+					if (!bf.getTokenAddressGroup().contains(key1)) {
+						bf.getTokenAddressGroup().add(key1);
+					}
+					if (!bf.getTokenAddressGroup().contains(key2) && !IconCode.SCORE_INSTALL_ADDR.getCode().equals(key2.getTokenAddr())) {
+						bf.getTokenAddressGroup().add(key2);
+					}
 
-						if (!bf.getTokenAddressGroup().contains(key1)) {
-							bf.getTokenAddressGroup().add(key1);
-						}
-						if (!bf.getTokenAddressGroup().contains(key2) && !IconCode.SCORE_INSTALL_ADDR.getCode().equals(key2.getTokenAddr())) {
-							bf.getTokenAddressGroup().add(key2);
-						}
-					} else {/* method가 tokenTransfer인데 score가 IRC2가 아닌경우 */}
+
 				} else if(IconCode.SCORE_METHOD_BTP_MESSAGE.getCode().equals(eventMethod)){ /* btp message */
 					TBtpHeader btpHeader = addBtpHeader(url, event.getIndexed().get(1), bf);
 					if(btpHeader != null){
@@ -945,7 +981,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		return contract;
 	}
 
-	public TTokenTx getTokenTxForInsert(String contractAddr, Integer height, String txHash, Integer txIndex, Date age, String fromAddr, String toAddr, String quantity, String ircVersion, String fee) {
+	public TTokenTx getTokenTxForInsert(String contractAddr, Integer height, String txHash, Integer txIndex, Date age, String fromAddr, String toAddr, String quantity, String ircVersion, String fee, String tokenId) {
 		TTokenTx tokenTx = new TTokenTx();
 		tokenTx.setContractAddr(contractAddr);
 		tokenTx.setBlockHeight(height);
@@ -957,6 +993,7 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 		tokenTx.setQuantity(quantity);
 		tokenTx.setIrcVersion(ircVersion);
 		tokenTx.setFee(fee);
+		tokenTx.setTokenId(tokenId);
 
 		return tokenTx;
 	}

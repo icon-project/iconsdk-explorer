@@ -18,16 +18,14 @@ import com.google.gson.JsonParser;
 public class IRCUtil {
 
 	public static JsonArray IRC2_FORMAT = null;
-	public static JsonArray eventLogInputsArray2 = null;
+	public static JsonArray IRC2_eventLogInputsArray = null;
+	public static JsonArray IRC3_FORMAT = null;
+	public static JsonArray IRC3_TRANSFER_eventLogInputsArray = null;
+	public static JsonArray IRC3_APPROVAL_eventLogInputsArray = null;
 	
 	 static  String ircFilePath = "";
-
-	public static void initIRC2() throws Exception{
-
-
-		File projectPath = new File("");
-		String path = projectPath.getAbsolutePath()+"/IRC/";
-		File file = new File(path + "IRC2.json");
+	public static JsonObject fileParse(String filePath) throws Exception{
+		File file = new File(filePath);
 
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -42,7 +40,14 @@ public class IRCUtil {
 
 		JsonParser parser = new JsonParser();
 		JsonElement element = parser.parse(jsonStr);
-		JsonObject rootObject =  element.getAsJsonObject();
+		return element.getAsJsonObject();
+	}
+
+	public static void initIRC2() throws Exception{
+		File projectPath = new File("");
+		String path = projectPath.getAbsolutePath()+"/IRC/";
+		JsonObject rootObject = fileParse(path + "IRC2.json");
+
 		IRC2_FORMAT = rootObject.get("result").getAsJsonArray();
 
 		// eventlog 일경우는 name 항목이 상이하여도 같은것으로 처리 해야함
@@ -50,10 +55,33 @@ public class IRCUtil {
 			String type = je.getAsJsonObject().get("type").getAsString();
 
 			if(type.equals("eventlog")) {
-				eventLogInputsArray2  = je.getAsJsonObject().get("inputs").getAsJsonArray();
+				IRC2_eventLogInputsArray = je.getAsJsonObject().get("inputs").getAsJsonArray();
 			}
 		}
 	}
+
+	public static void initIRC3() throws Exception{
+		File projectPath = new File("");
+		String path = projectPath.getAbsolutePath()+"/IRC/";
+		JsonObject rootObject = fileParse(path + "IRC3.json");
+
+		IRC3_FORMAT = rootObject.get("result").getAsJsonArray();
+
+		// eventlog 일경우는 name 항목이 상이하여도 같은것으로 처리 해야함
+		for(JsonElement je : IRC3_FORMAT) {
+			String type = je.getAsJsonObject().get("type").getAsString();
+			String name = je.getAsJsonObject().get("name").getAsString();
+			if(type.equals("eventlog")){
+				if(name.equals("Transfer")) {
+					IRC3_TRANSFER_eventLogInputsArray = je.getAsJsonObject().get("inputs").getAsJsonArray();
+				}else if(name.equals("Approval")){
+					IRC3_APPROVAL_eventLogInputsArray = je.getAsJsonObject().get("inputs").getAsJsonArray();
+				}
+			}
+		}
+	}
+
+
 
 
 	/** 해당 JSON String의 IRC 버젼을 조회
@@ -65,10 +93,19 @@ public class IRCUtil {
 	public static String checkIRCVersion(JsonArray jArray, String filePath) throws Exception {
 		ircFilePath = filePath;
 
+		if(IRC2_FORMAT == null) {
+			initIRC2();
+		}
+		if(IRC3_FORMAT == null) {
+			initIRC3();
+		}
+
 		String IrcFormat = "-";
 
 		if(checkIrc2(jArray) ) {
 			IrcFormat = IconCode.IRC2_TOKEN.getCode();
+		}else if(checkIrc3(jArray) ) {
+			IrcFormat = IconCode.IRC3_TOKEN.getCode();
 		}
 
 		return IrcFormat;
@@ -76,10 +113,6 @@ public class IRCUtil {
 
 
 	private static boolean checkIrc2(JsonArray jArray) throws Exception {
-		if(IRC2_FORMAT == null) {
-			initIRC2();
-		}
-
 		int okCount = 0 ;
 		JsonElement transferLog = null;
 
@@ -111,7 +144,7 @@ public class IRCUtil {
 			int checkCount = 0;
 			for(int i = 0 ; i < inputsArray.size() ; i++) {
 				JsonObject removeNameObject 	= inputsArray.get(i).getAsJsonObject();
-				JsonObject  targetObject	 = eventLogInputsArray2.get(i).getAsJsonObject();
+				JsonObject  targetObject	 = IRC2_eventLogInputsArray.get(i).getAsJsonObject();
 				if(removeNameObject.get("type").equals(targetObject.get("type")) ) {
 					if(removeNameObject.get("type").getAsString().equals("bytes")) {
 						checkCount++;
@@ -127,7 +160,7 @@ public class IRCUtil {
 				}
 			}
 
-			if(checkCount == eventLogInputsArray2.size()) {
+			if(checkCount == IRC2_eventLogInputsArray.size()) {
 				okCount++;
 			}
 		}
@@ -138,4 +171,25 @@ public class IRCUtil {
 
 		return false;
 	}
+
+
+	private static boolean checkIrc3(JsonArray jArray) throws Exception {
+		int okCount = 0 ;
+
+		for(JsonElement je : jArray) {
+			for(JsonElement je2 : IRC3_FORMAT) {
+				if(je.equals(je2)) {
+					okCount++;
+					break;
+				}
+			}
+		}
+
+		if(okCount == IRC3_FORMAT.size()) {
+			return true;
+		}
+
+		return false;
+	}
+
 }

@@ -30,7 +30,7 @@ public interface TokenMapper {
 	/** 토큰 tx count 합계 
 	 * @return
 	 */
-	Integer selectTotalTxCount();
+	Integer selectTotalTxCount(String ircVersion);
 	
 	/** 특정 주소에 관한 tokenTxCount
 	 * @return

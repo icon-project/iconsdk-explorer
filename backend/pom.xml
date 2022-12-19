@@ -168,8 +168,19 @@
 			<artifactId>core</artifactId>
 			<version>5.0.0</version>
 		</dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>foundation.icon</groupId>
+			<artifactId>icon-sdk</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 
 	<build>

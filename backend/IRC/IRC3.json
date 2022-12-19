@@ -1,0 +1,167 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "type": "str"
+        }
+      ],
+      "readonly": "0x1",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "type": "str"
+        }
+      ],
+      "readonly": "0x1",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "Address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "type": "int"
+        }
+      ],
+      "readonly": "0x1",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "type": "Address"
+        }
+      ],
+      "readonly": "0x1",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "type": "Address"
+        }
+      ],
+      "readonly": "0x1",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "Address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "Address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [],
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_from",
+          "type": "Address"
+        },
+        {
+          "name": "_to",
+          "type": "Address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": "0x1",
+          "name": "_from",
+          "type": "Address"
+        },
+        {
+          "indexed": "0x1",
+          "name": "_to",
+          "type": "Address"
+        },
+        {
+          "indexed": "0x1",
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "Transfer",
+      "type": "eventlog"
+    },
+    {
+      "inputs": [
+        {
+          "indexed": "0x1",
+          "name": "_owner",
+          "type": "Address"
+        },
+        {
+          "indexed": "0x1",
+          "name": "_approved",
+          "type": "Address"
+        },
+        {
+          "indexed": "0x1",
+          "name": "_tokenId",
+          "type": "int"
+        }
+      ],
+      "name": "Approval",
+      "type": "eventlog"
+    }
+  ],
+  "id": 1234
+}

@@ -43,6 +43,11 @@ public class PageReq {
     Byte addrType;
 
     /**
+     * IRC 버전
+     */
+    String ircVersion;
+
+    /**
      * 0 : pending, 1 : success, 2 : fail
      */
     Integer state;
@@ -84,6 +89,10 @@ public class PageReq {
         this.counting = counting;
         orderBy = "DESC";
     }
+
+    public void setIrcVersion(String ircVersion) { this.ircVersion = ircVersion;}
+
+    public String getIrcVersion() { return this.ircVersion; }
 
     public String getHash() {
         return hash;

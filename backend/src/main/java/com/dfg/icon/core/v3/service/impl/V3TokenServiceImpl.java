@@ -171,7 +171,7 @@ public class V3TokenServiceImpl implements V3TokenService {
 
 		if(req.getAddress() == null && req.getAddress2() == null) {
 			// 모두 미지정. 전체 토큰tx 개수 조회
-			totalTxCount = tokenMapper.selectTotalTxCount();
+			totalTxCount = tokenMapper.selectTotalTxCount(req.getIrcVersion());
 			if(totalTxCount == null) {
 				totalTxCount = 0;
 			}
