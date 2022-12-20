@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { SearchBox } from 'components'
 import { Connect } from 'components'
 import { withRouter } from 'react-router-dom'
+import configData from "../../config/config.json";
 
 class Header extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class Header extends Component {
                     <div className="content">
                         <Link to="/">
                             <div className="logo">
-                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>ICONSDK Explorer</font></p>
+                                <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>{configData.ICONSDK_EXPLORER_NAME}</font></p>
                                 <p><font style={{ fontSize: "150%", fontWeight: "900", color: "white"}}>[{localStorage.getItem("chainName")}]</font></p>
                             </div>
                         </Link>

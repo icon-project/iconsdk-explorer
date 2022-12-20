@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { InfoSummary, RecentBlocks, RecentTransactions } from 'components'
 import { search } from 'redux/actions/searchActions';
 import { connect } from 'react-redux'
+import configData from "../../config/config.json"
 
 class MainPage extends Component {
 
@@ -40,7 +41,7 @@ class MainPage extends Component {
                 <div className="screen2">
                     <div className="wrap-holder">
                         <div className="content">
-                            <p>ICONSDK Explorer</p>
+                            <p>{configData.ICONSDK_EXPLORER_NAME}</p>
                             <div className="search-group txt fixing">
                                 <input id='main-top-search-bar'
                                     ref={ref => { 
