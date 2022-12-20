@@ -135,10 +135,6 @@ class TxTableHead extends Component {
                         <tr>
                             <th>Address</th>
                             <th>Balance</th>
-                            <th>USD Value</th>
-                            <th>
-                                Percentage<em>%</em>
-                            </th>
                             <th>No of Txns</th>
                             <th>Address type</th>
                         </tr>
