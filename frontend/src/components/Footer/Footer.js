@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 
 class Footer extends Component {
 
-	componentWillMount() {
+	componentDidMount() {
 		this.props.chainInfoList();
 	}
 

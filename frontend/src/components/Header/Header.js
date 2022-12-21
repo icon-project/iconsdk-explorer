@@ -13,7 +13,7 @@ class Header extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.chainInfoList();
     }
 

@@ -10,7 +10,7 @@ class InfoChart extends Component {
     this.txChart = null
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.getMainChart()
   }
 
