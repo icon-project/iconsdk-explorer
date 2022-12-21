@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { convertNumberToText } from 'utils/utils'
 import { LoadingComponent, TransactionLink } from 'components'
+import configData from "../../config/config.json";
 
 class RecentTransactions extends Component {
     render() {
@@ -32,7 +33,7 @@ class RecentTransactions extends Component {
                                         <p className="b">
                                             Amount
                                             <em>
-                                                {convertNumberToText(amount)} ICX
+                                                {convertNumberToText(amount)} {configData.ICONSDK_EXPLORER_SYM}
                                             </em>
                                         </p>
                                         <p className="c">
@@ -44,7 +45,7 @@ class RecentTransactions extends Component {
                                         <p className="d">
                                             Fee
                                             <em>
-                                                {convertNumberToText(fee)} ICX
+                                                {convertNumberToText(fee)} {configData.ICONSDK_EXPLORER_SYM}
                                             </em>
                                         </p>
                                     </li>

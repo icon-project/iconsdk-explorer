@@ -4,6 +4,7 @@ import { convertNumberToText } from 'utils/utils'
 import { CopyButton, LoadingComponent, QrCodeButton } from 'components'
 import NotificationManager from 'utils/NotificationManager'
 import { isUrl } from '../../../utils/utils';
+import configData from '../../../config/config.json'
 
 const _isNotificationAvailable = NotificationManager.available()
 
@@ -119,7 +120,7 @@ class AddressInfo extends Component {
                                                 <td>Balance</td>
                                                 <td colSpan="3" className="balance">
                                                     <div>
-                                                        <p><span><i className="coin icon"></i>ICX</span><span>{`${convertNumberToText(balance, icxMore ? undefined : 4)}`}<em>ICX</em></span></p>
+                                                        <p><span><i className="coin icon"></i>{configData.ICONSDK_EXPLORER_SYM}</span><span>{`${convertNumberToText(balance, icxMore ? undefined : 4)}`}<em>{configData.ICONSDK_EXPLORER_SYM}</em></span></p>
                                                     </div>
                                                     <div className={tokenMore ? 'on' : ''}>
                                                         <p><span><i className="coin"></i>Token</span><span>{(tokenList || []).length}<em>Tokens</em></span><em className="drop-btn" onClick={this.toggleTokenMore}><i className="img"></i></em></p>

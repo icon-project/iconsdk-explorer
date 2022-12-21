@@ -4,6 +4,7 @@ import { CopyButton, TransactionLink, LoadingComponent, QrCodeButton, AddressLin
 import { convertNumberToText, numberWithCommas, tokenText, isValidData } from 'utils/utils'
 import { CONTRACT_STATUS, IRC_VERSION } from 'utils/const'
 import { convertLoopToIcxDecimal } from '../../../utils/utils'
+import configData from "../../../config/config.json";
 
 class ContractInfo extends Component {
     onMouseOver = param => {
@@ -94,9 +95,9 @@ class ContractInfo extends Component {
                                             </tr>                                            
                                             <tr>
                                                 <td>Balance</td>
-                                                <td>{convertNumberToText(balance)} ICX</td>
+                                                <td>{convertNumberToText(balance)} {configData.ICONSDK_EXPLORER_SYM}</td>
                                                 <td>Deposit</td>
-                                                {availableDeposit ? <td>{convertNumberToText(convertLoopToIcxDecimal(availableDeposit))} ICX</td> : <td>-</td>}
+                                                {availableDeposit ? <td>{convertNumberToText(convertLoopToIcxDecimal(availableDeposit))} {configData.ICONSDK_EXPLORER_SYM}</td> : <td>-</td>}
                                             </tr>
                                             <tr>
                                                 <td>Virtual Step</td>

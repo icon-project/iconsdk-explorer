@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { IconAmount, IconConverter } from 'icon-sdk-js'
 import Worker from 'worker-loader!workers/converter.js'; // eslint-disable-line import/no-webpack-loader-syntax
-import { getTrackerApiUrl } from 'redux/api/restV3/config'
 import {
 	CopyButton,
 	LoadingComponent,
@@ -22,6 +21,7 @@ import {
 	isHex,
 	isImageData,
 } from 'utils/utils'
+import configData from "../../../config/config.json";
 
 const COUNT = 10
 
@@ -58,13 +58,6 @@ class TransactionInfo extends Component {
 		}
 	}
 
-	onTwitterClick = async () => {
-		const text = encodeURIComponent('New transaction made #Hyperconnected_ICON ')
-		const url = await getTrackerApiUrl()
-		const link = `${url}/transaction/${this.props.transaction.data.txHash}`
-		window.open(`https://twitter.com/intent/tweet?text=${text}&url=${link}`, "_blank", "width=500,height=470")
-	}
-
 	render() {
 		const { download } = this.state
 		const { transaction } = this.props
@@ -92,7 +85,6 @@ class TransactionInfo extends Component {
 					stepPrice,
 					dataString,
 					fee,
-					feeUsd,
 					dataType,
 					targetContractAddr,
 					reportedCount,
@@ -100,7 +92,6 @@ class TransactionInfo extends Component {
 				} = data
 				const _stepPrice = stepPrice || "0"
 				const stepPriceLoop = IconAmount.of(_stepPrice, IconAmount.Unit.LOOP)
-				const stepPriceGloop = stepPriceLoop.convertUnit(9).toString()
 				const stepPriceIcx = stepPriceLoop.convertUnit(IconAmount.Unit.ICX)
 				const isFail = status === 'Fail'
 				const isErrorMsg = isValidData(errorMsg)
@@ -143,7 +134,7 @@ class TransactionInfo extends Component {
 										</tr>
 										<tr>
 											<td>Amount</td>
-											<td>{`${convertNumberToText(amount)} ICX`}</td>
+											<td>{`${convertNumberToText(amount)} ${configData.ICONSDK_EXPLORER_SYM}`}</td>
 										</tr>
 										{
 											(!!tokenTxList && tokenTxList.length !== 0) &&
@@ -154,7 +145,7 @@ class TransactionInfo extends Component {
 										}
 										<tr>
 											<td>Step Price</td>
-											<td>{convertNumberToText(stepPriceIcx)} ICX<em>({convertNumberToText(stepPriceGloop)} Gloop)</em></td>
+											<td>{convertNumberToText(stepPriceIcx)} {configData.ICONSDK_EXPLORER_SYM}</td>
 										</tr>
 										<tr>
 											<td>Step Limit</td>
@@ -178,8 +169,8 @@ class TransactionInfo extends Component {
 											</td>
 										</tr>
 										<tr>
-											<td>Fee in ICX</td>
-											<td>{convertNumberToText(fee)} ICX<em>({feeUsd ? convertNumberToText(feeUsd, 4) : ' -'} USD)</em></td>
+											<td>Fee in {configData.ICONSDK_EXPLORER_SYM}</td>
+											<td>{convertNumberToText(fee)} {configData.ICONSDK_EXPLORER_SYM}</td>
 										</tr>
 										{(dataType && dataString) ?
 											<tr>
@@ -388,7 +379,7 @@ class InternalTx extends Component {
 					const { amount, fromAddr, toAddr } = tx
 					return (
 						<p key={index}>
-							┗&emsp;TRANSFER {convertNumberToText(amount)} ICX
+							┗&emsp;TRANSFER {convertNumberToText(amount)} {configData.ICONSDK_EXPLORER_SYM}
 							&emsp;from &emsp;<span><AddressLink to={fromAddr} /></span>
 							&emsp;to&emsp;<span><AddressLink to={toAddr} /></span>
 						</p>

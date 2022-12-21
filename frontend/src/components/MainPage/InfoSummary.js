@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { numberWithCommas, convertNumberToText, getIsSolo } from 'utils/utils'
+import configData from "../../config/config.json";
 
 class InfoSummary extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class InfoSummary extends Component {
                 <li>
                     <div>
                         <span className="icx"><i className="img"></i></span>
-                        <p>ICX Supply</p>
+                        <p>{configData.ICONSDK_EXPLORER_SYM} Supply</p>
                         <p>{convertNumberToText(icxSupply, 0)}</p>									
                     </div>
                 </li>

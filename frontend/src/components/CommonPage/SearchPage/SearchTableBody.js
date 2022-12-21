@@ -13,6 +13,7 @@ import {
 	CONTRACT_STATUS,
 	SEARCH_TYPE
 } from 'utils/const'
+import configData from '../../../config/config.json'
 
 class SearchTableBody extends Component {
 	render() {
@@ -24,7 +25,7 @@ class SearchTableBody extends Component {
 						<tr>
 							<td className="on"><span className="ellipsis"><AddressLink to={data.address} /></span></td>
 							<td>{data.contractName || '-'}</td>
-							<AmountCell type="icx" amount={data.balance} symbol="ICX" />
+							<AmountCell type="icx" amount={data.balance} symbol={configData.ICONSDK_EXPLORER_SYM} />
 							<td>{numberWithCommas(data.txCount)}</td>
 							<td>{CONTRACT_STATUS[data.status]}</td>
 							<td>{onlyDate(data.verifiedDate)}</td>

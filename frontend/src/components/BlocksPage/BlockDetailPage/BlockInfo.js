@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { numberWithCommas, convertNumberToText, dateToUTC, utcDateInfo } from 'utils/utils'
 import { TX_TYPE } from 'utils/const'
 import { BlockLink, AddressLink, LoadingComponent } from 'components'
+import configData from '../../../config/config.json'
 
 class BlockInfo extends Component {
     handlePrevBlock = () => {
@@ -100,11 +101,11 @@ class BlockInfo extends Component {
                                             </tr>
                                             <tr>
                                                 <td>Amount</td>
-                                                <td>{convertNumberToText(amount)} ICX</td>
+                                                <td>{convertNumberToText(amount)} {configData.ICONSDK_EXPLORER_SYM}</td>
                                             </tr>
                                             <tr>
                                                 <td>TxFee</td>
-                                                <td>{convertNumberToText(fee)} ICX</td>
+                                                <td>{convertNumberToText(fee)} {configData.ICONSDK_EXPLORER_SYM}</td>
                                             </tr>
                                             {height === 0 && (
                                                 <tr>

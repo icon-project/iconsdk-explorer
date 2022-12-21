@@ -19,6 +19,7 @@ import {
 import {
 	TX_TYPE,
 } from 'utils/const'
+import configData from '../../../config/config.json'
 
 const TxHashCell = ({ isError, txHash }) => {
 	let _txHash, className
@@ -112,8 +113,8 @@ class TxTableBody extends Component {
 							<BlockCell height={data.height} />
 							<DateCell date={data.createDate} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} address={address} txType={data.txType} targetContractAddr={data.targetContractAddr} />
-							<AmountCell amount={data.amount} symbol="ICX" />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.ADDRESS_INTERNAL_TX:
@@ -123,7 +124,7 @@ class TxTableBody extends Component {
 							<BlockCell height={data.height} />
 							<DateCell date={data.createDate} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} address={address} txType={data.txType} targetContractAddr={address} />
-							<AmountCell amount={data.amount} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.ADDRESS_TOKEN_TX:
@@ -143,8 +144,8 @@ class TxTableBody extends Component {
 							<BlockCell height={data.height} />
 							<DateCell date={data.createDate} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} address={address} txType={data.txType} targetContractAddr={address} />
-							<AmountCell amount={data.amount} symbol="ICX" />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.CONTRACT_INTERNAL_TX:
@@ -154,7 +155,7 @@ class TxTableBody extends Component {
 							<BlockCell height={data.height} />
 							<DateCell date={data.createDate} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} address={address} txType={data.txType} targetContractAddr={address} />
-							<AmountCell amount={data.amount} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.CONTRACT_TOKEN_TX:
@@ -165,7 +166,7 @@ class TxTableBody extends Component {
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} address={address} txType={data.txType} targetContractAddr={address} />
 							<AmountCell amount={data.quantity} symbol={data.symbol} />
 							<TokenCell name={data.name} address={data.tradeTokenAddr} />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.BLOCK_TX:
@@ -173,8 +174,8 @@ class TxTableBody extends Component {
 						<tr>
 							<TxHashCell isError={isError} txHash={data.txHash} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.targetContractAddr} />
-							<AmountCell amount={data.amount} symbol="ICX" />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.TRANSACTIONS:
@@ -184,8 +185,8 @@ class TxTableBody extends Component {
 							<BlockCell height={data.height} />
 							<DateCell date={data.createDate} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.targetContractAddr} />
-							<AmountCell amount={data.amount} symbol="ICX" />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.TOKEN_TRANSFERS:
@@ -196,7 +197,7 @@ class TxTableBody extends Component {
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.contractAddr} />
 							<AmountCell amount={data.quantity} symbol={data.symbol} />
 							<TokenCell name={data.tokenName} address={data.contractAddr} />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.TOKEN_TX:
@@ -206,14 +207,14 @@ class TxTableBody extends Component {
 							<DateCell date={data.age} />
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.contractAddr} />
 							<AmountCell amount={data.quantity} symbol={data.symbol} />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.ADDRESSES:
 					return (
 						<tr>
 							<AddressCell targetAddr={addressInData} txType={data.txType} />
-							<AmountCell amount={data.balance} symbol="ICX" />
+							<AmountCell amount={data.balance} symbol={configData.ICONSDK_EXPLORER_SYM} />
 							<td>{numberWithCommas(data.txCount)}</td>
 							<td>{data.nodeType}</td>
 						</tr>
@@ -225,8 +226,8 @@ class TxTableBody extends Component {
 							<DateCell date={data.createDate} />
 							<td>{numberWithCommas(data.txCount)}</td>
 							<td><BlockLink label={data.hash} to={data.height} ellipsis /></td>
-							<AmountCell amount={data.amount} symbol="ICX" />
-							<AmountCell amount={data.fee} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
+							<AmountCell amount={data.fee} symbol={configData.ICONSDK_EXPLORER_SYM} />
 						</tr>
 					)
 				case TX_TYPE.BTPS:
@@ -290,7 +291,7 @@ class TxTableBody extends Component {
 						<tr>
 							{/* <td>-</td> */}
 							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.targetContractAddr} />
-							<AmountCell amount={data.amount} symbol="ICX" />
+							<AmountCell amount={data.amount} symbol={configData.ICONSDK_EXPLORER_SYM} />
 							{/* <td>-</td> */}
 						</tr>
 					)
