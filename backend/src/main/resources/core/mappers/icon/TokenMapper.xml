@@ -16,7 +16,7 @@
 		from T_CONTRACT
 		where
 		<if test="ircVersion != null">
-			and irc_version = #{ircVersion}
+			irc_version = #{ircVersion}
 		</if>
 		<if test="address != null">
 			and contract_addr = #{address}
@@ -39,7 +39,7 @@
 		from T_CONTRACT
 		where
 		<if test="ircVersion != null">
-			and irc_version = #{ircVersion}
+			irc_version = #{ircVersion}
 		</if>
 		<if test="address != null">
 			and contract_addr = #{address}
@@ -263,7 +263,8 @@
 			to_addr , 
 			quantity,
 			fee,
-			irc_version)
+			irc_version,
+			token_id)
 		VALUES
 		<foreach collection="list" item="element" index="index" open="(" separator="),(" close=")">
 			#{element.txHash},
@@ -275,7 +276,8 @@
 			#{element.toAddr},
 			#{element.quantity},
 			#{element.fee},
-			#{element.ircVersion}
+			#{element.ircVersion},
+			#{element.tokenId}
 		</foreach>
 	</insert>
 

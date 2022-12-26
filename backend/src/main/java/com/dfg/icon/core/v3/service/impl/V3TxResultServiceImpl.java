@@ -829,8 +829,8 @@ public class V3TxResultServiceImpl implements V3TxResultService {
 					} else if(IconCode.IRC3_TOKEN.getCode().equals(contractInfo.getIrcVersion())) {
 						tokenTx = getTokenTxForInsert(scoreAddress, blockHeight, txHash, indexTokenTx,
 								txCreateDate, event.getIndexed().get(1), event.getIndexed().get(2),
-								HexUtil.toDecimalString(event.getIndexed().get(3), contractInfo.getDecimals()), contractInfo.getIrcVersion(),
-								txFee, event.getIndexed().get(1)); //TODO irc3 event check
+								"", contractInfo.getIrcVersion(),
+								txFee, event.getIndexed().get(3));
 					}
 					bf.getTokenTxList().add(tokenTx);
 					bf.getTokenTxViewList().addAll(getTokenTxViewForInsert(tokenTx));
