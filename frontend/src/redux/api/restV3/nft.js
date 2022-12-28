@@ -5,8 +5,8 @@ const chainInfo = () => {
   return localStorage.getItem("chainName");
 }
 
-export async function tokenList(payload) {
-  payload['ircVersion'] = 'IRC2';
+export async function nftList(payload) {
+  payload['ircVersion'] = 'IRC3';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/list', payload))
@@ -19,8 +19,8 @@ export async function tokenList(payload) {
   })
 }
 
-export async function tokenTxList(payload) {
-  payload['ircVersion'] = 'IRC2';
+export async function nftTxList(payload) {
+  payload['ircVersion'] = 'IRC3';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/txList', payload))
@@ -33,8 +33,8 @@ export async function tokenTxList(payload) {
   })
 }
 
-export async function tokenSummary(payload) {
-  payload['ircVersion'] = 'IRC2';
+export async function nftSummary(payload) {
+  payload['ircVersion'] = 'IRC3';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/summary', payload))
@@ -47,12 +47,12 @@ export async function tokenSummary(payload) {
   })
 }
 
-export async function tokenTransfersList(payload) {
-  return tokenTxList(payload)
+export async function nftTransfersList(payload) {
+  return nftTxList(payload)
 }
 
-export async function tokenHoldersList(payload) {
-  payload['ircVersion'] = 'IRC2';
+export async function nftHoldersList(payload) {
+  payload['ircVersion'] = 'IRC3';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
     trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/holders', payload))

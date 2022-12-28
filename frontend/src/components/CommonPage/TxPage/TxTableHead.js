@@ -221,6 +221,38 @@ class TxTableHead extends Component {
                             </th>
                         </tr>
                     )
+                case TX_TYPE.NFT_TRANSFERS:
+                    return (
+                        <tr>
+                            <th>Tx Hash</th>
+                            <th>Age</th>
+                            <th>From</th>
+                            <th className="table-sign" />
+                            <th>To</th>
+                            <th>Token ID</th>
+                            <th>Quantity</th>
+                        </tr>
+                    )
+                case TX_TYPE.NFT_TX:
+                    return (
+                        <tr>
+                            <th>TxHash</th>
+                            <th>Age</th>
+                            <th>From</th>
+                            <th className="table-sign" />
+                            <th>To</th>
+                            <th>Token ID</th>
+                            <th>Quantity</th>
+                        </tr>
+                    )
+                case TX_TYPE.NFT_HOLDERS:
+                    return (
+                        <tr>
+                            <th>Rank</th>
+                            <th>Addresses</th>
+                            <th>Quantity</th>
+                        </tr>
+                    )
                 default:
                     return <tr />
             }

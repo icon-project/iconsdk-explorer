@@ -40,7 +40,7 @@ export async function getWalletApiUrl() {
   if (process.env.REACT_APP_ENV) {
     switch (process.env.REACT_APP_ENV) {
       case 'local':
-        return 'http://localhost:8080';
+        return 'http://localhost:9080';
       default:
     }
   }

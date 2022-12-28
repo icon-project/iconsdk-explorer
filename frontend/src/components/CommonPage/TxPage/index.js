@@ -79,6 +79,8 @@ class TxPage extends Component {
                 break
             case TX_TYPE.TOKEN_TX:
             case TX_TYPE.TOKEN_HOLDERS:
+            case TX_TYPE.NFT_TX:
+            case TX_TYPE.NFT_HOLDERS:
             case TX_TYPE.CONTRACT_EVENTS:
                 query.contractAddr = urlIndex
                 break
@@ -88,6 +90,7 @@ class TxPage extends Component {
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
+            case TX_TYPE.NFT_TRANSFERS:
                 break
             case TX_TYPE.TRANSACTION_EVENTS:
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
@@ -128,6 +131,8 @@ class TxPage extends Component {
             case TX_TYPE.BLOCK_TX:
             case TX_TYPE.TOKEN_TX:
             case TX_TYPE.TOKEN_HOLDERS:
+            case TX_TYPE.NFT_TX:
+            case TX_TYPE.NFT_HOLDERS:
             case TX_TYPE.TRANSACTION_EVENTS:
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
                 this.urlIndex = pathname.split('/')[2] || ''
@@ -143,6 +148,7 @@ class TxPage extends Component {
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
+            case TX_TYPE.NFT_TRANSFERS:
                 this.pageId = pathname.split('/')[2] || 1
                 break
             case TX_TYPE.BTPS:
@@ -177,6 +183,8 @@ class TxPage extends Component {
             case TX_TYPE.NETWORK_BTPS:
             case TX_TYPE.TOKEN_TX:
             case TX_TYPE.TOKEN_HOLDERS:
+            case TX_TYPE.NFT_TX:
+            case TX_TYPE.NFT_HOLDERS:
             case TX_TYPE.TRANSACTION_EVENTS:
             case TX_TYPE.TRANSACTION_INTERNAL_TX:
                 url = this.makeUrl(page, count, this.urlIndex)
@@ -187,6 +195,7 @@ class TxPage extends Component {
             case TX_TYPE.ADDRESSES:
             case TX_TYPE.TRANSACTIONS:
             case TX_TYPE.TOKEN_TRANSFERS:
+            case TX_TYPE.NFT_TRANSFERS:
                 url = this.makeUrl(page, count)
                 break
             // case TX_TYPE.BTP_NETWORKS:

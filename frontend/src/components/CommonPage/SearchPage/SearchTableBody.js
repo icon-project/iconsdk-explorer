@@ -37,8 +37,16 @@ class SearchTableBody extends Component {
 					return (
 						<tr>
 							<td>{ranking}</td>
-							<td><span className="ellipsis">{tokenText(data.name, data.symbol, data.contractAddr)}</span></td>
+							<td><span className="ellipsis">{tokenText('token', data.name, data.symbol, data.contractAddr)}</span></td>
 							<td>{convertNumberToText(Math.floor(data.volume)) || '-'}<em>USD</em></td>
+						</tr>
+					)
+				case SEARCH_TYPE.NFTS:
+					return (
+						<tr>
+							<td><span className="ellipsis">{tokenText('nft', data.name, data.symbol, data.contractAddr)}</span></td>
+							<td className="on"><span className="ellipsis"><AddressLink to={data.contractAddr} /></span></td>
+							<td>{data.totalSupply}<em>{data.symbol}</em></td>
 						</tr>
 					)
 				default:

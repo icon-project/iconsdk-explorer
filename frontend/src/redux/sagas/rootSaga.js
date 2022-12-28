@@ -10,6 +10,7 @@ import walletSaga from "./walletSaga"
 import chainsSaga from "./chainsSaga";
 import btpsSaga from "./btpsSaga";
 import networksSaga from "./networksSaga";
+import nftsSaga from "./nftsSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -23,6 +24,7 @@ export default function* rootSaga() {
     fork(walletSaga),
     fork(chainsSaga),
     fork(btpsSaga),
-    fork(networksSaga)
+    fork(networksSaga),
+    fork(nftsSaga)
   ]);
 }

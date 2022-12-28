@@ -2666,6 +2666,14 @@ body {
   vertical-align: top;
 }
 
+
+.table-typeF.nft th:nth-child(7) {
+  width: 250px;
+}
+.table-typeF.nft td:nth-child(7) .ellipsis {
+  vertical-align: top;
+}
+
 .table-typeM td:nth-child(1) {
   text-align: center;
 }
@@ -2688,6 +2696,10 @@ body {
 .table-typeM td:nth-child(3) .ellipsis {
   width: 51px;
   vertical-align: top;
+}
+
+.table-typeM.nft td:nth-child(3) {
+  text-align: center;
 }
 
 .table-typeG td:nth-child(1) {
@@ -2838,6 +2850,56 @@ body {
   top: 24px;
 }
 .table-typeI td:nth-child(2) .ellipsis {
+  width: 300px;
+  font-weight: 700;
+}
+
+.table-typeI3 tbody {
+  font-size: 12px;
+}
+.table-typeI3 th:nth-child(1) {
+  width: 40%;
+  color: #b3b3b3;
+}
+.table-typeI3 th:nth-child(2) {
+  width: 40%;
+}
+.table-typeI3 th:nth-child(3) {
+  width: 20%;
+}
+.table-typeI3 td:nth-child(1) {
+  font-size: 12px;
+  color: #1aaaba;
+}
+.table-typeI3 td:nth-child(2) {
+  text-align: center;
+  color: #1aaaba;
+}
+.table-typeI3 td:nth-child(3) {
+  text-align: center;
+  font-size: 10px;
+}
+
+.table-typeI3 i {
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.table-typeI3 i img {
+  width: 100%;
+}
+.table-typeI3 tr i.img {
+  width: 16px;
+  height: 16px;
+  background-position: -200px -350px;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 24px;
+}
+.table-typeI3 td:nth-child(1) .ellipsis {
   width: 300px;
   font-weight: 700;
 }

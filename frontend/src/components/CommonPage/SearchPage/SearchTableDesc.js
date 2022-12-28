@@ -24,6 +24,13 @@ class SearchTableDesc extends Component {
                             Contract(s) found
                         </span>
                     )
+                case SEARCH_TYPE.NFTS:
+                    return (
+                        <span className="cont right">
+                            A total of {listSize} {IRC_VERSION[3]} IRC3 NFT
+                            Contract(s) found
+                        </span>
+                    )
                 default:
                     return <p />
             }

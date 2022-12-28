@@ -16,8 +16,10 @@ import NetworkDetailPage from "./pages/NetworkDetailPage";
 import TransactionListPage from './pages/TransactionListPage';
 import TransactionDetailPage from './pages/TransactionDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
-import TokenListPage from './pages/TokenListPage'
-import TokenDetailPage from './pages/TokenDetailPage'
+import TokenListPage from './pages/TokenListPage';
+import TokenDetailPage from './pages/TokenDetailPage';
+import NFTListPage from "./pages/NFTListPage";
+import NFTDetailPage from "./pages/NFTDetailPage";
 import TxPage from './pages/TxPage'
 import { TX_TYPE, SEARCH_TYPE } from './utils/const'
 import { getIsSolo } from './utils/utils'
@@ -38,7 +40,7 @@ class Routes extends Component {
   }
 
   render() {
-    const isMain = window.location.pathname === '/' 
+    const isMain = window.location.pathname === '/'
 
     return (
       <BodyClassName className='main-back'>
@@ -82,6 +84,20 @@ class Routes extends Component {
                 <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.TOKENS}`} component={TokenListPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.TOKENS}/:pageId`} component={TokenListPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path='/token/:tokenId' component={TokenDetailPage} exact />
+
+                {/*NFT*/}
+                <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.NFTS}`} component={NFTListPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${SEARCH_TYPE.NFTS}/:pageId`} component={NFTListPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path='/nft/:nftId' component={NFTDetailPage} exact />
+
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_TRANSFERS}`} component={TxPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_TRANSFERS}/:pageId`} component={TxPage} />
+
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_HOLDERS}/:nftId`} component={TxPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_HOLDERS}/:nftId/:pageId`} component={TxPage} />
+
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_TX}/:nftId`} component={TxPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.NFT_TX}/:nftId/:pageId`} component={TxPage} />
 
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.TOKEN_TRANSFERS}`} component={TxPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.TOKEN_TRANSFERS}/:pageId`} component={TxPage} />

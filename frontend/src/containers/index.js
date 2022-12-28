@@ -21,6 +21,9 @@ import TransactionDetailPageContainer from './TransactionsPage/TransactionDetail
 import TokenListPageContainer from './TokensPage/TokenListPageContainer'
 import TokenDetailPageContainer from './TokensPage/TokenDetailPageContainer'
 
+import NFTListPageContainer from "./NFTsPage/NFTListPageContainer";
+import NFTDetailPageContainer from "./NFTsPage/NFTDetailPageContainer";
+
 import HeaderContainer from './CommonPage/HeaderContainer'
 import FooterContainer from "./CommonPage/FooterContainer";
 import NotFoundPageContainer from './CommonPage/NotFoundPageContainer'
@@ -49,6 +52,9 @@ export {
 
   TokenListPageContainer,
   TokenDetailPageContainer,
+
+  NFTListPageContainer,
+  NFTDetailPageContainer,
  
   HeaderContainer,
   FooterContainer,

@@ -30,13 +30,17 @@ import {
 import {
   btpList,
   btpTxList
-  // btpInfo,
 } from "../../redux/actions/btpsActions";
 import {
   networkList,
   networkBTPList
-  // networkInfo
 } from "../../redux/actions/networksActions"
+import {
+  nftList,
+  nftTxList,
+  nftTransfersList,
+  nftHoldersList
+} from "../../redux/actions/nftsActions"
 
 function mapStateToProps(state) {
   return {
@@ -60,7 +64,12 @@ function mapStateToProps(state) {
     btps: state.btps.btps,
     btpTx: state.btps.btpTx,
     networks: state.networks.networks,
-    networkBTPs: state.networks.networkBTPs
+    networkBTPs: state.networks.networkBTPs,
+    nfts: state.nfts.nfts,
+    nftTx: state.nfts.nftTx,
+    nftTransfers: state.nfts.nftTransfers,
+    nftHolders: state.nfts.nftHolders,
+    recentNftTx: state.nfts.recentNftTx,
   };
 }
 
@@ -85,7 +94,11 @@ function mapDispatchToProps(dispatch) {
     btpList: payload => dispatch(btpList(payload)),
     btpTxList: payload => dispatch(btpTxList(payload)),
     networkList: payload => dispatch(networkList(payload)),
-    networkBTPList: payload => dispatch(networkBTPList(payload))
+    networkBTPList: payload => dispatch(networkBTPList(payload)),
+    nftList: payload => dispatch(nftList(payload)),
+    nftTxList: payload => dispatch(nftTxList(payload)),
+    nftTransfersList: payload => dispatch(nftTransfersList(payload)),
+    nftHoldersList: payload => dispatch(nftHoldersList(payload))
   };
 }
 

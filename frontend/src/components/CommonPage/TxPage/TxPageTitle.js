@@ -193,6 +193,26 @@ class TxPageTitle extends Component {
                             </span>
                         </p>
                     )
+                case TX_TYPE.NFT_TX:
+                    return (
+                        <p className="title">
+                            NFT Transfers
+                            <span>for NFT {urlIndex}</span>
+                            <span className="right">
+                                A total of<em>{_listSize}</em> nft transfer(s) found
+                            </span>
+                        </p>
+                    )
+                case TX_TYPE.NFT_HOLDERS:
+                    return (
+                        <p className="title">
+                            NFT Holders
+                            <span>for NFT {urlIndex}</span>
+                            <span className="right">
+                                A total of<em>{_totalSize}</em> holder(s) found<em className="gray">(Showing the top {_listSize} holder(s) only)</em>
+                            </span>
+                        </p>
+                    )
                 default:
                     return <p />
             }

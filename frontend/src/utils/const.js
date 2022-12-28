@@ -85,6 +85,7 @@ export const BLOCK_TABS = ['Transactions'];
 export const BTP_TABS = ['BTP Messages'];
 export const NETWORK_TABS = ['BTPs'];
 export const TOKEN_TABS = ['Token Transfers', 'Token Holders', 'Read Contract'];
+export const NFT_TABS = ['NFT Transfers', 'NFT Holders', 'Read Contract'];
 export const TRANSACTION_TABS = ['Internal Transactions', 'Events'];
 
 export const POPUP_TYPE = {
@@ -100,7 +101,8 @@ export const POPUP_TYPE = {
 
 export const SEARCH_TYPE = {
   CONTRACTS: 'contracts',
-  TOKENS: 'tokens'
+  TOKENS: 'tokens',
+  NFTS: 'nfts'
 };
 
 export const SEARCH_TYPE_DATA = {
@@ -121,6 +123,15 @@ export const SEARCH_TYPE_DATA = {
     noBoxText: 'No Token',
     placeholder: 'Search for any token name / address / symbol',
     title: 'Tokens'
+  },
+  [SEARCH_TYPE.NFTS]: {
+    list: 'nfts',
+    getList: 'nftList',
+    tableClassName: 'table-typeI3',
+    contentsClassName: 'contents nfts',
+    noBoxText: 'No NFT',
+    placeholder: 'Search for any nft name',
+    title: 'NFTs'
   }
 };
 
@@ -145,7 +156,10 @@ export const TX_TYPE = {
   CONTRACT_EVENTS: 'contractevents',
   TRANSACTION_EVENTS: 'transactionevents',
   TRANSACTION_INTERNAL_TX: 'transactioninternaltx',
-  TOKEN_HOLDERS: 'tokenholders'
+  TOKEN_HOLDERS: 'tokenholders',
+  NFT_TRANSFERS: 'nfttransfers',
+  NFT_TX: 'nfttx',
+  NFT_HOLDERS: 'nftholders',
 };
 
 export const TX_TYPE_DATA = {
@@ -268,7 +282,25 @@ export const TX_TYPE_DATA = {
     getTxList: 'tokenHoldersList',
     className: 'table-typeM',
     noBoxText: 'No Holder'
-  }
+  },
+  [TX_TYPE.NFT_TRANSFERS]: {
+    tx: 'recentNftTx',
+    getTxList: 'nftTxList',
+    className: 'table-typeN',
+    noBoxText: 'No Transaction'
+  },
+  [TX_TYPE.NFT_TX]: {
+    tx: 'nftTransfers',
+    getTxList: 'nftTransfersList',
+    className: 'table-typeF nft',
+    noBoxText: 'No Transaction'
+  },
+  [TX_TYPE.NFT_HOLDERS]: {
+    tx: 'nftHolders',
+    getTxList: 'nftHoldersList',
+    className: 'table-typeM nft',
+    noBoxText: 'No Holder'
+  },
 };
 
 export const VIEW_NUMBER = false;

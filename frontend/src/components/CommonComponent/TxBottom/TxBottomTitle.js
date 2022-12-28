@@ -136,6 +136,24 @@ class TxPageTitle extends Component {
                             <span>Top<em className="mint" onClick={goAllTx}>{_listSize} Holder(s)</em><em className="gray">(from a total of {_totalSize} holder(s))</em></span>
                         </p>
                     )
+                case TX_TYPE.NFT_TRANSFERS:
+                    return (
+                        <p></p>
+                    )
+                case TX_TYPE.NFT_TX:
+                    return (
+                        <p className="txt">
+                            <span>
+                                A Total of<em className="mint" onClick={goAllTx}>{_listSize} nft transfer(s)</em> found
+                            </span>
+                        </p>
+                    )
+                case TX_TYPE.NFT_HOLDERS:
+                    return (
+                        <p className="txt">
+                            <span>Top<em className="mint" onClick={goAllTx}>{_listSize} Holder(s)</em><em className="gray">(from a total of {_totalSize} holder(s))</em></span>
+                        </p>
+                    )
                 case TX_TYPE.TRANSACTION_EVENTS:
                     return (
                         <p className="txt">

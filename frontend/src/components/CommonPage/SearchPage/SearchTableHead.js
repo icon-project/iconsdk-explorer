@@ -30,6 +30,14 @@ class SearchTableHead extends Component {
                             <th>Volume (24h)</th>
                         </tr>
                     )
+                case SEARCH_TYPE.NFTS:
+                    return (
+                        <tr>
+                            <th>NFT</th>
+                            <th>Address</th>
+                            <th>Total Supply</th>
+                        </tr>
+                    )
                 default:
                     return (
                         <tr></tr>

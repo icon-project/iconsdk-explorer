@@ -304,6 +304,34 @@ class TxTableBody extends Component {
 							<td><span>{data.percentage}</span><em>%</em></td>
 						</tr>
 					)
+				case TX_TYPE.NFT_TRANSFERS:
+					return (
+						<tr>
+							<TxHashCell isError={isError} txHash={data.txHash} />
+							<DateCell date={data.age} />
+							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.contractAddr} />
+							<td><span>{data.tokenId}</span></td>
+							<AmountCell amount={data.quantity} symbol={data.symbol} />
+						</tr>
+					)
+				case TX_TYPE.NFT_TX:
+					return (
+						<tr>
+							<TxHashCell isError={isError} txHash={data.txHash} />
+							<DateCell date={data.age} />
+							<AddressSet fromAddr={data.fromAddr} toAddr={data.toAddr} txType={data.txType} targetContractAddr={data.contractAddr} />
+							<td><span>{data.tokenId}</span></td>
+							<AmountCell amount={data.quantity} symbol={data.symbol} />
+						</tr>
+					)
+				case TX_TYPE.NFT_HOLDERS:
+					return (
+						<tr>
+							<td>{data.rank}</td>
+							<AddressCell targetAddr={addressInData} txType={data.txType} spanNoEllipsis />
+							<AmountCell amount={data.quantity} symbol={data.symbol} />
+						</tr>
+					)
 				default:
 					return <tr></tr>
 			}

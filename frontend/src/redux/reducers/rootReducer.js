@@ -12,6 +12,7 @@ import { storageReducer } from './storageReducer'
 import { chainsReducer } from "./chainsReducer";
 import { btpsReducer } from "./btpsReducer";
 import { networksReducer } from "./networksReducer";
+import { nftsReducer } from "./nftsReducer";
 
 const rootReducer = combineReducers({
   mainPage: mainPageReducer,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   storage: storageReducer,
   chains: chainsReducer,
   btps: btpsReducer,
-  networks: networksReducer
+  networks: networksReducer,
+  nfts: nftsReducer
 });
 
 export default rootReducer;

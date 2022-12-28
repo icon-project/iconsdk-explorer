@@ -168,6 +168,30 @@ const actionTypes = {
   networkBTPList: 'NETWORK_BTP_LIST',
   networkBTPListFulfilled: 'NETWORK_BTP_LIST_FULFILLED',
   networkBTPListRejected: 'NETWORK_BTP_LIST_REJECTED',
+
+  nftList: 'NFT_LIST',
+  nftListFulfilled: 'NFT_LIST_FULFILLED',
+  nftListRejected: 'NFT_LIST_REJECTED',
+
+  nftListSearch: 'NFT_LIST_SEARCH',
+  nftListSearchFulfilled: 'NFT_LIST_FULFILLED_SEARCH',
+  nftListSearchRejected: 'NFT_LIST_REJECTED_SEARCH',
+
+  nftTxList: 'NFT_TX_LIST',
+  nftTxListFulfilled: 'NFT_TX_LIST_FULFILLED',
+  nftTxListRejected: 'NFT_TX_LIST_REJECTED',
+
+  nftSummary: 'NFT_SUMMARY',
+  nftSummaryFulfilled: 'NFT_SUMMARY_FULFILLED',
+  nftSummaryRejected: 'NFT_SUMMARY_REJECTED',
+
+  nftTransfersList: 'NFT_TRANSFERS_LIST',
+  nftTransfersListFulfilled: 'NFT_TRANSFERS_LIST_FULFILLED',
+  nftTransfersListRejected: 'NFT_TRANSFERS_LIST_REJECTED',
+
+  nftHoldersList: 'NFT_HOLDERS_LIST',
+  nftHoldersListFulfilled: 'NFT_HOLDERS_LIST_FULFILLED',
+  nftHoldersListRejected: 'NFT_HOLDERS_LIST_REJECTED',
 }
 
 export default actionTypes

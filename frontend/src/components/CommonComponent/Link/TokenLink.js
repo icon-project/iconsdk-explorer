@@ -1,10 +1,10 @@
 import React from 'react';
 import LinkCell from './LinkCell'
 
-const TokenLink = ({ to, label }) => {
+const TokenLink = ({ pageType, to, label }) => {
   return (
     <LinkCell
-      pageType="token"
+      pageType={pageType}
       aClassName="on"
       to={to}
       label={label}

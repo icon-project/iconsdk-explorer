@@ -268,7 +268,7 @@ export async function makeDownloadLink(address, version) {
     return `${apiUrl}/score/${address}_${version}.zip`
 }
 
-export function tokenText(name, symbol, address, spanClassName) {
+export function tokenText(type, name, symbol, address, spanClassName) {
     const isName = isValidData(name)
     const isSymbol = isValidData(symbol)
 
@@ -289,7 +289,7 @@ export function tokenText(name, symbol, address, spanClassName) {
     if (!address) {
         return text
     } else {
-        return <TokenLink to={address} label={!spanClassName ? text : <span className={spanClassName}>{text}</span>} />
+        return <TokenLink pageType={type} to={address} label={!spanClassName ? text : <span className={spanClassName}>{text}</span>} />
     }
 }
 

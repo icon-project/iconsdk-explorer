@@ -26,6 +26,9 @@ import TransactionDetailPage from './TransactionsPage/TransactionDetailPage'
 import TokenListPage from './TokensPage/TokenListPage'
 import TokenDetailPage from './TokensPage/TokenDetailPage'
 
+import NFTListPage from "./NFTsPage/NFTListPage";
+import NFTDetailPage from "./NFTsPage/NFTDetailPage";
+
 import Header from './Header/Header'
 import Footer from './Footer/Footer'
 import SearchBox from './Header/SearchBox'
@@ -93,6 +96,9 @@ export {
 
   TokenListPage,
   TokenDetailPage,
+
+  NFTListPage,
+  NFTDetailPage,
 
   Header,
   Footer,

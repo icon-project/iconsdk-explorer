@@ -71,6 +71,14 @@ import {
     networkBTPList
 } from "./network";
 
+import {
+    nftList,
+    nftSummary,
+    nftTxList,
+    nftTransfersList,
+    nftHoldersList
+} from "./nft";
+
 export {
     getMainInfo,
     getMainChart,
@@ -122,5 +130,11 @@ export {
 
     networkList,
     networkInfo,
-    networkBTPList
+    networkBTPList,
+
+    nftList,
+    nftSummary,
+    nftTxList,
+    nftTransfersList,
+    nftHoldersList
 }

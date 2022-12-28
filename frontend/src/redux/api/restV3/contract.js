@@ -108,7 +108,7 @@ export async function getScoreStatus(address) {
         address
       }
     }
-    walletApi.post(`/api/v3`, JSON.stringify(param))
+    walletApi.post(`/api/v3/` + chainInfo(), JSON.stringify(param))
       .then(response => {
         resolve(response.data.result);
       })

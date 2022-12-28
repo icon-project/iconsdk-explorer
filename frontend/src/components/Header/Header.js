@@ -111,8 +111,7 @@ class Header extends Component {
                                         </li>
                                         <li
                                             onClick={() => {
-                                                // this.props.history.push('/nfts')
-                                                this.props.history.push('/tokens')
+                                                this.props.history.push('/nfts')
                                             }}
                                         >
                                             <span>NFT List</span>
