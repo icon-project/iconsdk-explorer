@@ -27,6 +27,7 @@ public class TokenTransfers {
 	Integer state;
 	String tokenName;
 	String targetContractAddr;
+	String tokenId;
 
 	public void setTokenTransfer(TTokenTx tokenTx){
 		contractAddr = tokenTx.getContractAddr();
@@ -36,6 +37,7 @@ public class TokenTransfers {
 		toAddr = tokenTx.getToAddr();
 		quantity = tokenTx.getQuantity();
 		fee = tokenTx.getFee();
+		tokenId = tokenTx.getTokenId();
 		state = 1;
 	}
 }

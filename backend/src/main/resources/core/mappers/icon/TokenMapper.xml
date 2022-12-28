@@ -66,7 +66,8 @@
 		T.fee as fee,
 		1 as state,
 		I.symbol as symbol,
-		I.name as tokenName
+		I.name as tokenName,
+		T.token_id as tokenId
 		FROM (
 			SELECT id
 			FROM T_TOKEN_TX
@@ -94,7 +95,8 @@
 		T.fee as fee,
 		1 as state,
 		I.symbol as symbol,
-		I.name as tokenName
+		I.name as tokenName,
+		T.token_id as tokenId
 		FROM (
 			SELECT id, tx_hash, tx_index
 			FROM T_TOKEN_TX_VIEW
@@ -141,6 +143,7 @@
 		</if> 
 	    order by quantity_order desc
 		limit ${page} , ${counting}
+-- TODO IRC3 curRank sort
 	
 	</select>
 	
