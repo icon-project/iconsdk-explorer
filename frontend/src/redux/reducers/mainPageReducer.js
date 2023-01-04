@@ -61,16 +61,17 @@ export function mainPageReducer(state = initialState, action) {
       }
 
     case actionTypes.getMainChartRejected:
-    return {
-      ...state,
-      chart: {
-        ...state.chart,
-        loading: false
+      return {
+        ...state,
+        chart: {
+          ...state.chart,
+          loading: false
+        }
       }
-    }
 
     default: {
       return state
     }
   }
 }
+

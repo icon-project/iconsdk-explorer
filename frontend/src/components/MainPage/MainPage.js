@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { InfoSummary, RecentBlocks, RecentTransactions } from 'components'
+import { RecentBlocks, RecentTransactions } from 'components'
 import { search } from 'redux/actions/searchActions';
 import { connect } from 'react-redux'
 import configData from "../../config/config.json"
@@ -12,7 +12,6 @@ class MainPage extends Component {
     }
 
     input = null
-    notFocus = true
     focused = false
 
     handleChange = e => {
@@ -44,41 +43,35 @@ class MainPage extends Component {
                             <p>{configData.ICONSDK_EXPLORER_NAME}</p>
                             <div className="search-group txt fixing">
                                 <input id='main-top-search-bar'
-                                    ref={ref => { 
-                                        this.input = ref 
-                                        if (this.input) {
-                                            this.input.onfocus = () => {
-                                                this.focused = true;
-                                            };
-                                            this.input.onblur = () => {
-                                                this.focused = false;
-                                            };
-                                        }
-                                    }}
-                                    type="text"
-                                    className="txt-type-search"
-                                    placeholder="Address, TxHash, Block, SCORE"
-                                    value={this.state.value}
-                                    onKeyDown={this.handleKeyDown}
-                                    onChange={this.handleChange}
+                                       ref={ref => {
+                                           this.input = ref
+                                           if (this.input) {
+                                               this.input.onfocus = () => {
+                                                   this.focused = true;
+                                               };
+                                               this.input.onblur = () => {
+                                                   this.focused = false;
+                                               };
+                                           }
+                                       }}
+                                       type="text"
+                                       className="txt-type-search"
+                                       placeholder="Address, TxHash, Block, SCORE"
+                                       value={this.state.value}
+                                       onKeyDown={this.handleKeyDown}
+                                       onChange={this.handleChange}
                                 />
                                 {this.state.value &&
-                                <em onMouseDown={() => {
-                                    this.setState({ value: '' })
-                                }}>
-                                    <i className="img"></i>
-                                </em>}
+                                    <em onMouseDown={() => {
+                                        this.setState({ value: '' })
+                                    }}>
+                                        <i className="img"></i>
+                                    </em>}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="screen0">
-                    <div className="wrap-holder">
-                        <ul className="content">
-                            <InfoSummary {...this.props} />
-                        </ul>
-                    </div>
-                </div>
+                <div className="screen0" />
                 <div className="screen1">
                     <div className="bg">
                         <div className="wrap-holder">

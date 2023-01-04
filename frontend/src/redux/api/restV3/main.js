@@ -14,7 +14,7 @@ export async function getMainInfo() {
       .catch(error => {
         reject(error)
       })
-  })``
+  })
 }
 
 export async function getMainChart() {
@@ -22,7 +22,7 @@ export async function getMainChart() {
   return new Promise((resolve, reject) => {
     trackerApi.get('/v3/' + chainInfo() + '/main/mainChart')
       .then(result => {
-        resolve(result.data.data)
+        resolve(result.data)
       })
       .catch(error => {
         reject(error)
