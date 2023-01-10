@@ -746,3 +746,7 @@ export function getNetworkStateAsString(state) {
             return 'N/A'
     }
 }
+
+export function getChainInfo() {
+    return localStorage.getItem("chainName");
+}

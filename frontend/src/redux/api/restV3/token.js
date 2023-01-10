@@ -1,15 +1,11 @@
-import { makeUrl } from 'utils/utils'
+import { makeUrl, getChainInfo } from 'utils/utils'
 import { trackerApiInstance } from './config'
-
-const chainInfo = () => {
-  return localStorage.getItem("chainName");
-}
 
 export async function tokenList(payload) {
   payload['ircVersion'] = 'IRC2';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/list', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/token/list', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -23,7 +19,7 @@ export async function tokenTxList(payload) {
   payload['ircVersion'] = 'IRC2';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/txList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/token/txList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -37,7 +33,7 @@ export async function tokenSummary(payload) {
   payload['ircVersion'] = 'IRC2';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/summary', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/token/summary', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -55,7 +51,7 @@ export async function tokenHoldersList(payload) {
   payload['ircVersion'] = 'IRC2';
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/token/holders', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/token/holders', payload))
       .then(result => {
         resolve(result.data)
       })

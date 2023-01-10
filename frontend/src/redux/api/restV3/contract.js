@@ -1,15 +1,11 @@
-import { makeUrl } from 'utils/utils'
+import { makeUrl, getChainInfo } from 'utils/utils'
 import { trackerApiInstance, walletApiInstance } from './config'
 import { randomUint32 } from '../../../utils/utils'
-
-const chainInfo = () => {
-  return localStorage.getItem("chainName");
-}
 
 export async function contractList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/list', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/list', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -22,7 +18,7 @@ export async function contractList(payload) {
 export async function contractInfo(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/info', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/info', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -35,7 +31,7 @@ export async function contractInfo(payload) {
 export async function contractDetail(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/detail', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/detail', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -48,7 +44,7 @@ export async function contractDetail(payload) {
 export async function contractTxList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/txList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/txList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -61,7 +57,7 @@ export async function contractTxList(payload) {
 export async function contractTokenTxList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/tokenTxList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/tokenTxList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -74,7 +70,7 @@ export async function contractTokenTxList(payload) {
 export async function contractEventLogList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/eventLogList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/eventLogList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -87,7 +83,7 @@ export async function contractEventLogList(payload) {
 export async function contractInternalTxList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/contract/internalTxList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/contract/internalTxList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -108,7 +104,7 @@ export async function getScoreStatus(address) {
         address
       }
     }
-    walletApi.post(`/api/v3/` + chainInfo(), JSON.stringify(param))
+    walletApi.post(`/api/v3/` + getChainInfo(), JSON.stringify(param))
       .then(response => {
         resolve(response.data.result);
       })

@@ -1,12 +1,8 @@
-import { randomUint32 } from 'utils/utils'
+import { randomUint32, getChainInfo } from 'utils/utils'
 import { walletApiInstance } from './config'
 import IconService, { HttpProvider } from "icon-sdk-js"
 import { getWalletApiUrl } from "./config"
 import axios from 'axios'
-
-const chainInfo = () => {
-  return localStorage.getItem("chainName");
-}
 
 export async function icxGetScore(params) {
   const walletApi = await walletApiInstance()
@@ -18,7 +14,7 @@ export async function icxGetScore(params) {
       id: randomUint32()
     }
     console.log(JSON.stringify(param))
-    walletApi.post(`/api/v3/` + chainInfo(), JSON.stringify(param))
+    walletApi.post(`/api/v3/` + getChainInfo(), JSON.stringify(param))
       .then(response => {
         console.log(response)
         resolve(response);
@@ -47,7 +43,7 @@ export async function icxCall(params) {
       params: params,
       id: randomUint32()
     }
-    walletApi.post(`/api/v3/` + chainInfo(), JSON.stringify(param))
+    walletApi.post(`/api/v3/` + getChainInfo(), JSON.stringify(param))
       .then(response => {
         resolve(response);
       })
@@ -68,7 +64,7 @@ export async function icxCall(params) {
 
 export async function getTransaction(txHash) {
   const walletApiUrl = await getWalletApiUrl()
-  const url = `${walletApiUrl}/api/v3/` + chainInfo();
+  const url = `${walletApiUrl}/api/v3/` + getChainInfo();
   const provider = new HttpProvider(url)
   const iconService = new IconService(provider);
   try {
@@ -82,7 +78,7 @@ export async function getTransaction(txHash) {
 
 export async function getTransactionResult(txHash) {
   const walletApiUrl = await getWalletApiUrl()
-  const url = `${walletApiUrl}/api/v3/` + chainInfo();
+  const url = `${walletApiUrl}/api/v3/` + getChainInfo();
   const provider = new HttpProvider(url)
   const iconService = new IconService(provider);
   try {
@@ -102,7 +98,7 @@ export async function getTransactionResultNotSdk(txHash) {
         'Content-Type': 'text/plain;charset=utf-8',
       },
       method: 'post',
-      url: `${walletApiUrl}/api/v3/` + chainInfo(),
+      url: `${walletApiUrl}/api/v3/` + getChainInfo(),
       data: {
         id: new Date().getTime() * 1000,
         jsonrpc: "2.0",
@@ -128,7 +124,7 @@ export async function getBalance(address) {
         address
       }
     }
-    walletApi.post(`/api/v3/` + chainInfo(), JSON.stringify(param))
+    walletApi.post(`/api/v3/` + getChainInfo(), JSON.stringify(param))
         .then(response => {
           resolve(response.data.result);
         })

@@ -1,14 +1,10 @@
-import { makeUrl } from 'utils/utils'
+import { makeUrl, getChainInfo } from 'utils/utils'
 import { trackerApiInstance } from './config'
-
-const chainInfo = () => {
-  return localStorage.getItem("chainName");
-}
 
 export async function transactionRecentTx(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/transaction/recentTx', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/transaction/recentTx', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -21,7 +17,7 @@ export async function transactionRecentTx(payload) {
 export async function transactionTxDetail(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/transaction/txDetail', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/transaction/txDetail', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -34,7 +30,7 @@ export async function transactionTxDetail(payload) {
 export async function transactionEventLogList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/transaction/eventLogList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/transaction/eventLogList', payload))
       .then(result => {
         resolve(result.data)
       })
@@ -47,7 +43,7 @@ export async function transactionEventLogList(payload) {
 export async function transactionInternalTxList(payload) {
   const trackerApi = await trackerApiInstance()
   return new Promise((resolve, reject) => {
-    trackerApi.get(makeUrl('/v3/' + chainInfo() + '/transaction/internalTxList', payload))
+    trackerApi.get(makeUrl('/v3/' + getChainInfo() + '/transaction/internalTxList', payload))
       .then(result => {
         resolve(result.data)
       })
