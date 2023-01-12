@@ -4,6 +4,7 @@ import TransactionEvents from './TransactionEvents';
 import TransactionInternalTransactions from './TransactionInternalTransactions';
 import { NoBox, TabTable } from 'components';
 import { TX_TYPE, TRANSACTION_TABS } from 'utils/const';
+import { getChainInfo } from "../../../../utils/utils";
 
 class TransactionTabs extends Component {
   render() {
@@ -45,7 +46,7 @@ class TransactionTabs extends Component {
                   txData={transactionInternalTx}
                   goAllTx={() => {
                     this.props.history.push(
-                      `/${TX_TYPE.TRANSACTION_INTERNAL_TX}/${txHash}`
+                      `/${TX_TYPE.TRANSACTION_INTERNAL_TX}/${txHash}#${getChainInfo()}`
                     );
                   }}
                   txType={TX_TYPE.TRANSACTION_INTERNAL_TX}
@@ -57,7 +58,7 @@ class TransactionTabs extends Component {
                   txData={transactionEvents}
                   goAllTx={() => {
                     this.props.history.push(
-                      `/${TX_TYPE.TRANSACTION_EVENTS}/${txHash}`
+                      `/${TX_TYPE.TRANSACTION_EVENTS}/${txHash}#${getChainInfo()}`
                     );
                   }}
                   txType={TX_TYPE.TRANSACTION_EVENTS}

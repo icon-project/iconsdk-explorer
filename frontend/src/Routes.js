@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 import { Popup } from './components/';
 import { HeaderContainer, FooterContainer } from './containers/'
+import InitPage from './pages/InitPage';
 import MainPage from './pages/MainPage';
 import AddressListPage from './pages/AddressListPage';
 import AddressDetailPage from './pages/AddressDetailPage';
@@ -22,9 +23,8 @@ import NFTListPage from "./pages/NFTListPage";
 import NFTDetailPage from "./pages/NFTDetailPage";
 import TxPage from './pages/TxPage'
 import { TX_TYPE, SEARCH_TYPE } from './utils/const'
-import { getIsSolo } from './utils/utils'
+import {getIsSolo, setChainInfo} from './utils/utils'
 import BodyClassName from 'react-body-classname'
-
 
 class Routes extends Component {
   constructor(props) {
@@ -36,11 +36,13 @@ class Routes extends Component {
 
   async componentDidMount() {
     const isSolo = await getIsSolo()
-    this.setState({ isSolo })
+    this.setState({ isSolo})
   }
 
   render() {
-    const isMain = window.location.pathname === '/'
+    const isMain = window.location.pathname === '/main'
+
+    setChainInfo(window.location.hash)
 
     return (
       <BodyClassName className='main-back'>
@@ -49,7 +51,8 @@ class Routes extends Component {
             <div className={`wrap ${isMain ? 'home' : 'sub'}`}>
               <HeaderContainer />
               <Switch>
-                <Route onEnter={window.scroll(0, 0)} path='/' component={MainPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path='/' component={InitPage} exact />
+                <Route onEnter={window.scroll(0, 0)} path='/main' component={MainPage} exact />
 
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESSES}`} component={AddressListPage} exact />
                 <Route onEnter={window.scroll(0, 0)} path={`/${TX_TYPE.ADDRESSES}/:pageId`} component={AddressListPage} />

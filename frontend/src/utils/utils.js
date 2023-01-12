@@ -6,6 +6,7 @@ import { IconConverter, IconAmount } from 'icon-sdk-js'
 import {TokenLink} from 'components'
 import {REDUX_STEP, SERVER_TX_TYPE} from './const'
 import { getIsSoloVersion } from 'redux/api/restV3/config'
+import { chainInfoList } from "redux/api/restV3/chains";
 
 moment.updateLocale('en', {
     relativeTime: {
@@ -749,4 +750,49 @@ export function getNetworkStateAsString(state) {
 
 export function getChainInfo() {
     return localStorage.getItem("chainName");
+}
+
+export function getTabHash(hash) {
+    const hashes = hash.split("#")
+    if(hashes.length > 2) {
+        return '#' + hashes[1];
+    } else {
+        return hash;
+    }
+}
+
+export function setChainInfo(hash) {
+    if(hash === '' || hash === undefined) {
+        return initChainInfo(hash);
+    }
+    const hashes = hash.split("#")
+    if(hashes.length > 2) {
+        localStorage.setItem("chainName", hashes[2])
+        return hashes[2];
+    } else {
+        localStorage.setItem("chainName", hashes[1])
+        return hashes[1];
+    }
+}
+
+export async function initChainInfo(hash) {
+    if(hash === '' || hash === undefined) {
+        const chains = await chainInfoList();
+        if(chains.data.length > 0) {
+            localStorage.setItem("chainName", chains.data[0].chainName);
+            return chains.data[0].chainName;
+        } else {
+            localStorage.removeItem("chainName");
+            return '';
+        }
+    } else {
+        const hashes = hash.split("#")
+        if(hashes.length > 2) {
+            localStorage.setItem("chainName", hashes[2])
+            return hashes[2];
+        } else {
+            localStorage.setItem("chainName", hashes[1])
+            return hashes[1];
+        }
+    }
 }

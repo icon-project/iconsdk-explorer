@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { numberWithCommas, convertNumberToText, dateToUTC, utcDateInfo } from 'utils/utils'
+import {numberWithCommas, convertNumberToText, dateToUTC, utcDateInfo, getChainInfo} from 'utils/utils'
 import { TX_TYPE } from 'utils/const'
 import { BlockLink, AddressLink, LoadingComponent } from 'components'
 import configData from '../../../config/config.json'
@@ -13,7 +13,7 @@ class BlockInfo extends Component {
         if (height === 0) return
 
         const prevHeight = height - 1
-        this.props.history.push('/block/' + prevHeight)
+        this.props.history.push(`/block/${prevHeight}#${getChainInfo()}`)
     }
 
     handleNextBlock = () => {
@@ -23,14 +23,14 @@ class BlockInfo extends Component {
         if (lastBlock !== '-') return
 
         const nextHeight = height + 1
-        this.props.history.push('/block/' + nextHeight)
+        this.props.history.push(`/block/${nextHeight}#${getChainInfo()}`)
     }
 
     goAllTx = () => {
         const { block } = this.props
         const { data } = block
         const { height } = data
-        this.props.history.push(`/${TX_TYPE.BLOCK_TX}/${height}`)
+        this.props.history.push(`/${TX_TYPE.BLOCK_TX}/${height}#${getChainInfo()}`)
     }
 
     render() {

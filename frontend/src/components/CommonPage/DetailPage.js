@@ -3,7 +3,9 @@ import {
     startsWith,
     findTabIndex,
     noSpaceLowerCase,
-    isHxAddress
+    isHxAddress,
+    getChainInfo,
+    getTabHash
 } from 'utils/utils'
 import {
     NotFoundPage,
@@ -32,8 +34,10 @@ class DetailPage extends Component {
             return
         }
         else {
-            const { hash: currentHash } = this.props.url
-            const { hash: nextHash } = nextProps.url
+            const { hash: cHash} = this.props.url
+            const currentHash = getTabHash(cHash)
+            const { hash: nHash } = nextProps.url
+            const nextHash = getTabHash(nHash)
             const { TABS: currentTabs } = this.props
             const { TABS: nextTabs } = nextProps
             if (currentHash !== nextHash || currentTabs.length !== nextTabs.length) {
@@ -53,7 +57,8 @@ class DetailPage extends Component {
             } else {
                 this.props.getInfo(query)
             }
-            this.setTab(findTabIndex(TABS, url.hash), query)
+            const hash = getTabHash(url.hash)
+            this.setTab(findTabIndex(TABS, hash), query)
         }
     }
 
@@ -81,13 +86,13 @@ class DetailPage extends Component {
     changeTab = (index) => {
         const { TABS, url } = this.props
         const { pathname } = url
-        this.props.history.push(`${pathname}#${noSpaceLowerCase(TABS[index])}`);
+        this.props.history.push(`${pathname}#${noSpaceLowerCase(TABS[index])}#${getChainInfo()}`);
     }
 
     render() {
         const { loading, error, pending } = this.props;
         const isNotFoundPage = !loading && error !== "" && !isHxAddress(error) && !pending
-        
+
         const Content = () => {
             if(pending){
                 return <PendingPage error={error}/>

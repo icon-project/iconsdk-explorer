@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getChainInfo } from "utils/utils";
 
 const LinkCell = ({ pageType, to, label, aClassName, onClick }) => {
     return (
         <Link
             className={aClassName}
-            to={`/${pageType}/${to}`}
+            to={`/${pageType}/${to}#${getChainInfo()}`}
             onClick={() => { if (typeof onClick === 'function') { onClick() } }}            
             title={to}
         >

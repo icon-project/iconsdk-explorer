@@ -4,6 +4,7 @@ import { SearchBox } from 'components'
 import { Connect } from 'components'
 import { withRouter } from 'react-router-dom'
 import configData from "../../config/config.json";
+import { getChainInfo } from "../../utils/utils";
 
 class Header extends Component {
     constructor(props) {
@@ -46,14 +47,14 @@ class Header extends Component {
                                     <ol className="sub-menu">
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/addresses')
+                                                this.props.history.push(`/addresses#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>Addresses List</span>
                                         </li>
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/contracts')
+                                                this.props.history.push(`/contracts#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>Contracts List</span>
@@ -62,7 +63,7 @@ class Header extends Component {
                                 </li>
                                 <li
                                     onClick={() => {
-                                        this.props.history.push('/blocks')
+                                        this.props.history.push(`/blocks#${getChainInfo()}`)
                                     }}
                                 >
                                     <span>Block</span>
@@ -75,14 +76,14 @@ class Header extends Component {
                                     <ol className="sub-menu">
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/networks')
+                                                this.props.history.push(`/networks#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>Networks</span>
                                         </li>
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/btps')
+                                                this.props.history.push(`/btps#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>BTPs</span>
@@ -91,7 +92,7 @@ class Header extends Component {
                                 </li>
                                 <li
                                     onClick={() => {
-                                        this.props.history.push('/transactions')
+                                        this.props.history.push(`/transactions#${getChainInfo()}`)
                                     }}
                                 >
                                     <span>Transaction</span>
@@ -104,21 +105,21 @@ class Header extends Component {
                                     <ol className="sub-menu">
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/tokens')
+                                                this.props.history.push(`/tokens#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>Tokens List</span>
                                         </li>
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/nfts')
+                                                this.props.history.push(`/nfts#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>NFT List</span>
                                         </li>
                                         <li
                                             onClick={() => {
-                                                this.props.history.push('/tokentransfers')
+                                                this.props.history.push(`/tokentransfers#${getChainInfo()}`)
                                             }}
                                         >
                                             <span>Token Transfers List</span>

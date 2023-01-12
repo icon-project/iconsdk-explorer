@@ -9,6 +9,7 @@ import {
     NoBox,
     TabTable
 } from 'components'
+import { getChainInfo } from "utils/utils";
 
 class BlockTabs extends Component {
 
@@ -28,7 +29,7 @@ class BlockTabs extends Component {
                             return (
                                 <BlockTransactions 
                                     txData={blockTx} 
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.BLOCK_TX}/${height}`)}} 
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.BLOCK_TX}/${height}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.BLOCK_TX} 
                                 />
                             )

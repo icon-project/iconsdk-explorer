@@ -3,6 +3,7 @@ import { requestAddress } from '../../utils/connect'
 import { CopyButton } from 'components'
 import checkIconsdk from '../../lib/check-iconsdk'
 import NotificationManager from 'utils/NotificationManager'
+import { getChainInfo } from "../../utils/utils";
 
 class Connect extends Component {
     constructor(props) {
@@ -56,7 +57,7 @@ class Connect extends Component {
                 }),
             )
             this.props.setAddress(walletAddress)
-            this.props.history.push(`/address/${walletAddress}`)
+            this.props.history.push(`/address/${walletAddress}#${getChainInfo()}`)
         })
     }
 
@@ -86,7 +87,7 @@ class Connect extends Component {
                         <span
                             className="btn"
                             onClick={() => {
-                                this.props.history.push(`/address/${walletAddress}`)
+                                this.props.history.push(`/address/${walletAddress}#${getChainInfo()}`)
                             }}
                         >
                             View Details

@@ -9,6 +9,8 @@ class Footer extends Component {
 
 	onChainClick = chainName => {
 		localStorage.setItem("chainName", chainName)
+		const newUrl = `${window.location.pathname}${window.location.search}#${chainName}`
+		this.props.history.push(newUrl);
 		window.location.reload();
 	}
 

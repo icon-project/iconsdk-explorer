@@ -9,6 +9,7 @@ import {
     NoBox,
     TabTable
 } from 'components'
+import { getChainInfo } from "utils/utils";
 
 class BTPTabs extends Component {
 
@@ -28,7 +29,7 @@ class BTPTabs extends Component {
                             return (
                                 <BTPTransactions
                                     txData={btpTx}
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.BTP_TX}/${height}`)}}
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.BTP_TX}/${height}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.BTP_TX}
                                 />
                             )

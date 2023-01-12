@@ -10,7 +10,7 @@ import {
     NoBox,
     SearchInput,
 } from 'components'
-import { calcMaxPageNum, isNumeric } from 'utils/utils'
+import {calcMaxPageNum, getChainInfo, isNumeric} from 'utils/utils'
 import { SEARCH_TYPE_DATA, CONTRACT_STATUS_NUM } from 'utils/const'
 
 class SearchPage extends Component {
@@ -112,13 +112,13 @@ class SearchPage extends Component {
         const count = this.getCount()
         const { status, keyword } = this.state
         const url = this.makeUrl(page, { count, status, keyword })
-        this.props.history.push(url)
+        this.props.history.push(url + `#${getChainInfo()}`)
     }
 
     getListByCount = count => {
         const { status, keyword } = this.state
         const url = this.makeUrl(1, { count, status, keyword })
-        this.props.history.push(url)
+        this.props.history.push(url + `#${getChainInfo()}`)
     }
 
     getListByStatus = status => {
@@ -126,7 +126,7 @@ class SearchPage extends Component {
             const { keyword } = this.state
             const count = this.getCount()
             const url = this.makeUrl(1, { count, status, keyword })
-            this.props.history.push(url)
+            this.props.history.push(url + `#${getChainInfo()}`)
         })
     }
 
@@ -139,7 +139,7 @@ class SearchPage extends Component {
             const { status } = this.state
             const count = this.getCount()
             const url = this.makeUrl(1, { count, status, keyword: nextSearch })
-            this.props.history.push(url)
+            this.props.history.push(url + `#${getChainInfo()}`)
         })
     }
 

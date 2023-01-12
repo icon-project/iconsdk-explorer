@@ -11,7 +11,6 @@ import {
 class NFTDetailPage extends Component {
 
     render() {
-        console.log("NFT Detail Page: ", this.props)
         const { nft } = this.props;
         const { loading, error } = nft
 

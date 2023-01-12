@@ -11,7 +11,7 @@ import {
     NoBox,
 } from 'components'
 import { TX_TYPE, TX_TYPE_DATA } from 'utils/const'
-import { calcMaxPageNum, isNumeric } from 'utils/utils'
+import {calcMaxPageNum, getChainInfo, isNumeric} from 'utils/utils'
 
 class TxPage extends Component {
     constructor(props) {
@@ -202,7 +202,7 @@ class TxPage extends Component {
             default:
                 return
         }
-        this.props.history.push(url)
+        this.props.history.push(url + `#${getChainInfo()}`)
     }
 
     makeUrl = (page, count, urlIndex) => {

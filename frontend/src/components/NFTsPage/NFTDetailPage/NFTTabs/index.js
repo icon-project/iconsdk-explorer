@@ -11,6 +11,7 @@ import {
     TX_TYPE,
     NFT_TABS,
 } from 'utils/const'
+import { getChainInfo } from "utils/utils";
 
 class NFTTabs extends Component {
 
@@ -30,7 +31,7 @@ class NFTTabs extends Component {
                             return (
                                 <NFTTransfers
                                     txData={nftTransfers}
-                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.NFT_TX}/${contract}`) }}
+                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.NFT_TX}/${contract}#${getChainInfo()}`) }}
                                     txType={TX_TYPE.NFT_TX}
                                 />
                             )
@@ -38,7 +39,7 @@ class NFTTabs extends Component {
                             return (
                                 <NFTHolders
                                     txData={nftHolders}
-                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.NFT_HOLDERS}/${contract}`) }}
+                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.NFT_HOLDERS}/${contract}#${getChainInfo()}`) }}
                                     txType={TX_TYPE.NFT_HOLDERS}
                                 />
                             )

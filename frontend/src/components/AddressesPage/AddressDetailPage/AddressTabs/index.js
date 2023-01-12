@@ -11,6 +11,7 @@ import {
     NoBox,
     TabTable
 } from 'components'
+import { getChainInfo } from "utils/utils";
 
 class WalletTabs extends Component {
     render() {
@@ -41,7 +42,7 @@ class WalletTabs extends Component {
                             return (
                                 <AddressTransactions
                                     txData={walletTx}
-                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_TX}/${address}`) }}
+                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_TX}/${address}#${getChainInfo()}`) }}
                                     txType={TX_TYPE.ADDRESS_TX}
                                     address={address}
                                 />
@@ -50,7 +51,7 @@ class WalletTabs extends Component {
                             return (
                                 <AddressInternalTransactions
                                     txData={addressInternalTx}
-                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_INTERNAL_TX}/${address}`) }}
+                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_INTERNAL_TX}/${address}#${getChainInfo()}`) }}
                                     txType={TX_TYPE.ADDRESS_INTERNAL_TX}
                                     address={address}
                                 />
@@ -59,7 +60,7 @@ class WalletTabs extends Component {
                             return (
                                 <AddressTokenTransfers
                                     txData={walletTokenTx}
-                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_TOKEN_TX}/${address}`) }}
+                                    goAllTx={() => { this.props.history.push(`/${TX_TYPE.ADDRESS_TOKEN_TX}/${address}#${getChainInfo()}`) }}
                                     txType={TX_TYPE.ADDRESS_TOKEN_TX}
                                     address={address}
                                 />

@@ -14,7 +14,7 @@ import {
     TX_TYPE,
     CONTRACT_TABS,
 } from 'utils/const'
-
+import { getChainInfo } from "utils/utils";
 
 class ContractTabs extends Component {
 
@@ -34,7 +34,7 @@ class ContractTabs extends Component {
                             return (
                                 <ContractTransactions 
                                     txData={contractTx}
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_TX}/${address}`)}} 
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_TX}/${address}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.CONTRACT_TX}
                                     address={address}
                                 />
@@ -43,7 +43,7 @@ class ContractTabs extends Component {
                             return (
                                 <ContractInternalTransactions 
                                     txData={contractInternalTx}
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_INTERNAL_TX}/${address}`)}} 
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_INTERNAL_TX}/${address}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.CONTRACT_INTERNAL_TX}
                                     address={address}
                                 />
@@ -52,7 +52,7 @@ class ContractTabs extends Component {
                             return (
                                 <ContractTokenTransfers 
                                     txData={contractTokenTx}
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_TOKEN_TX}/${address}`)}} 
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_TOKEN_TX}/${address}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.CONTRACT_TOKEN_TX}
                                     address={address}
                                 />
@@ -76,7 +76,7 @@ class ContractTabs extends Component {
                             return (
                                 <ContractEvents
                                     txData={contractEvents}                            
-                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_EVENTS}/${address}`)}} 
+                                    goAllTx={() => {this.props.history.push(`/${TX_TYPE.CONTRACT_EVENTS}/${address}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.CONTRACT_EVENTS}
                                 />
                             )
