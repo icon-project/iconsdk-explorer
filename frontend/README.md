@@ -1,4 +1,4 @@
-# ICON Tracker
+# ICONSDK-EXPLORER Tracker
 
 ### Development Setup
 
