@@ -52,7 +52,7 @@ public interface V3BlockChainAdapter {
 
     String getBtpHeader(String url, String networkId, Integer height) throws Exception;
 
-    String getBtpMessage(String url, String networkId, Integer height) throws Exception;
+    JsonArray getBtpMessage(String url, String networkId, Integer height) throws Exception;
 
 
 

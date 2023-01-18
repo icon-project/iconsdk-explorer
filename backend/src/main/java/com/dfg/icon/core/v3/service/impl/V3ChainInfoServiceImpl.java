@@ -28,9 +28,6 @@ public class V3ChainInfoServiceImpl implements V3ChainInfoService {
 
     @Autowired
     private TChainInfoMapper chainInfoMapper;
-//
-//    @Autowired
-//    private ChainInfoMapper chainInfoMapper;
 
     @Autowired
     private ChainDatabase chainDatabase;

@@ -10,6 +10,6 @@ public interface V3BtpHeaderService {
 
 	CommonRes getBtpHeader(int height, String networkId);
 
-	CommonRes getBtpMessage(int height, String networkId);
+	CommonRes getBtpMessage(String url, int height, String networkId, int sequenceNumber) throws Exception;
 
 }

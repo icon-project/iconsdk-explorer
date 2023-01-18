@@ -412,7 +412,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 	}
 
 	@Override
-	public String getBtpMessage(String url, String networkId, Integer height) throws Exception{
+	public JsonArray getBtpMessage(String url, String networkId, Integer height) throws Exception{
 		try{
 			HttpEntity requestEntity = null;
 			logger.info("[V3 BlockChain] getBtpMessage. url = {}, networkId = {}", url, networkId);
@@ -426,7 +426,7 @@ public class V3BlockChainClient implements V3BlockChainAdapter {
 			if(rootObject == null || rootObject.get("result") == null || rootObject.get("result").isJsonNull()) {
 				return null;
 			}
-			return rootObject.get("result").getAsString();
+			return rootObject.get("result").getAsJsonArray();
 		} catch (HttpClientErrorException re) {
 			logger.error("HttpClientError getBtpMessage. errMsg = [{}]", re.getResponseBodyAsString());
 			throw new IconException(IconCode.TRANSACTION_ERROR, re.getMessage());

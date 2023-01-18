@@ -6,6 +6,7 @@ import com.dfg.icon.core.mappers.icon.BlockMapper;
 import com.dfg.icon.core.v3.service.V3BlockService;
 import com.dfg.icon.core.v3.service.V3BtpHeaderService;
 import com.dfg.icon.core.v3.service.V3BtpNetworkService;
+import com.dfg.icon.core.v3.service.V3ChainInfoService;
 import com.dfg.icon.core.v3.service.database.tenant.TenantContext;
 import com.dfg.icon.util.CommonUtil;
 import com.dfg.icon.web.v0.dto.TxInBlock;
@@ -17,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import jnr.ffi.annotations.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class V3SelectBtpController {
 
 	@Autowired
 	V3BtpNetworkService btpNetworkService;
+
+	@Autowired
+	V3ChainInfoService chainInfoService;
 
     
     @ApiOperation(value = "BTP Header List 페이징 조회" , notes="BTP Header list 조회")
@@ -190,4 +195,39 @@ public class V3SelectBtpController {
 		}
 		return cRes;
 	}
+
+	@ApiOperation(value = "BTP Message " , notes="BTP Message 조회")
+	@ApiResponses(
+			value = {
+					@ApiResponse(code = 200, message = "Success", response = CommonRes.class)
+			})
+	@GetMapping(value = "/message")
+	public CommonRes getBtpMessage(@PathVariable String chainName,
+								   @Valid
+								   @RequestParam(value = "height", required = false) Integer height,
+								   @RequestParam(value = "sequenceNumber", required = false) Integer sn,
+								   @RequestParam(value = "networkId", required = false) String networkId
+	) {
+		String url = chainInfoService.chainHost(chainName);
+		TenantContext.setTenant(chainName);
+		CommonRes cRes = new CommonRes();
+		try {
+			if(networkId == "" || networkId == null) {
+				throw new IconException(IconCode.BTP_ERROR);
+			}
+
+			logger.info("====================");
+			logger.info("BTP Message : {}");
+
+			cRes = btpHeaderService.getBtpMessage(url, height, networkId, sn) ;
+
+		} catch (Exception e) {
+			logger.error("blockDetail", e);
+			cRes.setError();
+		} finally {
+			TenantContext.clearTenant();
+		}
+		return cRes;
+	}
+
 }
