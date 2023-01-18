@@ -50,14 +50,14 @@ class Header extends Component {
                                                 this.props.history.push(`/addresses#${getChainInfo()}`)
                                             }}
                                         >
-                                            <span>Addresses List</span>
+                                            <span>Addresses</span>
                                         </li>
                                         <li
                                             onClick={() => {
                                                 this.props.history.push(`/contracts#${getChainInfo()}`)
                                             }}
                                         >
-                                            <span>Contracts List</span>
+                                            <span>Contracts</span>
                                         </li>
                                     </ol>
                                 </li>
@@ -108,21 +108,21 @@ class Header extends Component {
                                                 this.props.history.push(`/tokens#${getChainInfo()}`)
                                             }}
                                         >
-                                            <span>Tokens List</span>
+                                            <span>Tokens</span>
                                         </li>
                                         <li
                                             onClick={() => {
                                                 this.props.history.push(`/nfts#${getChainInfo()}`)
                                             }}
                                         >
-                                            <span>NFT List</span>
+                                            <span>NFTs</span>
                                         </li>
                                         <li
                                             onClick={() => {
                                                 this.props.history.push(`/tokentransfers#${getChainInfo()}`)
                                             }}
                                         >
-                                            <span>Token Transfers List</span>
+                                            <span>Token Transfers</span>
                                         </li>
                                     </ol>
                                 </li>
