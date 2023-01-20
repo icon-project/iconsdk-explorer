@@ -11,7 +11,6 @@ import {
 class TokenDetailPage extends Component {
 
     render() {
-        console.log("Token Detail Page: ", this.props)
         const { token } = this.props;
         const { loading, error } = token
 

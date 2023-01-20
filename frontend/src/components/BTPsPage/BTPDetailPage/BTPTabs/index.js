@@ -31,6 +31,7 @@ class BTPTabs extends Component {
                                     txData={btpTx}
                                     goAllTx={() => {this.props.history.push(`/${TX_TYPE.BTP_TX}/${height}#${getChainInfo()}`)}}
                                     txType={TX_TYPE.BTP_TX}
+                                    btpMessage={this.props.btpMessage}
                                 />
                             )
                         default:

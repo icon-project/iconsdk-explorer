@@ -91,12 +91,8 @@ export const TRANSACTION_TABS = ['Internal Transactions', 'Events'];
 export const POPUP_TYPE = {
   QR: 'qr',
   DETAIL: 'detail',
-  SCAM: 'scam',
   SEARCH: 'search',
-  ABOUT: 'about',
-  SUGGEST: 'suggest',
-  IGLOBAL: 'iglobal',
-  SPONSOR: 'sponsor'
+  BTP_MESSAGE: 'btpMessage'
 };
 
 export const SEARCH_TYPE = {

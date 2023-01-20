@@ -5,6 +5,7 @@ import ContractDetail from './ContractDetail';
 import Search from './Search';
 import { initPopup } from '../../redux/actions/popupActions';
 import { POPUP_TYPE } from 'utils/const';
+import BtpMessage from "./BtpMessage";
 
 class Popup extends Component {
   componentWillReceiveProps(nextProps) {
@@ -37,6 +38,13 @@ class Popup extends Component {
           new CustomEvent('CUSTOM_FX', {
             detail: { type: 'POPUP_OPEN', param: 'search' }
           })
+        );
+        break;
+      case POPUP_TYPE.BTP_MESSAGE:
+        window.dispatchEvent(
+            new CustomEvent('CUSTOM_FX', {
+              detail: { type: 'POPUP_OPEN', param: 'btpMessage' }
+            })
         );
         break;
       default:
@@ -75,6 +83,8 @@ class Popup extends Component {
     const isDetail = type === POPUP_TYPE.DETAIL;
     const detailData = isDetail ? data : {};
     const isSearch = type === POPUP_TYPE.SEARCH;
+    const isBtpMessage = type === POPUP_TYPE.BTP_MESSAGE;
+    const btpMessage = isBtpMessage ? data : {};
     const searchData = isSearch ? data : {};
     return (
       <React.Fragment>
@@ -98,6 +108,19 @@ class Popup extends Component {
                 data={detailData}
                 closeDetail={this.closeDetail}
               />
+            )}
+          </div>
+        </div>
+        <div key='btpMessage' className='popup-wrap btpMessage'>
+          <div className='dimmed' />
+          <div className='popup btpMessage'>
+            <span className='close' onClick={this.closePopup}>
+              <em className='img' />
+            </span>
+            {isBtpMessage && (
+                <BtpMessage
+                    data={btpMessage}
+                />
             )}
           </div>
         </div>

@@ -7,7 +7,7 @@ import {TX_TYPE} from "../../../utils/const";
 class TxBottomComponent extends Component {
 
     render() {
-        const { txData, txType, goAllTx, address, tableClassName, noBoxText, networks } = this.props
+        const { txData, txType, goAllTx, address, tableClassName, noBoxText, networks, btpMessage } = this.props
 
         const { data, listSize, totalSize, loading } = txData
 
@@ -34,7 +34,8 @@ class TxBottomComponent extends Component {
                                                 item.method = words[0] + '\n(' + words[1];
                                             }
                                         }
-                                        return <TxTableBody key={index} data={item} txType={txType} address={address} networks={networks}/>
+                                        return <TxTableBody key={index} data={item} txType={txType} address={address} networks={networks}
+                                            btpMessage={btpMessage}/>
                                     })}
                                 </tbody>
                             </table>

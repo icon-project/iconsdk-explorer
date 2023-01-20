@@ -157,6 +157,10 @@ const actionTypes = {
   btpTxListFulfilled: 'BTP_TX_LIST_FULFILLED',
   btpTxListRejected: 'BTP_TX_LIST_REJECTED',
 
+  btpMessage: 'BTP_MESSAGE',
+  btpMessageFulfilled: 'BTP_MESSAGE_FULFILLED',
+  btpMessageRejected: 'BTP_MESSAGE_REJECTED',
+
   networkList: 'NETWORK_LIST',
   networkListFulfilled: 'NETWORK_LIST_FULFILLED',
   networkListRejected: 'NETWORK_LIST_REJECTED',

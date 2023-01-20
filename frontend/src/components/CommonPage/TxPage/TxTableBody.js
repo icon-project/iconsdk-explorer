@@ -246,7 +246,7 @@ class TxTableBody extends Component {
 						<tr>
 							<td>{data.btpMessageSn}</td>
 							<TxHashCell isError={isError} txHash={data.txHash} />
-							<td>message View Button</td>
+							<td><BTPMessageButton btpTx={data} btpMessage={this.props.btpMessage} /></td>
 						</tr>
 					)
 				case TX_TYPE.NETWORKS:
@@ -338,6 +338,23 @@ class TxTableBody extends Component {
 		}
 
 		return TableRow(this.props)
+	}
+}
+
+class BTPMessageButton extends Component {
+	handleClick = () => {
+		const { btpHeaderBlockHeight, btpHeaderNetworkId, btpMessageSn } = this.props.btpTx
+		this.props.btpMessage({
+			'height': btpHeaderBlockHeight, 'sequenceNumber': btpMessageSn, 'networkId': btpHeaderNetworkId
+		})
+	}
+
+	render() {
+		return (
+			<button onClick={this.handleClick} className="btn-type-normal status">
+				Message
+			</button>
+		)
 	}
 }
 

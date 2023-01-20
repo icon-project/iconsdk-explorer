@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
   btpInfo,
   btpTxList,
+  btpMessage
 } from '../../redux/actions/btpsActions';
 import {
   networkList,
@@ -24,7 +25,8 @@ function mapDispatchToProps(dispatch) {
     btpInfo: (payload) => dispatch(btpInfo(payload)),
     btpTxList: (payload) => dispatch(btpTxList(payload)),
     networkList: (payload) => dispatch(networkList(payload)),
-    networkInfo: (payload) => dispatch(networkInfo(payload))
+    networkInfo: (payload) => dispatch(networkInfo(payload)),
+    btpMessage: (payload) => dispatch(btpMessage(payload))
   };
 }
 

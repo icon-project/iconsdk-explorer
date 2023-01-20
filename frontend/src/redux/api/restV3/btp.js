@@ -40,3 +40,16 @@ export async function btpTxList(payload) {
             })
     })
 }
+
+export async function btpMessage(payload) {
+    const trackerApi = await trackerApiInstance()
+    return new Promise((resolve, reject) => {
+        trackerApi.get(makeUrl(`/v3/` + getChainInfo() + `/btp/message`, payload))
+            .then(result => {
+                resolve(result.data)
+            })
+            .catch(error => {
+                reject(error)
+            })
+    })
+}

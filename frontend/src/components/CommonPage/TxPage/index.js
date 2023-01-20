@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import queryString from 'query-string'
 import TxPageTitle from './TxPageTitle'
@@ -251,7 +251,7 @@ class TxPage extends Component {
                                         item.method = words[0] + '\n(' + words[1];
                                     }
                                 }
-                                return <TxTableBody key={index} data={item} txType={this.txType} address={this.urlIndex} networks={this.props.networks}/>
+                                return <TxTableBody key={index} data={item} txType={this.txType} address={this.urlIndex} networks={this.props.networks} btpMessage={this.props.btpMessage}/>
                             })}
                             </tbody>
                         </table>

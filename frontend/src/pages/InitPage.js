@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { getChainInfo, initChainInfo, setChainInfo} from 'utils/utils'
+import { Component } from 'react';
+import { getChainInfo, initChainInfo } from 'utils/utils'
 
 class InitPage extends Component {
 

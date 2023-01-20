@@ -62,7 +62,8 @@ import {
 import {
     btpList,
     btpInfo,
-    btpTxList
+    btpTxList,
+    btpMessage
 } from './btp'
 
 import {
@@ -127,6 +128,7 @@ export {
     btpList,
     btpInfo,
     btpTxList,
+    btpMessage,
 
     networkList,
     networkInfo,

@@ -21,3 +21,10 @@ export function btpTxList(payload) {
   }
 }
 
+export function btpMessage(payload) {
+  return {
+    type: actionTypes.btpMessage,
+    payload
+  }
+}
+
