@@ -8,7 +8,7 @@ You can install modules with npm:
 
 ```sh
 # Install dependencies
-npm install
+yarn install
 ```
 
 ##### Run development mode:
