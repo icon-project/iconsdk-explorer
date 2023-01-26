@@ -50,12 +50,7 @@ public class V0SelectWalletController {
 
 	@Autowired
 	TransactionMapper transactionMapper;
-	
-	@Value("${server.url}")
-	String serverUrl;
-	
-	@Value("${qrCode.path}")
-	String qrcodePath;
+
 
 	@ApiOperation(value = "Addresses List" , notes="outputvalue [ data : 결과 , totalData: 총 주소 갯수  ] ")
 	@ApiResponses(

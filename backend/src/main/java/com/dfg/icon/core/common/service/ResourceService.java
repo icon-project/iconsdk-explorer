@@ -8,7 +8,6 @@ public interface ResourceService {
     Integer getLimitAddress();
     Integer getLimitMainBlock();
     Integer getLimitMainTx();
-    Boolean isIcxStatic();
     Boolean isLogSpeed();
     String getTrackerVersion();
 }

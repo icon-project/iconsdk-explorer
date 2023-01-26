@@ -151,14 +151,7 @@ public class V3BlockScheduler {
 		return new TenantAwareThread(chainName, () -> {
 			while (!Thread.interrupted()) {
 				if(channel.getRequestState(threadName) == true){
-					//TODO for test
 					sLogger.info("----------- updateBlockSync ---------");
-
-					//TODO refactoring (check version???)
-					//		if(!IconCode.SCHEDULER_VER3.getCode().equals(resourceService.getBlockSchedulerVersion())){
-					//			return ;
-					//		}
-					// 실제 데이터 수집 작업
 					try {
 						// get lastBlock
 						Integer lastHeight = blockChainAdapter.getHeightByBlock(url, null);

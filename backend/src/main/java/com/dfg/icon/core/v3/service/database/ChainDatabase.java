@@ -34,19 +34,16 @@ public class ChainDatabase {
         try{
             chains = readMultiChain(MULTICHAIN_PATH);
         }catch (IOException e){
-            //TODO exception message
             logger.error("error message : " + e.getMessage());
         }
 
         //database
-        //TODO Database status check
         createDatabase(env.getProperty("db.url")+"/?" + option,
                 env.getProperty("db.username"), env.getProperty("db.password"), "explorer");
         try{
             createTable(env.getProperty("db.url")+"/explorer" + "?" + option,
                     env.getProperty("db.username"), env.getProperty("db.password"), SQL_PATH);
         }catch (Exception e){
-            //TODO exception message
             logger.error("e message : " + e.getMessage());
         }
 
@@ -57,7 +54,6 @@ public class ChainDatabase {
                 createTable(env.getProperty("db.url")+"/"+chainInfo.getChannel() + "?" + option,
                         env.getProperty("db.username"), env.getProperty("db.password"), SQL_PATH);
             }catch (Exception e){
-                //TODO exception message
                 logger.error("e message : " + e.getMessage());
             }
         }
@@ -79,10 +75,12 @@ public class ChainDatabase {
         try {
             Connection con1 = DriverManager.getConnection(url, user, pw);
             Statement s1 = con1.createStatement();
-            String s = "CREATE DATABASE IF NOT EXISTS `"+ dbName +"`";
-            s1.executeUpdate(s);
-        }
-        catch(SQLException err) {
+            String createTable = "CREATE DATABASE IF NOT EXISTS `"+ dbName +"`";
+            String grantUser = "GRANT ALL PRIVILEGES ON " + dbName + ".* TO '" + user + "'" + "@'%'";
+
+            s1.executeUpdate(createTable);
+            s1.executeUpdate(grantUser);
+        } catch(SQLException err) {
             logger.error(err.getMessage());
         }
 

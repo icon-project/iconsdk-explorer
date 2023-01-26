@@ -30,9 +30,4 @@ public class Application {
 
 		SpringApplication.run(Application.class, args);
 	}
-
-	@Value("${server.url}")
-	private void setIcxUrl(String serverUrl) {
-		SERVER_URL = serverUrl;
-	}
 }

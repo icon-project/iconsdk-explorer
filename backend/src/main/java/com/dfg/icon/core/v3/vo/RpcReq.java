@@ -195,14 +195,5 @@ public class RpcReq {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
-//TODO refactoring
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String str = null;
-//        try {
-//            str = objectMapper.writeValueAsString(this);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//        return str;
     }
 }

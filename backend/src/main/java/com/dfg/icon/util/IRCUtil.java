@@ -22,8 +22,6 @@ public class IRCUtil {
 	public static JsonArray IRC3_FORMAT = null;
 	public static JsonArray IRC3_TRANSFER_eventLogInputsArray = null;
 	public static JsonArray IRC3_APPROVAL_eventLogInputsArray = null;
-	
-	 static  String ircFilePath = "";
 	public static JsonObject fileParse(String filePath) throws Exception{
 		File file = new File(filePath);
 
@@ -43,11 +41,8 @@ public class IRCUtil {
 		return element.getAsJsonObject();
 	}
 
-	public static void initIRC2() throws Exception{
-		File projectPath = new File("");
-		String path = projectPath.getAbsolutePath()+"/IRC/";
-		JsonObject rootObject = fileParse(path + "IRC2.json");
-
+	public static void initIRC2(String filePath) throws Exception{
+		JsonObject rootObject = fileParse(filePath + "IRC2.json");
 		IRC2_FORMAT = rootObject.get("result").getAsJsonArray();
 
 		// eventlog 일경우는 name 항목이 상이하여도 같은것으로 처리 해야함
@@ -60,10 +55,8 @@ public class IRCUtil {
 		}
 	}
 
-	public static void initIRC3() throws Exception{
-		File projectPath = new File("");
-		String path = projectPath.getAbsolutePath()+"/IRC/";
-		JsonObject rootObject = fileParse(path + "IRC3.json");
+	public static void initIRC3(String filePath) throws Exception{
+		JsonObject rootObject = fileParse(filePath + "IRC3.json");
 
 		IRC3_FORMAT = rootObject.get("result").getAsJsonArray();
 
@@ -91,13 +84,11 @@ public class IRCUtil {
 	 */
 
 	public static String checkIRCVersion(JsonArray jArray, String filePath) throws Exception {
-		ircFilePath = filePath;
-
 		if(IRC2_FORMAT == null) {
-			initIRC2();
+			initIRC2(filePath);
 		}
 		if(IRC3_FORMAT == null) {
-			initIRC3();
+			initIRC3(filePath);
 		}
 
 		String IrcFormat = "-";

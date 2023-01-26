@@ -31,9 +31,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Value("${limit.main.tx}")
     private Integer limitMainTx;
 
-    @Value("${circulation.static}")
-    private Integer circulationStatic;
-
     @Value("${log.speed}")
     private Integer logSpeed;
 
@@ -79,11 +76,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Integer getLimitMainTx() {
         return limitMainTx;
-    }
-
-    @Override
-    public Boolean isIcxStatic() {
-        return circulationStatic>0?true:false;
     }
 
     @Override
