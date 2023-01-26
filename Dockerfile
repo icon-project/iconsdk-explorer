@@ -5,34 +5,29 @@ ARG VERSION
 #Admin Port
 ENV SEVER_PORT=8080
 
-#User Security
-ENV SERVER_SERVLET_SESSION_TIMEOUT=1h
-
 #Database
-ENV DB_DRIVERCLASSNAME=org.hibernate.dialect.MariaDB102Dialect
-ENV DB_URL=org.hibernate.dialect.MariaDB102Dialect
-ENV DB_CONNECTIONPROPERTIE=jdbc:mysql://mysql:3306
+ENV DB_DRIVERCLASSNAME="com.mysql.jdbc.Driver"
+ENV DB_URL="jdbc:mysql://mysql:3306"
+ENV DB_CONNECTIONPROPERTIE="useUnicode=yes;characterEncoding=utf8;"
 ENV DB_USERNAME=root
 
 #Logging
-ENV LOGGING_LEVEL_ROOT=INFO
-
-#keystore
-ENV ADMIN_KEYSTORE-FILE=keystore.json
-
-#governancePath
-ENV ADMIN_GOVERNANCE_PATH=/genesis/governance
-ENV ADMIN_GENESIS_PATH=/genesis/genesisfiles
 
 
 LABEL version=${VERSION}
 
-ADD backend/build/distributions/goloop-admin-boot-${VERSION}.tar /
-RUN mkdir /genesis/
-COPY backend/src/main/resources/genesis /genesis/
+ADD backend/build/distributions/iconsdk-explorer-boot-${VERSION}.tar /
 
+RUN mkdir /erd/
+COPY backend/erd /erd/
 
-RUN mv /goloop-admin-boot-${VERSION} /goloop-admin
-WORKDIR /goloop-admin
+RUN mkdir /IRC/
+COPY backend/IRC /IRC/
+
+ENV IRC_PATH=/IRC/
+ENV SQL_PATH=/erd/init(long).sql
+
+RUN mv /iconsdk-explorer-boot-${VERSION} /iconsdk-explorer
+WORKDIR /iconsdk-explorer
 EXPOSE ${SEVER_PORT}
-CMD /goloop-admin/bin/goloop-admin
+CMD /iconsdk-explorer/bin/iconsdk-explorer
