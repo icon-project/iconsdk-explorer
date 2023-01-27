@@ -1,0 +1,12 @@
+{
+  "chainInfos" : [
+    {
+      "name" : "edge",
+      "title" : "btp_chain",
+      "host" : "http://localhost:9080",
+      "api" : "/api/v3/",
+      "channel" : "edge",
+      "version" : "v3"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    container_name: mysql-explorer
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=icon_dev
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Asia/Seoul
+
+    command:
+      - --lower_case_table_names=1
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql-explorer:/var/lib/mysql
+  explorer:
+    image: iconsdk-explorer:0.0.1
+    ports:
+      - "8090:8090"
+    volumes:
+      - type: bind
+        source: ./log
+        target: /log
+      - type: bind
+        source: ./configuration
+        target: /configuration
+    environment:
+      - LOGGING_CONFIG=/configuration/logback.xml
+      - MULTICHAIN_PATH=/configuration/chain_info.json
+      - QRCODE_PATH=/configuration/qrcode/
+      - SCORE_PATH=/configuration/score/
+      - REPORT_IMAGE_PATH=/configuration/report/
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+    deploy:
+      mode: global
